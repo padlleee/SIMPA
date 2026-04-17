@@ -3,6 +3,9 @@
 /public/storage
 /storage/*.key
 /vendor
+AUTHENTICATION_MODULE.md
+LANDING_PAGE_IMPLEMENTATION.md
+.docx
 .env
 .env.backup
 .phpunit.result.cache
