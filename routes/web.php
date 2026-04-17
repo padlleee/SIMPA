@@ -21,8 +21,13 @@ Route::get('/', function () {
     return view('landing');
 })->name('landing');
 
-Route::get('/donasi-publik', [DonasiController::class, 'publicCreate'])->name('donasi.public.create');
-Route::post('/donasi/public', [DonasiController::class, 'publicStore'])->name('donasi.public.store');
+// Public Donation Form (No Authentication Required)
+Route::get('/donasi', [DonasiController::class, 'publicCreate'])->name('donasi.public-Create');
+Route::post('/donasi', [DonasiController::class, 'publicStore'])->name('donasi.publicStore');
+Route::get('/donasi-sukses', [DonasiController::class, 'publicSuccess'])->name('donasi.public.success');
+
+// Public Library View
+Route::get('/perpustakaan-publik', [PerpustakaanController::class, 'publicIndex'])->name('perpustakaan.public.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +35,15 @@ Route::post('/donasi/public', [DonasiController::class, 'publicStore'])->name('d
 |--------------------------------------------------------------------------
 */
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post')->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Password Management (First-Login & User-Initiated)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/ubah-password', [AuthController::class, 'showChangePassword'])->name('password.change');
+    Route::post('/ubah-password', [AuthController::class, 'updatePassword'])->name('password.update');
+    Route::get('/ubah-password-sukses', [AuthController::class, 'passwordChangeSuccess'])->name('password.success');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +70,8 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
     Route::patch('/donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
     Route::patch('/donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
+    Route::get('/donasi/{donasi}/kwitansi', [DonasiController::class, 'showReceipt'])->name('donasi.receipt');
+    Route::get('/donasi/{donasi}/kwitansi/download', [DonasiController::class, 'downloadReceipt'])->name('donasi.receipt.download');
     Route::delete('/donasi/{donasi}', [DonasiController::class, 'destroy'])->name('donasi.destroy');
 
     // Stok Panti (Gudang)

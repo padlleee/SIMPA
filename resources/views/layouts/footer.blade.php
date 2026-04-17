@@ -50,7 +50,7 @@
             <div>
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-6">Tautan Cepat</h3>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('donasi.public.create') }}" class="text-slate-600 text-sm hover:text-slate-900 flex items-center gap-2 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Donasi Publik</a></li>
+                    <li><a href="{{ route('donasi.index') }}" class="text-slate-600 text-sm hover:text-slate-900 flex items-center gap-2 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Donasi Publik</a></li>
                     <li><a href="{{ route('login') }}" class="text-slate-600 text-sm hover:text-slate-900 flex items-center gap-2 transition-colors"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Area Pengurus</a></li>
                 </ul>
             </div>

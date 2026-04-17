@@ -51,10 +51,6 @@
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 transition"
                            placeholder="••••••••">
                 </div>
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" name="remember" id="remember" class="rounded border-slate-300">
-                    <label for="remember" class="text-sm text-slate-600">Ingat saya</label>
-                </div>
                 <button type="submit" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-700 transition-colors">
                     Masuk
                 </button>

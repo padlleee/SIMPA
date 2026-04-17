@@ -21,11 +21,21 @@ class User extends Authenticatable
         'password',
         'role',
         'kode_akses',
+        'force_password_change',
+        'last_login_at',
+        'password_changed_at',
+        'status',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'force_password_change' => 'boolean',
+        'last_login_at' => 'datetime',
+        'password_changed_at' => 'datetime',
     ];
 
     /**

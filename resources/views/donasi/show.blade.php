@@ -1,71 +1,334 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Donasi')
-@section('page-title', 'Detail Donasi')
-@section('page-subtitle', 'Informasi lengkap donasi')
-
 @section('content')
-<div class="max-w-2xl">
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="p-8">
-        <div class="flex items-center justify-between mb-8">
-            <h3 class="text-lg font-bold text-slate-800">Donasi #{{ $donasi->id_donasi }}</h3>
-            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold {{ $donasi->status_verifikasi === 'Success' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700' }}">
-                {{ $donasi->status_verifikasi === 'Success' ? '✓ Terverifikasi' : '⏳ Menunggu Verifikasi' }}
-            </span>
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="{{ route('donasi.index') }}" class="text-blue-600 hover:text-blue-800">← Kembali ke Daftar Donasi</a>
         </div>
 
-        <div class="space-y-5">
-            <div class="flex justify-between py-3 border-b border-slate-100">
-                <span class="text-slate-500 text-sm">Donatur</span>
-                <span class="font-semibold text-slate-800">{{ $donasi->donatur?->nama_donatur ?? '-' }}</span>
-            </div>
-            <div class="flex justify-between py-3 border-b border-slate-100">
-                <span class="text-slate-500 text-sm">Nominal</span>
-                <span class="font-bold text-slate-800 text-lg">Rp {{ number_format($donasi->nominal, 0, ',', '.') }}</span>
-            </div>
-            <div class="flex justify-between py-3 border-b border-slate-100">
-                <span class="text-slate-500 text-sm">Tanggal Donasi</span>
-                <span class="font-medium text-slate-800">{{ $donasi->tanggal_donasi?->isoFormat('D MMMM Y') ?? '-' }}</span>
-            </div>
-            @if($donasi->bendahara)
-            <div class="flex justify-between py-3 border-b border-slate-100">
-                <span class="text-slate-500 text-sm">Diverifikasi oleh</span>
-                <span class="font-medium text-slate-800">{{ $donasi->bendahara->username }}</span>
-            </div>
-            @endif
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Donor Information -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Informasi Donatur</h2>
 
-        @if($donasi->bukti_pembayaran)
-        <div class="mt-8">
-            <p class="text-sm font-semibold text-slate-700 mb-3">Bukti Pembayaran</p>
-            @php $ext = pathinfo($donasi->bukti_pembayaran, PATHINFO_EXTENSION); @endphp
-            @if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png']))
-            <img src="{{ Storage::url($donasi->bukti_pembayaran) }}" alt="Bukti Pembayaran"
-                 class="w-full max-w-sm rounded-xl border border-slate-200 shadow-sm">
-            @else
-            <a href="{{ Storage::url($donasi->bukti_pembayaran) }}" target="_blank"
-               class="inline-flex items-center gap-2 text-slate-700 bg-slate-100 px-4 py-2.5 rounded-xl hover:bg-slate-200 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Lihat File PDF
-            </a>
-            @endif
-        </div>
-        @endif
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Nama Donatur</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->nama_donatur_display }}</p>
+                        </div>
 
-        <div class="flex gap-3 mt-8">
-            @if($donasi->status_verifikasi === 'Pending')
-            <form action="{{ route('donasi.verify', $donasi) }}" method="POST">
-                @csrf @method('PATCH')
-                <button type="submit" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-green-700 transition-colors"
-                        onclick="return confirm('Verifikasi donasi ini?')">
-                    ✓ Verifikasi Donasi
-                </button>
-            </form>
-            @endif
-            <a href="{{ route('donasi.index') }}" class="bg-slate-100 text-slate-700 px-6 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition-colors">Kembali</a>
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Email</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->donatur->email ?? 'Tidak tersedia' }}</p>
+                        </div>
+
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Nomor Telepon</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->donatur->no_hp ?? 'Tidak tersedia' }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Status Donatur</p>
+                            @if($donasi->donatur && $donasi->donatur->id_user)
+                                <span class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                    Terdaftar
+                                </span>
+                            @else
+                                <span class="inline-block mt-2 px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+                                    Donatur Umum
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donation Details -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Detail Donasi</h2>
+
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Nominal Donasi</p>
+                            <p class="text-3xl font-bold text-gray-900">{{ $donasi->nominal_formatted }}</p>
+                        </div>
+
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Metode Pembayaran</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->metode_pembayaran }}</p>
+                        </div>
+
+                        <div class="border-b border-gray-200 pb-4">
+                            <p class="text-sm text-gray-600 font-medium">Tanggal Donasi</p>
+                            <p class="text-lg font-semibold text-gray-900">
+                                {{ $donasi->tanggal_donasi->locale('id_ID')->translatedFormat('j F Y H:i') }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-gray-600 font-medium">Status</p>
+                            <div class="mt-2">
+                                @if($donasi->status_verifikasi === 'Pending')
+                                    <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                                        ⏳ Menunggu Verifikasi
+                                    </span>
+                                @elseif($donasi->status_verifikasi === 'Valid')
+                                    <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                        ✓ Sudah Terverifikasi
+                                    </span>
+                                @else
+                                    <span class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                                        ✗ Ditolak
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proof/Evidence -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Bukti Pembayaran</h2>
+
+                    @if($donasi->bukti_pembayaran)
+                        @php
+                            $filePath = $donasi->bukti_pembayaran;
+                            $fileExt = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                        @endphp
+
+                        @if(in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']))
+                            <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Pembayaran" class="w-full rounded-lg border border-gray-200">
+                        @else
+                            <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
+                                <div class="text-6xl mb-4">📄</div>
+                                <p class="text-gray-600 mb-4">File: {{ basename($filePath) }}</p>
+                                <a href="{{ asset('storage/' . $filePath) }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
+                                    Buka File
+                                </a>
+                            </div>
+                        @endif
+
+                        <div class="mt-4 text-sm text-gray-500">
+                            <p>Format File: <strong>.{{ $fileExt }}</strong></p>
+                            <p>Lokasi: <code class="bg-gray-50 px-2 py-1 rounded">{{ $filePath }}</code></p>
+                        </div>
+                    @else
+                        <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
+                            <div class="text-6xl mb-4">❌</div>
+                            <p class="text-gray-600">Tidak ada bukti pembayaran</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Verification History -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Riwayat Verifikasi</h2>
+
+                    @if($donasi->isVerified() || $donasi->isRejected())
+                        <div class="space-y-4">
+                            <div class="border-l-4 {{ $donasi->isVerified() ? 'border-green-500' : 'border-red-500' }} pl-4 py-2">
+                                <p class="text-sm text-gray-600 font-medium">Diverifikasi Oleh</p>
+                                <p class="text-lg font-semibold text-gray-900">{{ $donasi->bendahara->nama_lengkap ?? $donasi->bendahara->username ?? 'Admin' }}</p>
+                            </div>
+
+                            <div class="border-l-4 {{ $donasi->isVerified() ? 'border-green-500' : 'border-red-500' }} pl-4 py-2">
+                                <p class="text-sm text-gray-600 font-medium">Tanggal Verifikasi</p>
+                                <p class="text-lg font-semibold text-gray-900">
+                                    {{ $donasi->tanggal_verifikasi->locale('id_ID')->translatedFormat('j F Y H:i') }}
+                                </p>
+                            </div>
+
+                            @if($donasi->catatan_verifikasi)
+                                <div class="border-l-4 {{ $donasi->isVerified() ? 'border-green-500' : 'border-red-500' }} pl-4 py-2">
+                                    <p class="text-sm text-gray-600 font-medium">Catatan</p>
+                                    <p class="text-gray-900 mt-2 p-3 bg-gray-50 rounded">{{ $donasi->catatan_verifikasi }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @else
+                        <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
+                            <p class="text-gray-600">Belum ada riwayat verifikasi</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Sidebar - Action Panel -->
+            <div class="lg:col-span-1">
+                <!-- Status Card -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Status Saat Ini</h3>
+
+                    <div class="p-4 rounded-lg {{ $donasi->status_verifikasi === 'Pending' ? 'bg-yellow-50 border border-yellow-200' : ($donasi->status_verifikasi === 'Valid' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200') }}">
+                        @if($donasi->status_verifikasi === 'Pending')
+                            <p class="text-sm font-semibold text-yellow-800">⏳ Menunggu Verifikasi</p>
+                            <p class="text-xs text-yellow-600 mt-2">Donasi ini belum diverifikasi oleh bendahara.</p>
+                        @elseif($donasi->status_verifikasi === 'Valid')
+                            <p class="text-sm font-semibold text-green-800">✓ Sudah Terverifikasi</p>
+                            <p class="text-xs text-green-600 mt-2">Donasi ini telah diverifikasi dan diterima.</p>
+                        @else
+                            <p class="text-sm font-semibold text-red-800">✗ Ditolak</p>
+                            <p class="text-xs text-red-600 mt-2">Donasi ini telah ditolak oleh bendahara.</p>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                @if($donasi->status_verifikasi === 'Pending')
+                    <div class="space-y-3">
+                        <!-- Verify Button -->
+                        <button
+                            onclick="showModal('verifyModal')"
+                            class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+                        >
+                            ✓ Verifikasi Donasi
+                        </button>
+
+                        <!-- Reject Button -->
+                        <button
+                            onclick="showModal('rejectModal')"
+                            class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition"
+                        >
+                            ✗ Tolak Donasi
+                        </button>
+                    </div>
+                @else
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm text-gray-600 text-center">Donasi sudah diproses</p>
+                    </div>
+                @endif
+
+                <!-- Print Receipt Button -->
+                @if($donasi->isVerified())
+                    <div class="mt-4">
+                        <a
+                            href="{{ route('donasi.receipt', $donasi) }}"
+                            target="_blank"
+                            class="w-full block text-center bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition text-sm"
+                        >
+                            🖨️ Lihat Kwitansi
+                        </a>
+                    </div>
+                @endif
+
+                <!-- Delete Button -->
+                <div class="mt-4">
+                    <form action="{{ route('donasi.destroy', $donasi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus donasi ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition text-sm">
+                            🗑️ Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Verify Modal -->
+<div id="verifyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Verifikasi Donasi</h3>
+
+        <form action="{{ route('donasi.verify', $donasi) }}" method="POST">
+            @csrf
+            @method('PATCH')
+
+            <p class="text-sm text-gray-600 mb-4">
+                Verifikasi donasi sebesar <strong>{{ $donasi->nominal_formatted }}</strong> dari <strong>{{ $donasi->nama_donatur_display }}</strong>?
+            </p>
+
+            <div class="mb-4">
+                <label for="catatan" class="block text-sm font-medium text-gray-700 mb-2">Catatan (Opsional)</label>
+                <textarea
+                    id="catatan"
+                    name="catatan"
+                    rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    placeholder="Contoh: Bukti pembayaran sudah diverifikasi"
+                ></textarea>
+            </div>
+
+            <div class="flex gap-3">
+                <button
+                    type="button"
+                    onclick="hideModal('verifyModal')"
+                    class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition"
+                >
+                    Batal
+                </button>
+                <button
+                    type="submit"
+                    class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+                >
+                    Ya, Verifikasi
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Tolak Donasi</h3>
+
+        <form action="{{ route('donasi.reject', $donasi) }}" method="POST">
+            @csrf
+            @method('PATCH')
+
+            <p class="text-sm text-gray-600 mb-4">
+                Tolak donasi sebesar <strong>{{ $donasi->nominal_formatted }}</strong>?
+            </p>
+
+            <div class="mb-4">
+                <label for="catatan_tolak" class="block text-sm font-medium text-gray-700 mb-2">Alasan Penolakan <span class="text-red-500">*</span></label>
+                <textarea
+                    id="catatan_tolak"
+                    name="catatan"
+                    rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    placeholder="Jelaskan alasan penolakan..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="flex gap-3">
+                <button
+                    type="button"
+                    onclick="hideModal('rejectModal')"
+                    class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition"
+                >
+                    Batal
+                </button>
+                <button
+                    type="submit"
+                    class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold"
+                >
+                    Ya, Tolak
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function hideModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'verifyModal') hideModal('verifyModal');
+        if (e.target.id === 'rejectModal') hideModal('rejectModal');
+    });
+</script>
 @endsection

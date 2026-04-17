@@ -104,4 +104,20 @@ class PerpustakaanController extends Controller
         $peminjaman->update(['status' => 'Dikembalikan']);
         return redirect()->route('perpustakaan.index')->with('success', 'Buku berhasil dikembalikan.');
     }
+
+    // Public library view - no authentication required
+    public function publicIndex(Request $request)
+    {
+        $query = Perpustakaan::withCount(['peminjamanAktif as dipinjam_count']);
+
+        if ($request->filled('search')) {
+            $query->where('judul_buku', 'like', '%' . $request->search . '%')
+                  ->orWhere('pengarang', 'like', '%' . $request->search . '%')
+                  ->orWhere('kategori_buku', 'like', '%' . $request->search . '%');
+        }
+
+        $buku = $query->orderBy('judul_buku')->paginate(12)->withQueryString();
+
+        return view('perpustakaan.public-index', compact('buku'));
+    }
 }
