@@ -28,8 +28,7 @@
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
                 <input type="number" name="nominal" value="{{ old('nominal') }}" min="1"
                        class="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('nominal') border-red-400 @enderror">
-                <input type="number" name="nominal" value="{{ old('nominal') }}" min="1"
-                       class="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('nominal') border-red-400 @enderror">
+
             </div>
             @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
