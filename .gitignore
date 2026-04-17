@@ -3,6 +3,10 @@
 /public/storage
 /storage/*.key
 /vendor
+AUTHENTICATION_MODULE.md
+LANDING_PAGE_IMPLEMENTATION.md
+Dokumentasi_Modul_SIMPA.docx
+generate_docs.py
 .env
 .env.backup
 .phpunit.result.cache
