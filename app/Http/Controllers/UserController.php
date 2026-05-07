@@ -24,14 +24,17 @@ class UserController extends Controller
     {
         $request->validate([
             'username' => 'required|string|max:50|unique:users,username',
+            'email'    => 'required|email|max:150|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role'     => 'required|in:Admin,Ketua,Bendahara,Donatur',
         ]);
 
         $user = User::create([
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role'     => $request->role,
+            'username'             => $request->username,
+            'email'                => $request->email,
+            'password'             => Hash::make($request->password),
+            'role'                 => $request->role,
+            'force_password_change'=> true,
         ]);
 
         if ($request->role === 'Donatur') {
@@ -55,12 +58,14 @@ class UserController extends Controller
     {
         $request->validate([
             'username' => 'required|string|max:50|unique:users,username,' . $user->id_user . ',id_user',
+            'email'    => 'required|email|max:150|unique:users,email,' . $user->id_user . ',id_user',
             'role'     => 'required|in:Admin,Ketua,Bendahara,Donatur',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         $data = [
             'username' => $request->username,
+            'email'    => $request->email,
             'role'     => $request->role,
         ];
 

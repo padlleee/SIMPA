@@ -11,6 +11,7 @@ use App\Http\Controllers\PerpustakaanController;
 use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AccountRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,10 @@ Route::get('/donasi-sukses', [DonasiController::class, 'publicSuccess'])->name('
 
 // Public Library View
 Route::get('/perpustakaan-publik', [PerpustakaanController::class, 'publicIndex'])->name('perpustakaan.public.index');
+
+// Public Account Request
+Route::get('/minta-akun', [AccountRequestController::class, 'publicCreate'])->name('account-request.create');
+Route::post('/minta-akun', [AccountRequestController::class, 'publicStore'])->name('account-request.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -109,13 +114,18 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::put('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
     Route::delete('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
 
-    // User Management (Admin only in practice, but Ketua can view)
+    // User Management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Account Requests (Admin)
+    Route::get('/account-requests', [AccountRequestController::class, 'index'])->name('account-request.index');
+    Route::patch('/account-requests/{accountRequest}/approve', [AccountRequestController::class, 'approve'])->name('account-request.approve');
+    Route::patch('/account-requests/{accountRequest}/reject', [AccountRequestController::class, 'reject'])->name('account-request.reject');
 });
 
 /*

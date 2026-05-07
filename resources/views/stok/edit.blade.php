@@ -34,14 +34,7 @@
                        class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
             </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Kondisi</label>
-                <select name="kondisi" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                    <option value="Baik" {{ old('kondisi', $stok->kondisi) === 'Baik' ? 'selected' : '' }}>Baik</option>
-                    <option value="Rusak" {{ old('kondisi', $stok->kondisi) === 'Rusak' ? 'selected' : '' }}>Rusak</option>
-                    <option value="Perlu Perbaikan" {{ old('kondisi', $stok->kondisi) === 'Perlu Perbaikan' ? 'selected' : '' }}>Perlu Perbaikan</option>
-                </select>
-            </div>
+
             
             <div class="md:col-span-2 pt-4 border-t border-slate-100 grid grid-cols-3 gap-4">
                 <div>

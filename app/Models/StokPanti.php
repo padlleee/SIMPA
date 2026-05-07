@@ -22,7 +22,6 @@ class StokPanti extends Model
         'barang_keluar',
         'stok_akhir',
         'satuan',
-        'kondisi',
         'keterangan',
         'id_admin',
     ];

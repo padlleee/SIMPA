@@ -18,6 +18,7 @@ class User extends Authenticatable
     protected $dates = ['created_at'];
     protected $fillable = [
         'username',
+        'email',
         'password',
         'role',
         'kode_akses',

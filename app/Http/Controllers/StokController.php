@@ -36,11 +36,20 @@ class StokController extends Controller
             'barang_keluar'  => 'required|integer|min:0',
             'stok_akhir'     => 'required|integer|min:0',
             'satuan'         => 'nullable|string|max:20',
-            'kondisi'        => 'nullable|in:Baik,Rusak,Perlu Perbaikan',
             'keterangan'     => 'nullable|string',
         ]);
 
-        StokPanti::create(array_merge($request->all(), ['id_admin' => Auth::user()->id_user]));
+        StokPanti::create([
+            'nama_barang'    => $request->nama_barang,
+            'kategori_barang'=> $request->kategori_barang,
+            'satuan'         => $request->satuan,
+            'stok_awal'      => $request->stok_awal,
+            'barang_masuk'   => $request->barang_masuk,
+            'barang_keluar'  => $request->barang_keluar,
+            'stok_akhir'     => $request->stok_akhir,
+            'keterangan'     => $request->keterangan,
+            'id_admin'       => Auth::user()->id_user,
+        ]);
         return redirect()->route('stok.index')->with('success', 'Barang berhasil ditambahkan.');
     }
 
@@ -59,11 +68,13 @@ class StokController extends Controller
             'barang_keluar'  => 'required|integer|min:0',
             'stok_akhir'     => 'required|integer|min:0',
             'satuan'         => 'nullable|string|max:20',
-            'kondisi'        => 'nullable|in:Baik,Rusak,Perlu Perbaikan',
             'keterangan'     => 'nullable|string',
         ]);
 
-        $stok->update($request->all());
+        $stok->update($request->only([
+            'nama_barang', 'kategori_barang', 'satuan',
+            'stok_awal', 'barang_masuk', 'barang_keluar', 'stok_akhir', 'keterangan',
+        ]));
         return redirect()->route('stok.index')->with('success', 'Data stok berhasil diperbarui.');
     }
 

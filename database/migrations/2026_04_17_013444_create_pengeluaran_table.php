@@ -13,18 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-    Schema::create('pengeluaran', function (Blueprint $table) {
-    $table->integer('id_pengeluaran')->autoIncrement();
-    $table->string('kategori_biaya', 50)->nullable();
-    $table->text('keterangan')->nullable();
-    $table->decimal('nominal', 15, 2);
-    $table->date('tanggal_pengeluaran');
-    $table->integer('id_bendahara')->nullable();
-
-    // Foreign key ke users
-    $table->foreign('id_bendahara')->references('id_user')->on('users');
-    });
+        if (!Schema::hasTable('pengeluaran')) {
+            Schema::create('pengeluaran', function (Blueprint $table) {
+                $table->integer('id_pengeluaran')->autoIncrement();
+                $table->string('kategori_biaya', 50)->nullable();
+                $table->text('keterangan')->nullable();
+                $table->decimal('nominal', 15, 2);
+                $table->date('tanggal_pengeluaran');
+                $table->integer('id_bendahara')->nullable();
+                $table->foreign('id_bendahara')->references('id_user')->on('users');
+            });
         }
+    }
 
 
     /**

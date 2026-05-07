@@ -94,6 +94,15 @@
             <span class="text-sm font-medium text-amber-700">{{ $donasiPending }} Donasi Pending</span>
         </a>
         @endif
+        @if($pendingAccountRequests > 0)
+        <a href="{{ route('account-request.index', ['status' => 'pending']) }}" class="flex flex-col items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl p-4 hover:bg-blue-100 transition-colors text-center relative">
+            <div class="relative">
+                <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">{{ $pendingAccountRequests }}</span>
+            </div>
+            <span class="text-sm font-medium text-blue-700">Permintaan Akun</span>
+        </a>
+        @endif
         <a href="{{ route('anak-asuh.create') }}" class="flex flex-col items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-4 hover:bg-slate-100 transition-colors text-center">
             <svg class="w-7 h-7 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
             <span class="text-sm font-medium text-slate-700">Tambah Anak</span>

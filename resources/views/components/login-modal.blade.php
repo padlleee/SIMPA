@@ -6,11 +6,7 @@
         <!-- Modal Header with Close Button -->
         <div class="sticky top-0 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200 p-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                    </svg>
-                </div>
+                <img src="/storage/img/logo-panti.jpg" alt="Logo Panti Asuhan Amaliya" class="w-10 h-10 rounded-lg object-cover">
                 <span class="text-lg font-bold text-slate-800">SIMPA</span>
             </div>
             <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
@@ -33,10 +29,10 @@
                 @csrf
 
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Username</label>
-                    <input type="text" name="username" id="modalUsername" required autofocus
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                    <input type="email" name="email" id="modalEmail" required autofocus
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 transition placeholder:text-slate-400"
-                           placeholder="Masukkan username">
+                           placeholder="contoh@email.com">
                 </div>
 
                 <div>
@@ -75,9 +71,13 @@
             </div>
 
             <!-- Footer -->
-            <p class="text-center text-slate-400 text-xs mt-6">
+            <p class="text-center text-slate-400 text-xs mt-6 space-y-1">
+                <span class="block">
+                    Belum punya akun?
+                    <button type="button" onclick="closeLoginModal(); openRegisterModal();" class="text-slate-600 font-medium hover:underline">Daftar sebagai Donatur</button>
+                </span>
                 <button type="button" onclick="closeLoginModal()" class="hover:text-slate-600 transition-colors">
-                    = Kembali ke Beranda
+                    ← Kembali ke Beranda
                 </button>
             </p>
         </div>
@@ -108,7 +108,7 @@
 <script>
     function openLoginModal() {
         document.getElementById('loginModal').classList.remove('hidden');
-        document.getElementById('modalUsername').focus();
+        document.getElementById('modalEmail').focus();
     }
 
     function closeLoginModal() {
@@ -139,8 +139,17 @@
         document.getElementById('loginErrors').classList.add('hidden');
     });
 
+    // Open modal if requested via session
+    @if(session('showLoginModal'))
+        openLoginModal();
+    @endif
+
+    @php
+        $isLoginError = $errors->any() && !$errors->has('nama_lengkap') && old('nama_lengkap') === null;
+    @endphp
+
     // Display errors if any
-    @if($errors->any())
+    @if($isLoginError)
         openLoginModal();
         const errorsDiv = document.getElementById('loginErrors');
         @foreach($errors->all() as $error)

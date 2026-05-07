@@ -42,6 +42,42 @@
         <p class="text-slate-600 text-lg max-w-2xl">Jelajahi koleksi buku kami yang dirancang untuk mendukung pendidikan dan pengembangan anak-anak asuh Panti Amaliya.</p>
     </div>
 </section>
+<!-- INFO SECTION -->
+<section class="py-16 bg-slate-100">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl p-6 border border-slate-200">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Durasi Peminjaman</h3>
+                <p class="text-slate-600">Buku dapat dipinjam hingga 2 minggu. Perpanjangan bisa dilakukan jika tidak dipinjam orang lain.</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 border border-slate-200">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Persyaratan</h3>
+                <p class="text-slate-600">Hanya tersedia untuk anggota komunitas Panti Amaliya. Login diperlukan untuk meminjam buku.</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 border border-slate-200">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-2">Koleksi Terus Bertambah</h3>
+                <p class="text-slate-600">Kami terus menambahkan buku baru untuk memperkaya koleksi perpustakaan digital kami.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- SEARCH -->
 <section class="bg-white border-b border-slate-200 sticky top-20 z-40">
@@ -159,42 +195,7 @@
     </div>
 </section>
 
-<!-- INFO SECTION -->
-<section class="py-16 bg-slate-100">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Durasi Peminjaman</h3>
-                <p class="text-slate-600">Buku dapat dipinjam hingga 2 minggu. Perpanjangan bisa dilakukan jika tidak dipinjam orang lain.</p>
-            </div>
 
-            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Persyaratan</h3>
-                <p class="text-slate-600">Hanya tersedia untuk anggota komunitas Panti Amaliya. Login diperlukan untuk meminjam buku.</p>
-            </div>
-
-            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Koleksi Terus Bertambah</h3>
-                <p class="text-slate-600">Kami terus menambahkan buku baru untuk memperkaya koleksi perpustakaan digital kami.</p>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- FOOTER -->
 <footer class="bg-slate-800 text-gray-300 py-12">

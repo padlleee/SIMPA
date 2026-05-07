@@ -12,24 +12,25 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
+            return redirect()->route('landing');
         }
-        return view('auth.login');
+        return redirect()->route('landing')->with('showLoginModal', true);
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'username' => 'required|string',
+            'email'    => 'required|string|email',
             'password' => 'required',
         ], [
-            'username.required' => 'Username wajib diisi.',
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Login with username (not email)
+        // Login with email
         $credentials = [
-            'username' => $request->username,
+            'email'    => $request->email,
             'password' => $request->password,
         ];
 
@@ -46,12 +47,12 @@ class AuthController extends Controller
                     ->with('info', 'Silakan ubah password default Anda untuk melanjutkan.');
             }
 
-            return $this->redirectByRole(Auth::user());
+            return redirect()->route('landing');
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->onlyInput('username');
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)
@@ -126,16 +127,11 @@ class AuthController extends Controller
     }
 
     /**
-     * Redirect user by role after login
+     * Redirect user by role after login — all go to landing page
+     * where the profile dropdown lets them navigate to their dashboard.
      */
     private function redirectByRole($user)
     {
-        if (in_array($user->role, ['Admin', 'Ketua', 'Bendahara'])) {
-            return redirect()->route('dashboard');
-        }
-        if ($user->role === 'Donatur') {
-            return redirect()->route('donatur.dashboard');
-        }
-        return redirect()->route('login');
+        return redirect()->route('landing');
     }
 }

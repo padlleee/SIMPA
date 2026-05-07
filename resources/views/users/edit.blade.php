@@ -21,9 +21,10 @@
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">Role</label>
             <select name="role" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
-                <option value="Ketua" {{ old('role', $user->role) == 'Ketua' ? 'selected' : '' }}>Ketua Yayasan</option>
-                <option value="Donatur" {{ old('role', $user->role) == 'Donatur' ? 'selected' : '' }}>Donatur</option>
+                <option value="Admin"     {{ old('role', $user->role) == 'Admin'     ? 'selected' : '' }}>Admin</option>
+                <option value="Ketua"     {{ old('role', $user->role) == 'Ketua'     ? 'selected' : '' }}>Ketua Yayasan</option>
+                <option value="Bendahara" {{ old('role', $user->role) == 'Bendahara' ? 'selected' : '' }}>Bendahara</option>
+                <option value="Donatur"   {{ old('role', $user->role) == 'Donatur'   ? 'selected' : '' }}>Donatur</option>
             </select>
         </div>
         <div class="grid grid-cols-2 gap-4">

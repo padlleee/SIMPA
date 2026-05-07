@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AnakAsuh;
 use App\Models\Donasi;
 use App\Models\Pengeluaran;
+use App\Models\AccountRequest;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -44,10 +45,13 @@ class DashboardController extends Controller
             $bulanLabels[] = $namaBulan[now()->subMonths($i)->month] . ' ' . now()->subMonths($i)->year;
         }
 
+        $pendingAccountRequests = AccountRequest::where('status', 'pending')->count();
+
         return view('admin.dashboard', compact(
             'totalAnak', 'anakAktif', 'anakAlumni',
             'totalDonasi', 'donasiPending', 'totalPengeluaran', 'saldo',
-            'donasiChart', 'pengeluaranChart', 'bulanLabels'
+            'donasiChart', 'pengeluaranChart', 'bulanLabels',
+            'pendingAccountRequests'
         ));
     }
 }
