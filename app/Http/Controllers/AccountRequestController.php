@@ -107,6 +107,7 @@ class AccountRequestController extends Controller
         Donatur::create([
             'id_user'      => $user->id_user,
             'nama_donatur' => $accountRequest->nama_lengkap,
+            'email'        => $accountRequest->email,
             'no_hp'        => $accountRequest->no_hp ?? '-',
             'alamat'       => '-',
         ]);

@@ -16,8 +16,9 @@ class Donasi extends Model
     protected $fillable = [
         'id_donatur',
         'nama_donatur_manual',      // for public donations without account
+        'email_donatur_manual',     // email for public donations
         'nominal',
-        'metode_pembayaran',        // Transfer, QRIS, Tunai
+        'metode_pembayaran',        // Transfer, QRIS, Tunai, BJB, BRI
         'bukti_pembayaran',         // file path to proof
         'status_verifikasi',        // Pending, Valid, Tolak
         'id_bendahara',             // admin who verified
@@ -34,9 +35,9 @@ class Donasi extends Model
 
     // ==================== RELATIONSHIPS ====================
 
-    public function donatur()
+    public function user()
     {
-        return $this->belongsTo(Donatur::class, 'id_donatur', 'id_donatur');
+        return $this->belongsTo(User::class, 'id_donatur', 'id_user');
     }
 
     public function bendahara()
@@ -48,7 +49,7 @@ class Donasi extends Model
 
     public function getNamaDonaturDisplayAttribute()
     {
-        return $this->donatur?->nama_donatur ?? $this->nama_donatur_manual ?? '-';
+        return $this->user?->donatur?->nama_donatur ?? $this->user?->username ?? $this->nama_donatur_manual ?? '-';
     }
 
     public function getStatusBadgeAttribute()

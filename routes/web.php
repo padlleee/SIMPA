@@ -23,8 +23,8 @@ Route::get('/', function () {
 })->name('landing');
 
 // Public Donation Form (No Authentication Required)
-Route::get('/donasi', [DonasiController::class, 'publicCreate'])->name('donasi.public-Create');
-Route::post('/donasi', [DonasiController::class, 'publicStore'])->name('donasi.publicStore');
+Route::get('/form-donasi', [DonasiController::class, 'publicCreate'])->name('donasi.publicCreate');
+Route::post('/form-donasi', [DonasiController::class, 'publicStore'])->name('donasi.publicStore');
 Route::get('/donasi-sukses', [DonasiController::class, 'publicSuccess'])->name('donasi.public.success');
 
 // Public Library View
@@ -137,4 +137,8 @@ Route::middleware(['auth', 'role:Donatur'])->group(function () {
     Route::get('/donatur/dashboard', [DonaturController::class, 'dashboard'])->name('donatur.dashboard');
     Route::get('/donatur/profile', [DonaturController::class, 'profile'])->name('donatur.profile');
     Route::put('/donatur/profile', [DonaturController::class, 'profileUpdate'])->name('donatur.profile.update');
+    
+    // Donasi from registered Donatur
+    Route::get('/donatur/donasi/create', [DonasiController::class, 'userCreate'])->name('donatur.donasi.create');
+    Route::post('/donatur/donasi', [DonasiController::class, 'userStore'])->name('donatur.donasi.store');
 });

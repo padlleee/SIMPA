@@ -16,13 +16,14 @@ class DonaturController extends Controller
         $user    = Auth::user();
         $donatur = $user->donatur;
 
-        $donasi = $donatur
-            ? Donasi::where('id_donatur', $donatur->id_donatur)->latest('tanggal_donasi')->paginate(10)
-            : collect();
+        // id_donatur in donasi table stores id_user directly
+        $donasi = Donasi::where('id_donatur', $user->id_user)
+            ->latest('tanggal_donasi')
+            ->paginate(10);
 
-        $totalDonasi = $donatur
-            ? Donasi::where('id_donatur', $donatur->id_donatur)->valid()->sum('nominal')
-            : 0;
+        $totalDonasi = Donasi::where('id_donatur', $user->id_user)
+            ->where('status_verifikasi', 'Valid')
+            ->sum('nominal');
 
         return view('donatur.dashboard', compact('user', 'donatur', 'donasi', 'totalDonasi'));
     }

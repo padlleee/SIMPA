@@ -162,6 +162,15 @@
                 <p class="text-slate-400 text-sm mt-0.5">@yield('page-subtitle', '')</p>
             </div>
             <div class="flex items-center gap-3">
+                @if(auth()->user()->role === 'Admin' || auth()->user()->role === 'Bendahara')
+                @php $pendingDonations = \App\Models\Donasi::where('status_verifikasi','Pending')->count(); @endphp
+                <a href="{{ route('donasi.index', ['status' => 'Pending']) }}" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors" title="Donasi Menunggu Verifikasi">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    @if($pendingDonations > 0)
+                    <span class="absolute top-0.5 right-0.5 bg-yellow-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">{{ $pendingDonations }}</span>
+                    @endif
+                </a>
+                @endif
                 @if(auth()->user()->role === 'Admin')
                 @php $pendingReqs = \App\Models\AccountRequest::where('status','pending')->count(); @endphp
                 <a href="{{ route('account-request.index', ['status' => 'pending']) }}" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors" title="Permintaan Akun Pending">

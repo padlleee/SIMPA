@@ -6,7 +6,7 @@
         <!-- Modal Header with Close Button -->
         <div class="sticky top-0 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200 p-6 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="/storage/img/logo-panti.jpg" alt="Logo Panti Asuhan Amaliya" class="w-10 h-10 rounded-lg object-cover">
+                <img src="/storage/img/logo-panti-single.png" alt="Logo Panti Asuhan Amaliya" class="w-10 h-10 rounded-lg object-cover">
                 <span class="text-lg font-bold text-slate-800">SIMPA</span>
             </div>
             <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-600 transition-colors">

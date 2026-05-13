@@ -47,11 +47,34 @@ class DashboardController extends Controller
 
         $pendingAccountRequests = AccountRequest::where('status', 'pending')->count();
 
+        $totalDonasiAbbr = $this->formatAbbreviated($totalDonasi);
+        $saldoAbbr       = $this->formatAbbreviated($saldo);
+        $totalPengeluaranAbbr = $this->formatAbbreviated($totalPengeluaran);
+
         return view('admin.dashboard', compact(
             'totalAnak', 'anakAktif', 'anakAlumni',
             'totalDonasi', 'donasiPending', 'totalPengeluaran', 'saldo',
             'donasiChart', 'pengeluaranChart', 'bulanLabels',
-            'pendingAccountRequests'
+            'pendingAccountRequests', 'totalDonasiAbbr', 'saldoAbbr', 'totalPengeluaranAbbr'
         ));
+    }
+
+    /**
+     * Format number to abbreviated string (Rb, Jt, M)
+     */
+    private function formatAbbreviated($value)
+    {
+        if ($value >= 1000000000) {
+            $formatted = round($value / 1000000000, 2);
+            return rtrim(rtrim(number_format($formatted, 2, ',', '.'), '0'), ',') . ' M';
+        } elseif ($value >= 1000000) {
+            $formatted = round($value / 1000000, 2);
+            return rtrim(rtrim(number_format($formatted, 2, ',', '.'), '0'), ',') . ' Jt';
+        } elseif ($value >= 1000) {
+            $formatted = round($value / 1000, 2);
+            return rtrim(rtrim(number_format($formatted, 2, ',', '.'), '0'), ',') . ' Rb';
+        }
+
+        return number_format($value, 0, ',', '.');
     }
 }

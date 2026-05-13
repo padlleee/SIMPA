@@ -1,7 +1,18 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Donasi – Panti Asuhan Amaliya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
 
-@section('content')
-<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-2xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-12">
@@ -26,7 +37,7 @@
                         <div>
                             <p class="text-gray-600 font-medium">No. Rekening</p>
                             <p class="text-gray-900 font-mono text-lg">
-                                <span id="bri-account">1234567890</span>
+                                <span id="bri-account">012301002045309</span>
                                 <button onclick="copyToClipboard('bri-account')" class="ml-2 text-blue-600 hover:text-blue-800" title="Salin">
                                     📋
                                 </button>
@@ -160,17 +171,33 @@
                     <select
                         id="metode"
                         name="metode"
+                        onchange="showPaymentInfo(this.value)"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('metode') border-red-500 @enderror"
                         required
                     >
                         <option value="">-- Pilih Metode --</option>
-                        <option value="Transfer" @selected(old('metode') === 'Transfer')>Transfer Bank</option>
-                        <option value="Tunai" @selected(old('metode') === 'Tunai')>Tunai</option>
+                        <option value="BJB" @selected(old('metode') === 'BJB')>Transfer Bank BJB</option>
+                        <option value="BRI" @selected(old('metode') === 'BRI')>Transfer Bank BRI</option>
+                        <option value="Transfer" @selected(old('metode') === 'Transfer')>Transfer Bank Lainnya</option>
                         <option value="QRIS" @selected(old('metode') === 'QRIS')>QRIS</option>
+                        <option value="Tunai" @selected(old('metode') === 'Tunai')>Tunai</option>
                     </select>
                     @error('metode')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
+
+                    {{-- Dynamic Info --}}
+                    <div id="info-transfer" class="hidden mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-gray-700">
+                        <p class="font-semibold">📌 Transfer ke salah satu rekening yang tertera di atas, lalu unggah bukti transfer.</p>
+                    </div>
+                    <div id="info-qris" class="hidden mt-3 text-center">
+                        <p class="text-sm font-semibold text-gray-700 mb-2">Scan QRIS berikut untuk pembayaran:</p>
+                        <img src="{{ asset('storage/img/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya"
+                             class="mx-auto h-48 object-contain rounded-lg border border-gray-200 p-2 bg-white">
+                    </div>
+                    <div id="info-tunai" class="hidden mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-gray-700">
+                        <p class="font-semibold">🏢 Donasi tunai diserahkan langsung ke kantor Yayasan Amaliya Subang.</p>
+                    </div>
                 </div>
 
                 <!-- Bukti Pembayaran -->
@@ -229,6 +256,13 @@
 </div>
 
 <script>
+    function showPaymentInfo(val) {
+        ['info-transfer','info-qris','info-tunai'].forEach(id => document.getElementById(id).classList.add('hidden'));
+        if (['BJB','BRI','Transfer'].includes(val)) document.getElementById('info-transfer').classList.remove('hidden');
+        if (val === 'QRIS') document.getElementById('info-qris').classList.remove('hidden');
+        if (val === 'Tunai') document.getElementById('info-tunai').classList.remove('hidden');
+    }
+
     // Update file info when file is selected
     document.getElementById('bukti_pembayaran').addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -243,18 +277,12 @@
     // Copy to clipboard function
     function copyToClipboard(elementId) {
         const element = document.getElementById(elementId);
-        const text = element.textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Nomor rekening disalin ke clipboard!');
-        });
+        navigator.clipboard.writeText(element.textContent.trim()).then(() => alert('Nomor rekening disalin!'));
     }
 
-    // Format nominal input
-    document.getElementById('nominal').addEventListener('input', function(e) {
-        let value = e.target.value;
-        if (value && value > 0) {
-            // Format dengan angka ribuan jika digunakan
-        }
-    });
+    // Restore dynamic info on validation error
+    const oldMetode = '{{ old('metode') }}';
+    if (oldMetode) showPaymentInfo(oldMetode);
 </script>
-@endsection
+</body>
+</html>

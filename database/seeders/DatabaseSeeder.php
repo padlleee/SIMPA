@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         // Admin Account
         User::create([
             'username' => 'admin',
+            'email'    => 'admin@simpa.test',
             'password' => Hash::make('password'),
             'role'     => 'Admin',
         ]);
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
         // Ketua Yayasan Account
         User::create([
             'username' => 'ketua',
+            'email'    => 'ketua@simpa.test',
             'password' => Hash::make('password'),
             'role'     => 'Ketua',
         ]);
@@ -35,6 +37,7 @@ class DatabaseSeeder extends Seeder
         // Bendahara Account
         User::create([
             'username' => 'bendahara',
+            'email'    => 'bendahara@simpa.test',
             'password' => Hash::make('password'),
             'role'     => 'Bendahara',
         ]);
@@ -42,6 +45,7 @@ class DatabaseSeeder extends Seeder
         // Donatur Account
         $donaturUser = User::create([
             'username' => 'donatur1',
+            'email'    => 'donatur1@simpa.test',
             'password' => Hash::make('password'),
             'role'     => 'Donatur',
         ]);
@@ -56,12 +60,12 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('✓ Users seeded:');
         $this->command->table(
-            ['Username', 'Role', 'Password'],
+            ['Username', 'Email', 'Role', 'Password'],
             [
-                ['admin',     'Admin',     'password'],
-                ['ketua',     'Ketua',     'password'],
-                ['bendahara', 'Bendahara', 'password'],
-                ['donatur1',  'Donatur',   'password'],
+                ['admin',     'admin@simpa.test',     'Admin',     'password'],
+                ['ketua',     'ketua@simpa.test',     'Ketua',     'password'],
+                ['bendahara', 'bendahara@simpa.test', 'Bendahara', 'password'],
+                ['donatur1',  'donatur1@simpa.test',  'Donatur',   'password'],
             ]
         );
     }

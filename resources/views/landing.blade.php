@@ -58,7 +58,7 @@
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center gap-3">
-            <img src="/storage/img/logo-panti.jpg" alt="Logo Panti Asuhan Amaliya" class="h-10 md:h-12 w-auto object-contain" 
+            <img src="/storage/img/logo-panti.png" alt="Logo Panti Asuhan Amaliya" class="h-10 md:h-12 w-auto object-contain" 
          style="aspect-ratio: 1019/277;">
         </div>
 
@@ -136,9 +136,21 @@
                 SIMPA hadir untuk mengelola yayasan panti asuhan secara transparan dan profesional. Setiap donasi Anda langsung tercatat dan terverifikasi.
             </p>
             <div class="flex flex-wrap gap-4">
-                <a href="{{ route('donasi.index') }}" class="bg-white text-slate-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-100 transition-colors">
+                @auth
+                    @if(auth()->user()->role === 'Donatur')
+                    <a href="{{ route('donatur.donasi.create') }}" class="bg-white text-slate-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-100 transition-colors">
+                        Donasi Sekarang
+                    </a>
+                    @else
+                    <a href="{{ route('donasi.publicCreate') }}" class="bg-white text-slate-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-100 transition-colors">
+                        Donasi Sekarang
+                    </a>
+                    @endif
+                @else
+                <a href="{{ route('donasi.publicCreate') }}" class="bg-white text-slate-800 px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-100 transition-colors">
                     Donasi Sekarang
                 </a>
+                @endauth
                 @guest
                 <button onclick="openRegisterModal()" class="border border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-colors">
                     Daftar sebagai Donatur
@@ -254,9 +266,21 @@
         <h2 class="text-4xl font-bold text-slate-800 mb-6">Jadilah Bagian dari Perubahan</h2>
         <p class="text-slate-600 text-lg mb-10">Mulai langkah kebaikan Anda hari ini. Bantuan Anda sangat berarti bagi kelangsungan pendidikan dan kehidupan anak-anak asuh kami.</p>
         <div class="flex flex-wrap gap-4 justify-center">
-            <a href="{{ route('donasi.index') }}" class="inline-block bg-slate-800 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-slate-700 hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl">
+            @auth
+                @if(auth()->user()->role === 'Donatur')
+                <a href="{{ route('donatur.donasi.create') }}" class="inline-block bg-slate-800 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-slate-700 hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl">
+                    Mulai Berdonasi Sekarang
+                </a>
+                @else
+                <a href="{{ route('donasi.publicCreate') }}" class="inline-block bg-slate-800 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-slate-700 hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl">
+                    Mulai Berdonasi Sekarang
+                </a>
+                @endif
+            @else
+            <a href="{{ route('donasi.publicCreate') }}" class="inline-block bg-slate-800 text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-slate-700 hover:-translate-y-1 transition-all shadow-lg hover:shadow-xl">
                 Mulai Berdonasi Sekarang
             </a>
+            @endauth
             @guest
             <button onclick="openRegisterModal()" class="inline-block border-2 border-slate-800 text-slate-800 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-slate-800 hover:text-white hover:-translate-y-1 transition-all">
                 Daftar sebagai Donatur

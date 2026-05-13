@@ -17,7 +17,7 @@ class DonasiController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Donasi::with('donatur', 'bendahara')->latest('tanggal_donasi');
+        $query = Donasi::with('user.donatur', 'bendahara')->latest('tanggal_donasi');
 
         // Filter by status
         if ($request->filled('status')) {
@@ -32,9 +32,21 @@ class DonasiController extends Controller
             $query->whereDate('tanggal_donasi', '<=', $request->sampai_tanggal);
         }
 
+        // Filter by type (member/public)
+        $type = $request->get('type', 'all');
+        if ($type === 'member') {
+            $query->whereNotNull('id_donatur');
+        } elseif ($type === 'public') {
+            $query->whereNull('id_donatur');
+        }
+
         $donasi = $query->paginate(15)->withQueryString();
 
-        return view('donasi.index', compact('donasi'));
+        // Separate counts for tab badges
+        $memberCount = Donasi::whereNotNull('id_donatur')->count();
+        $publicCount  = Donasi::whereNull('id_donatur')->count();
+
+        return view('donasi.index', compact('donasi', 'memberCount', 'publicCount', 'type'));
     }
 
     /**
@@ -42,7 +54,7 @@ class DonasiController extends Controller
      */
     public function show(Donasi $donasi)
     {
-        $donasi->load('donatur', 'bendahara');
+        $donasi->load('user.donatur', 'bendahara');
         return view('donasi.show', compact('donasi'));
     }
 
@@ -128,7 +140,7 @@ class DonasiController extends Controller
             'email' => 'required|email|max:120',
             'no_hp' => 'nullable|string|max:20',
             'nominal' => 'required|numeric|min:10000',
-            'metode' => 'required|in:Tunai,Transfer,QRIS',
+            'metode' => 'required|in:Tunai,Transfer,QRIS,BJB,BRI',
             'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
             'nama_donatur.required' => 'Nama donatur wajib diisi.',
@@ -148,6 +160,7 @@ class DonasiController extends Controller
         // Create donation record
         Donasi::create([
             'nama_donatur_manual' => $request->nama_donatur,
+            'email_donatur_manual' => $request->email,
             'nominal' => $request->nominal,
             'metode_pembayaran' => $request->metode,
             'bukti_pembayaran' => $filePath,
@@ -167,6 +180,54 @@ class DonasiController extends Controller
         return view('donasi.public-success');
     }
 
+    // ==================== REGISTERED DONOR - DONATION FORM ====================
+
+    /**
+     * Show donation form for authenticated donors
+     */
+    public function userCreate()
+    {
+        $user    = Auth::user();
+        $donatur = $user->donatur;
+        return view('donasi.user-create', compact('user', 'donatur'));
+    }
+
+    /**
+     * Store donation for authenticated donors
+     */
+    public function userStore(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'nominal' => 'required|numeric|min:10000',
+            'metode' => 'required|in:Tunai,Transfer,QRIS,BJB,BRI',
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ], [
+            'nominal.required' => 'Nominal donasi wajib diisi.',
+            'nominal.min' => 'Minimal donasi Rp 10.000.',
+            'metode.required' => 'Metode pembayaran harus dipilih.',
+            'bukti_pembayaran.required' => 'Bukti pembayaran wajib diunggah.',
+            'bukti_pembayaran.mimes' => 'File harus berformat JPG, PNG, atau PDF.',
+            'bukti_pembayaran.max' => 'Ukuran file maksimal 2MB.',
+        ]);
+
+        // Store file
+        $filePath = $request->file('bukti_pembayaran')->store('donasi/bukti_pembayaran', 'public');
+
+        // Create donation record linked to user
+        Donasi::create([
+            'id_donatur' => Auth::id(),
+            'nominal' => $request->nominal,
+            'metode_pembayaran' => $request->metode,
+            'bukti_pembayaran' => $filePath,
+            'status_verifikasi' => 'Pending',
+            'tanggal_donasi' => now(),
+        ]);
+
+        return redirect()->route('donatur.dashboard')
+            ->with('success', 'Donasi Anda telah dikirim dan sedang menunggu verifikasi.');
+    }
+
     // ==================== RECEIPT - DIGITAL RECEIPT ====================
 
     /**
@@ -181,7 +242,7 @@ class DonasiController extends Controller
         }
 
         // Load relations
-        $donasi->load('donatur', 'bendahara');
+        $donasi->load('user.donatur', 'bendahara');
 
         return view('donasi.receipt', compact('donasi'));
     }

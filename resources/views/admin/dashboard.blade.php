@@ -34,7 +34,7 @@
             <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">{{ $donasiPending }} Pending</span>
             @endif
         </div>
-        <div class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalDonasi, 0, ',', '.') }}</div>
+        <div class="text-3xl font-bold text-slate-800" title="Rp {{ number_format($totalDonasi, 0, ',', '.') }}">Rp {{ $totalDonasiAbbr }}</div>
         <div class="text-slate-500 text-sm mt-1">Total Donasi Terverifikasi</div>
     </div>
 
@@ -45,7 +45,7 @@
                 <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
             </div>
         </div>
-        <div class="text-3xl font-bold text-slate-800">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</div>
+        <div class="text-3xl font-bold text-slate-800" title="Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}">Rp {{ $totalPengeluaranAbbr }}</div>
         <div class="text-slate-500 text-sm mt-1">Total Pengeluaran</div>
     </div>
 
@@ -54,7 +54,7 @@
         <div class="w-11 h-11 bg-white/10 rounded-xl flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
         </div>
-        <div class="text-3xl font-bold text-white">Rp {{ number_format($saldo, 0, ',', '.') }}</div>
+        <div class="text-3xl font-bold text-white cursor-help" title="Rp {{ number_format($saldo, 0, ',', '.') }}">Rp {{ $saldoAbbr }}</div>
         <div class="text-slate-400 text-sm mt-1">Estimasi Saldo</div>
     </div>
 </div>

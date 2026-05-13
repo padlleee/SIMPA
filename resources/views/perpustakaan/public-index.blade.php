@@ -19,13 +19,11 @@
 <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div class="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                    </svg>
-                </div>
-                <span class="text-xl font-bold text-slate-800">SIMPA</span>
+        <div class="flex items-center gap-3">
+            <img src="/storage/img/logo-panti.png" alt="Logo Panti Asuhan Amaliya" class="h-10 md:h-12 w-auto object-contain" 
+         style="aspect-ratio: 1019/277;">
+        </div>
+
             </a>
         </div>
         <div class="hidden md:flex items-center gap-6">

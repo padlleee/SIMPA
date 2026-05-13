@@ -15,13 +15,14 @@ return new class extends Migration
             // Primary key
             $table->bigIncrements('id_donasi');
 
-            // Donor information (can be from registered donatur or manual entry)
+            // Donor information (can be from registered users or manual entry)
             $table->unsignedBigInteger('id_donatur')->nullable();
-            $table->string('nama_donatur_manual', 150)->nullable()->comment('For guest donations');
+            $table->string('nama_donatur_manual', 150)->nullable()->comment('For public donations');
+            $table->string('email_donatur_manual', 120)->nullable()->comment('Email for public donations');
 
             // Donation details
             $table->decimal('nominal', 15, 2);
-            $table->enum('metode_pembayaran', ['Transfer', 'QRIS', 'Tunai'])->default('Transfer');
+            $table->enum('metode_pembayaran', ['Transfer', 'QRIS', 'Tunai', 'BJB', 'BRI'])->default('Transfer');
             $table->string('bukti_pembayaran')->nullable()->comment('File path to proof of transfer');
 
             // Status workflow: Pending → Valid (approved) or Tolak (rejected)
@@ -36,7 +37,7 @@ return new class extends Migration
             $table->timestamp('tanggal_verifikasi')->nullable();
 
             // Foreign key constraints
-            $table->foreign('id_donatur')->references('id_donatur')->on('donatur')->onDelete('set null');
+            $table->foreign('id_donatur')->references('id_user')->on('users')->onDelete('set null');
             $table->foreign('id_bendahara')->references('id_user')->on('users')->onDelete('set null');
 
             // Indexes for efficient queries

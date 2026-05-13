@@ -20,7 +20,7 @@ return new class extends Migration
                 $table->text('keterangan')->nullable();
                 $table->decimal('nominal', 15, 2);
                 $table->date('tanggal_pengeluaran');
-                $table->integer('id_bendahara')->nullable();
+                $table->unsignedBigInteger('id_bendahara')->nullable();
                 $table->foreign('id_bendahara')->references('id_user')->on('users');
             });
         }
