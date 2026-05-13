@@ -23,17 +23,17 @@
 
                         <div class="border-b border-gray-200 pb-4">
                             <p class="text-sm text-gray-600 font-medium">Email</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->donatur->email ?? 'Tidak tersedia' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->user->email ?? ($donasi->email_donatur_manual ?? 'Tidak tersedia') }}</p>
                         </div>
 
                         <div class="border-b border-gray-200 pb-4">
                             <p class="text-sm text-gray-600 font-medium">Nomor Telepon</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->donatur->no_hp ?? 'Tidak tersedia' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->user->donatur->no_hp ?? 'Tidak tersedia' }}</p>
                         </div>
 
                         <div>
                             <p class="text-sm text-gray-600 font-medium">Status Donatur</p>
-                            @if($donasi->donatur && $donasi->donatur->id_user)
+                            @if($donasi->user)
                                 <span class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                                     Terdaftar
                                 </span>
@@ -104,17 +104,12 @@
                         @else
                             <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
                                 <div class="text-6xl mb-4">📄</div>
-                                <p class="text-gray-600 mb-4">File: {{ basename($filePath) }}</p>
+                                <p class="text-gray-600 mb-4">Format File: <strong>.{{ $fileExt }}</strong></p>
                                 <a href="{{ asset('storage/' . $filePath) }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
-                                    Buka File
+                                    Buka File PDF
                                 </a>
                             </div>
                         @endif
-
-                        <div class="mt-4 text-sm text-gray-500">
-                            <p>Format File: <strong>.{{ $fileExt }}</strong></p>
-                            <p>Lokasi: <code class="bg-gray-50 px-2 py-1 rounded">{{ $filePath }}</code></p>
-                        </div>
                     @else
                         <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
                             <div class="text-6xl mb-4">❌</div>
@@ -243,14 +238,13 @@
             </p>
 
             <div class="mb-4">
-                <label for="catatan" class="block text-sm font-medium text-gray-700 mb-2">Catatan (Opsional)</label>
+                <label for="catatan" class="block text-sm font-medium text-gray-700 mb-2">Catatan Verifikasi</label>
                 <textarea
                     id="catatan"
                     name="catatan"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    placeholder="Contoh: Bukti pembayaran sudah diverifikasi"
-                ></textarea>
+                >Terima kasih banyak atas donasinya, {{ $donasi->nama_donatur_display }}. Donasi Anda telah kami verifikasi dan akan segera kami salurkan kepada anak asuh.</textarea>
             </div>
 
             <div class="flex gap-3">

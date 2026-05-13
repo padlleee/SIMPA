@@ -56,8 +56,20 @@
                 <td class="px-4 py-4">
                     @if($item->status_verifikasi === 'Valid')
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✓ Terverifikasi</span>
+                        @if($item->catatan_verifikasi)
+                            <div class="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+                                <span class="font-semibold block mb-0.5">Catatan Admin:</span>
+                                {{ $item->catatan_verifikasi }}
+                            </div>
+                        @endif
                     @elseif($item->status_verifikasi === 'Tolak')
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">✗ Ditolak</span>
+                        @if($item->catatan_verifikasi)
+                            <div class="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded border border-red-100">
+                                <span class="font-semibold block mb-0.5">Alasan:</span>
+                                {{ $item->catatan_verifikasi }}
+                            </div>
+                        @endif
                     @else
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">⏳ Diproses</span>
                     @endif

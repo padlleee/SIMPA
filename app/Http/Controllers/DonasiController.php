@@ -105,9 +105,6 @@ class DonasiController extends Controller
             ->with('success', 'Donasi berhasil ditolak dengan catatan disimpan.');
     }
 
-    /**
-     * Admin: Delete donation
-     */
     public function destroy(Donasi $donasi)
     {
         // Delete uploaded file if exists
@@ -117,6 +114,46 @@ class DonasiController extends Controller
 
         $donasi->delete();
         return redirect()->route('donasi.index')->with('success', 'Data donasi berhasil dihapus.');
+    }
+
+    /**
+     * Admin: Show create cash donation form
+     */
+    public function adminCreate()
+    {
+        if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+        return view('donasi.admin-create');
+    }
+
+    /**
+     * Admin: Store cash donation manually
+     */
+    public function adminStore(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'nama_donatur' => 'required|string|max:150',
+            'nominal' => 'required|numeric|min:1000',
+            'tanggal_donasi' => 'required|date',
+        ]);
+
+        Donasi::create([
+            'nama_donatur_manual' => $request->nama_donatur,
+            'nominal' => $request->nominal,
+            'metode_pembayaran' => 'Tunai',
+            'status_verifikasi' => 'Valid',
+            'id_bendahara' => Auth::id(),
+            'tanggal_donasi' => $request->tanggal_donasi,
+            'tanggal_verifikasi' => now(),
+            'catatan_verifikasi' => 'Rekap tunai oleh Admin',
+        ]);
+
+        return redirect()->route('donasi.index')->with('success', 'Rekap donasi tunai berhasil ditambahkan.');
     }
 
     // ==================== PUBLIC - DONATION FORM ====================
@@ -140,7 +177,7 @@ class DonasiController extends Controller
             'email' => 'required|email|max:120',
             'no_hp' => 'nullable|string|max:20',
             'nominal' => 'required|numeric|min:10000',
-            'metode' => 'required|in:Tunai,Transfer,QRIS,BJB,BRI',
+            'metode' => 'required|in:Transfer,QRIS,BJB,BRI',
             'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
             'nama_donatur.required' => 'Nama donatur wajib diisi.',
@@ -200,7 +237,7 @@ class DonasiController extends Controller
         // Validate input
         $request->validate([
             'nominal' => 'required|numeric|min:10000',
-            'metode' => 'required|in:Tunai,Transfer,QRIS,BJB,BRI',
+            'metode' => 'required|in:Transfer,QRIS,BJB,BRI',
             'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
             'nominal.required' => 'Nominal donasi wajib diisi.',

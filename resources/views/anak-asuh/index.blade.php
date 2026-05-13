@@ -56,7 +56,7 @@
                     </div>
                 </td>
                 <td class="px-4 py-4 text-slate-600">{{ $anak->tanggal_lahir?->format('d/m/Y') }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $anak->jenis_kelamin === 'Laki-laki' ? 'L' : 'P' }}</td>
+                <td class="px-4 py-4 text-slate-600">{{ $anak->jenis_kelamin === 'L' ? 'L' : 'P' }}</td>
                 <td class="px-4 py-4 text-slate-600">{{ $anak->pendidikan ?? '-' }}</td>
                 <td class="px-4 py-4 text-slate-600">{{ $anak->tanggal_masuk?->format('d/m/Y') }}</td>
                 <td class="px-4 py-4">

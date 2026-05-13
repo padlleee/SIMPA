@@ -27,8 +27,8 @@
     </div>
 </div>
 
-{{-- Filter --}}
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+{{-- Filter & Actions --}}
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6 flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-end">
     <form method="GET" class="flex flex-wrap gap-4 items-end">
         <input type="hidden" name="type" value="{{ $type }}">
         <div class="flex-1 min-w-[140px]">
@@ -53,6 +53,10 @@
             <a href="{{ route('donasi.index', ['type' => $type]) }}" class="px-5 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200 transition">Reset</a>
         </div>
     </form>
+    <a href="{{ route('donasi.adminCreate') }}" class="px-5 py-2.5 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition flex items-center gap-2 whitespace-nowrap">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Rekap Donasi Tunai
+    </a>
 </div>
 
 {{-- Tab Navigation --}}
@@ -131,7 +135,7 @@
                     </td>
                     {{-- Tanggal --}}
                     <td class="px-5 py-4 text-slate-500 text-xs">
-                        {{ $item->tanggal_donasi?->locale('id_ID')?->translatedFormat('j M Y H:i') ?? '-' }}
+                        {{ $item->tanggal_donasi?->locale('id_ID')?->translatedFormat('j M Y') ?? '-' }}
                     </td>
                     {{-- Status --}}
                     <td class="px-5 py-4">

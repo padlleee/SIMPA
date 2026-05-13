@@ -72,6 +72,8 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
 
     // Donasi
     Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
+    Route::get('/donasi/create-tunai', [DonasiController::class, 'adminCreate'])->name('donasi.adminCreate');
+    Route::post('/donasi/store-tunai', [DonasiController::class, 'adminStore'])->name('donasi.adminStore');
     Route::get('/donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
     Route::patch('/donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
     Route::patch('/donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');

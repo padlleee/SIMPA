@@ -90,8 +90,10 @@
                 </label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
-                    <input type="number" id="nominal" name="nominal" value="{{ old('nominal') }}"
-                           min="10000" placeholder="10000" required
+                    <input type="text" id="nominal" name="nominal" value="{{ old('nominal') }}"
+                           placeholder="10000" required
+                           oninvalid="this.setCustomValidity('Wajib diisi')"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.setCustomValidity('')"
                            class="w-full pl-12 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent @error('nominal') border-red-500 @enderror">
                 </div>
                 @error('nominal')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
@@ -104,13 +106,13 @@
                     Metode Pembayaran <span class="text-red-500">*</span>
                 </label>
                 <select id="metode" name="metode" onchange="showPaymentInfo(this.value)" required
+                        oninvalid="this.setCustomValidity('Wajib pilih metode pembayaran')" oninput="this.setCustomValidity('')"
                         class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 @error('metode') border-red-500 @enderror">
                     <option value="">-- Pilih Metode --</option>
                     <option value="BJB" @selected(old('metode') === 'BJB')>Transfer Bank BJB</option>
                     <option value="BRI" @selected(old('metode') === 'BRI')>Transfer Bank BRI</option>
                     <option value="Transfer" @selected(old('metode') === 'Transfer')>Transfer Bank Lainnya</option>
                     <option value="QRIS" @selected(old('metode') === 'QRIS')>QRIS</option>
-                    <option value="Tunai" @selected(old('metode') === 'Tunai')>Tunai</option>
                 </select>
                 @error('metode')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
 
@@ -123,9 +125,6 @@
                     <img src="{{ asset('/storage/img/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya"
                          class="mx-auto h-48 object-contain rounded-lg border border-slate-200 p-2 bg-white">
                 </div>
-                <div id="info-tunai" class="hidden mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-slate-700">
-                    <p class="font-semibold">🏢 Donasi tunai dapat diserahkan langsung ke kantor Yayasan Amaliya Subang.</p>
-                </div>
             </div>
 
             {{-- Bukti Pembayaran --}}
@@ -135,7 +134,8 @@
                 </label>
                 <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-6 bg-slate-50 hover:bg-slate-100 transition cursor-pointer" onclick="document.getElementById('bukti_pembayaran').click()">
                     <input type="file" id="bukti_pembayaran" name="bukti_pembayaran"
-                           accept=".jpg,.jpeg,.png,.pdf" class="hidden" required onchange="showFileName(this)">
+                           accept=".jpg,.jpeg,.png,.pdf" class="hidden" required onchange="showFileName(this)"
+                           oninvalid="this.setCustomValidity('Wajib upload bukti pembayaran')" oninput="this.setCustomValidity('')">
                     <div class="text-center" id="upload-placeholder">
                         <svg class="mx-auto h-10 w-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
@@ -166,10 +166,9 @@
 @push('scripts')
 <script>
 function showPaymentInfo(val) {
-    ['info-transfer', 'info-qris', 'info-tunai'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    ['info-transfer', 'info-qris'].forEach(id => document.getElementById(id).classList.add('hidden'));
     if (['BJB','BRI','Transfer'].includes(val)) document.getElementById('info-transfer').classList.remove('hidden');
     if (val === 'QRIS') document.getElementById('info-qris').classList.remove('hidden');
-    if (val === 'Tunai') document.getElementById('info-tunai').classList.remove('hidden');
 }
 
 function showFileName(input) {

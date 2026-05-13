@@ -42,6 +42,10 @@
                             <p class="font-medium text-slate-800">{{ $anakAsuh->jenis_kelamin_label }}</p>
                         </div>
                         <div>
+                            <p class="text-xs text-slate-500 mb-1">Pendidikan / Kelas</p>
+                            <p class="font-medium text-slate-800">{{ $anakAsuh->pendidikan ?? '-' }} {{ $anakAsuh->kelas ? ' - ' . $anakAsuh->kelas : '' }}</p>
+                        </div>
+                        <div>
                             <p class="text-xs text-slate-500 mb-1">Tanggal Masuk</p>
                             <p class="font-medium text-slate-800">{{ $anakAsuh->tanggal_masuk?->isoFormat('D MMMM Y') ?? '-' }}</p>
                         </div>

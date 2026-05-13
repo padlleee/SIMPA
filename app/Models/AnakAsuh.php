@@ -18,6 +18,8 @@ class AnakAsuh extends Model
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',   // 'L' or 'P'
+        'pendidikan',
+        'kelas',
         'jenis_layanan',
         'dusun',
         'rt',

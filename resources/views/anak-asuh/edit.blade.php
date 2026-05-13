@@ -42,6 +42,25 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Pendidikan</label>
+                    <select name="pendidikan" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                        <option value="">Pilih Pendidikan...</option>
+                        <option value="TK" {{ old('pendidikan', $anakAsuh->pendidikan) === 'TK' ? 'selected' : '' }}>TK</option>
+                        <option value="SD" {{ old('pendidikan', $anakAsuh->pendidikan) === 'SD' ? 'selected' : '' }}>SD</option>
+                        <option value="SMP" {{ old('pendidikan', $anakAsuh->pendidikan) === 'SMP' ? 'selected' : '' }}>SMP</option>
+                        <option value="SMA/SMK" {{ old('pendidikan', $anakAsuh->pendidikan) === 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                        <option value="Kuliah" {{ old('pendidikan', $anakAsuh->pendidikan) === 'Kuliah' ? 'selected' : '' }}>Kuliah / Perguruan Tinggi</option>
+                        <option value="Tidak/Belum Sekolah" {{ old('pendidikan', $anakAsuh->pendidikan) === 'Tidak/Belum Sekolah' ? 'selected' : '' }}>Tidak/Belum Sekolah</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Kelas / Tingkat</label>
+                    <input type="text" name="kelas" value="{{ old('kelas', $anakAsuh->kelas) }}" placeholder="cth: Kelas 1 / Semester 3"
+                           class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                </div>
+
+                <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Jenis Layanan</label>
                     <input type="text" name="jenis_layanan" value="{{ old('jenis_layanan', $anakAsuh->jenis_layanan) }}"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
