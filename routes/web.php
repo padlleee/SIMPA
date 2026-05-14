@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AnakAsuhController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\RiwayatStokController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PerpustakaanController;
 use App\Http\Controllers\PengeluaranController;
@@ -83,6 +84,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
 
     // Stok Panti (Gudang)
     Route::get('/stok', [StokController::class, 'index'])->name('stok.index');
+    Route::get('/stok/riwayat', [RiwayatStokController::class, 'index'])->name('stok.riwayat');
     Route::get('/stok/create', [StokController::class, 'create'])->name('stok.create');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
     Route::get('/stok/{stok}/edit', [StokController::class, 'edit'])->name('stok.edit');
@@ -100,7 +102,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     // Perpustakaan
     Route::get('/perpustakaan', [PerpustakaanController::class, 'index'])->name('perpustakaan.index');
     Route::get('/perpustakaan/create', [PerpustakaanController::class, 'create'])->name('perpustakaan.create');
+    Route::get('/perpustakaan/riwayat', [PerpustakaanController::class, 'riwayat'])->name('perpustakaan.riwayat');
     Route::post('/perpustakaan', [PerpustakaanController::class, 'store'])->name('perpustakaan.store');
+    Route::get('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'show'])->name('perpustakaan.show');
     Route::get('/perpustakaan/{perpustakaan}/edit', [PerpustakaanController::class, 'edit'])->name('perpustakaan.edit');
     Route::put('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'update'])->name('perpustakaan.update');
     Route::delete('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'destroy'])->name('perpustakaan.destroy');

@@ -17,12 +17,14 @@ class PeminjamanBuku extends Model
         'nama_peminjam',
         'tanggal_pinjam',
         'tanggal_kembali',
+        'tanggal_dikembalikan', // actual return date
         'status',
     ];
 
     protected $casts = [
-        'tanggal_pinjam'  => 'date',
-        'tanggal_kembali' => 'date',
+        'tanggal_pinjam'       => 'date',
+        'tanggal_kembali'      => 'date',
+        'tanggal_dikembalikan' => 'date',
     ];
 
     public function buku()
@@ -38,5 +40,24 @@ class PeminjamanBuku extends Model
     public function scopeDikembalikan($query)
     {
         return $query->where('status', 'Dikembalikan');
+    }
+
+    /**
+     * Returns true when the loan is overdue (past deadline and still active).
+     */
+    public function getTerlambatAttribute(): bool
+    {
+        return $this->status === 'Dipinjam'
+            && $this->tanggal_kembali
+            && $this->tanggal_kembali->isPast();
+    }
+
+    /**
+     * Days remaining until deadline (negative = overdue).
+     */
+    public function getSisaHariAttribute(): int
+    {
+        if (!$this->tanggal_kembali) return 0;
+        return now()->startOfDay()->diffInDays($this->tanggal_kembali->startOfDay(), false);
     }
 }

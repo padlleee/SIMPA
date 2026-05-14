@@ -15,11 +15,74 @@
         </div>
         <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium">Cari</button>
     </form>
+    <a href="{{ route('stok.riwayat') }}" class="bg-white border border-slate-300 text-slate-600 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Riwayat Stok
+    </a>
     <a href="{{ route('stok.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Barang
     </a>
 </div>
+
+@php
+    $lowStockItems = \App\Models\StokPanti::where('stok_akhir', '<=', 5)->get();
+@endphp
+
+@if($lowStockItems->count() > 0)
+<div id="stok-alert" class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex gap-4 items-center relative">
+    <div class="bg-red-100 p-2 rounded-lg text-red-600 shrink-0">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <div class="flex-1">
+        <h4 class="font-bold text-red-800">Perhatian! Terdapat {{ $lowStockItems->count() }} barang dengan stok menipis.</h4>
+        <p class="text-sm text-red-700 mt-0.5">
+            Harap segera lakukan pengecekan dan penambahan stok.
+            <a href="{{ route('stok.index', ['filter' => 'menipis']) }}" class="text-red-600 font-bold hover:underline transition-colors">Lihat stok yang menipis</a>.
+        </p>
+    </div>
+    @if(request()->anyFilled(['search', 'kategori', 'filter']))
+    <div class="shrink-0">
+        <a href="{{ route('stok.index') }}" title="Reset/Lihat Semua" class="p-2 bg-white rounded-lg border border-red-100 text-red-400 hover:text-red-600 hover:bg-red-50 transition-all shadow-sm flex items-center gap-2 group">
+            <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </a>
+    </div>
+    @endif
+    {{-- Close Button --}}
+    <button onclick="closeStokAlert()" title="Tutup peringatan" class="p-1.5 ml-1 text-red-300 hover:text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+</div>
+
+{{-- Re-open button when closed --}}
+<button id="stok-alert-reopen" onclick="reopenStokAlert()" title="Lihat peringatan stok" class="hidden mb-6 w-full text-left bg-red-50 border border-red-200 rounded-xl px-4 py-2.5 flex items-center gap-2 text-red-700 text-sm font-medium hover:bg-red-100 transition-colors">
+    <svg class="w-4 h-4 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    {{ $lowStockItems->count() }} barang dengan stok menipis — <span class="underline ml-1">Tampilkan peringatan</span>
+</button>
+
+<script>
+    (function() {
+        const alert = document.getElementById('stok-alert');
+        const reopen = document.getElementById('stok-alert-reopen');
+        if (sessionStorage.getItem('stok-alert-closed') === '1') {
+            if (alert) alert.classList.add('hidden');
+            if (reopen) reopen.classList.remove('hidden');
+        }
+    })();
+
+    function closeStokAlert() {
+        document.getElementById('stok-alert').classList.add('hidden');
+        document.getElementById('stok-alert-reopen').classList.remove('hidden');
+        sessionStorage.setItem('stok-alert-closed', '1');
+    }
+
+    function reopenStokAlert() {
+        document.getElementById('stok-alert').classList.remove('hidden');
+        document.getElementById('stok-alert-reopen').classList.add('hidden');
+        sessionStorage.removeItem('stok-alert-closed');
+    }
+</script>
+@endif
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <table class="w-full text-sm">
@@ -42,7 +105,16 @@
                 <td class="px-4 py-4 text-center text-green-600 font-medium">+{{ $item->barang_masuk }}</td>
                 <td class="px-4 py-4 text-center text-red-500 font-medium">-{{ $item->barang_keluar }}</td>
                 <td class="px-4 py-4 text-center">
-                    <span class="font-bold text-slate-800 {{ $item->stok_akhir <= 5 ? 'text-red-600' : '' }}">{{ $item->stok_akhir }}</span>
+                    <span class="font-bold {{ $item->stok_akhir <= 5 ? 'text-red-600' : 'text-green-600' }}">{{ $item->stok_akhir }}</span>
+                    @if($item->stok_akhir <= 5)
+                        <div class="mt-1">
+                            <span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Menipis</span>
+                        </div>
+                    @else
+                        <div class="mt-1">
+                            <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Aman</span>
+                        </div>
+                    @endif
                 </td>
                 <td class="px-4 py-4 text-slate-500 text-xs truncate max-w-xs">{{ $item->keterangan ?? '-' }}</td>
                 <td class="px-6 py-4">

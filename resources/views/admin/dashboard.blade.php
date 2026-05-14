@@ -6,8 +6,8 @@
 
 @section('content')
 
-<!-- Stat Cards Row 1 -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+<!-- Stat Cards Row -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
     <!-- Total Anak -->
     <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4">
@@ -17,18 +17,18 @@
         </div>
         <div class="text-3xl font-bold text-slate-800">{{ $totalAnak }}</div>
         <div class="text-slate-500 text-sm mt-1">Total Anak Asuh</div>
-        <div class="flex gap-3 mt-3 text-xs text-slate-400">
+        <div class="flex gap-3 mt-3 text-xs">
             <span class="text-green-600 font-medium">{{ $anakAktif }} Aktif</span>
-            <span>·</span>
-            <span>{{ $anakAlumni }} Alumni</span>
+            <span class="text-slate-300">·</span>
+            <span class="text-slate-400">{{ $anakAlumni }} Alumni</span>
         </div>
     </div>
 
     <!-- Total Donasi -->
     <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-11 h-11 bg-slate-100 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <div class="w-11 h-11 bg-green-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             </div>
             @if($donasiPending > 0)
             <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">{{ $donasiPending }} Pending</span>
@@ -41,8 +41,8 @@
     <!-- Total Pengeluaran -->
     <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
         <div class="flex items-center justify-between mb-4">
-            <div class="w-11 h-11 bg-slate-100 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
+            <div class="w-11 h-11 bg-red-50 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/></svg>
             </div>
         </div>
         <div class="text-3xl font-bold text-slate-800" title="Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}">Rp {{ $totalPengeluaranAbbr }}</div>
@@ -59,28 +59,60 @@
     </div>
 </div>
 
-<!-- Charts -->
-<div class="grid lg:grid-cols-2 gap-6 mb-8">
-    <!-- Donasi Chart -->
-    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-        <div class="flex items-center justify-between mb-6">
+<!-- Charts Row -->
+<div class="grid lg:grid-cols-3 gap-5 mb-7">
+    <!-- Combined Trend Chart (2/3 width) -->
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <div class="flex items-center justify-between mb-5">
             <div>
-                <h3 class="font-bold text-slate-800">Tren Donasi</h3>
-                <p class="text-slate-400 text-sm mt-0.5">6 bulan terakhir</p>
+                <h3 class="font-bold text-slate-800">Tren Keuangan</h3>
+                <p class="text-slate-400 text-sm mt-0.5">Donasi & pengeluaran 6 bulan terakhir</p>
+            </div>
+            <div class="flex items-center gap-4 text-xs font-medium">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-700 inline-block"></span>Donasi</span>
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>Pengeluaran</span>
             </div>
         </div>
-        <canvas id="donasiChart" height="200"></canvas>
+        <canvas id="trendChart" height="220"></canvas>
     </div>
 
-    <!-- Pengeluaran Chart -->
-    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h3 class="font-bold text-slate-800">Tren Pengeluaran</h3>
-                <p class="text-slate-400 text-sm mt-0.5">6 bulan terakhir</p>
+    <!-- Donut Chart: Keseimbangan (1/3 width) -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col">
+        <div class="mb-5">
+            <h3 class="font-bold text-slate-800">Keseimbangan</h3>
+            <p class="text-slate-400 text-sm mt-0.5">Komposisi keuangan</p>
+        </div>
+        <div class="flex-1 flex items-center justify-center">
+            <div class="relative w-44 h-44">
+                <canvas id="donutChart"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                    @php
+                        $total = $totalDonasi + $totalPengeluaran;
+                        $pctDonasi = $total > 0 ? round($totalDonasi / $total * 100) : 0;
+                    @endphp
+                    <div class="text-2xl font-bold text-slate-800">{{ $pctDonasi }}%</div>
+                    <div class="text-xs text-slate-400 leading-tight">Donasi</div>
+                </div>
             </div>
         </div>
-        <canvas id="pengeluaranChart" height="200"></canvas>
+        <div class="mt-4 space-y-2 text-sm">
+            <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2 text-slate-600">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-700 inline-block"></span>Donasi
+                </span>
+                <span class="font-semibold text-slate-800">Rp {{ $totalDonasiAbbr }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2 text-slate-600">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span>Pengeluaran
+                </span>
+                <span class="font-semibold text-slate-800">Rp {{ $totalPengeluaranAbbr }}</span>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <span class="text-slate-500 text-xs">Saldo Bersih</span>
+                <span class="font-bold text-slate-800 text-sm">Rp {{ $saldoAbbr }}</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -123,84 +155,132 @@
 @push('scripts')
 <script>
     const labels = @json($bulanLabels);
-    const namaBulan = ['','Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const donasiRaw       = @json($donasiChart);
+    const pengeluaranRaw  = @json($pengeluaranChart);
 
-    // Build donasi data array
-    const donasiRaw = @json($donasiChart);
-    const pengeluaranRaw = @json($pengeluaranChart);
-
-    function buildChartData(raw) {
+    function buildData(raw) {
         return labels.map((label, i) => {
-            const month = new Date().getMonth() + 1 - (5 - i);
-            const adjusted = month <= 0 ? month + 12 : month;
-            const year = month <= 0 ? new Date().getFullYear() - 1 : new Date().getFullYear();
-            const found = raw.find(d => parseInt(d.bulan) === adjusted && parseInt(d.tahun) === year);
+            const offset = 5 - i;
+            const d = new Date();
+            d.setMonth(d.getMonth() - offset);
+            const m = d.getMonth() + 1;
+            const y = d.getFullYear();
+            const found = raw.find(r => parseInt(r.bulan) === m && parseInt(r.tahun) === y);
             return found ? parseFloat(found.total) : 0;
         });
     }
 
-    const chartDefaults = {
-        borderWidth: 2,
-        borderRadius: 8,
-        borderSkipped: false,
-    };
+    const donasiData      = buildData(donasiRaw);
+    const pengeluaranData = buildData(pengeluaranRaw);
 
-    new Chart(document.getElementById('donasiChart'), {
-        type: 'bar',
+    // ── Combined Area / Line Chart ──────────────────────────────────────────
+    const trendCtx = document.getElementById('trendChart').getContext('2d');
+
+    const gradDonasi = trendCtx.createLinearGradient(0, 0, 0, 300);
+    gradDonasi.addColorStop(0,   'rgba(51,65,85,0.25)');
+    gradDonasi.addColorStop(1,   'rgba(51,65,85,0)');
+
+    const gradPengeluaran = trendCtx.createLinearGradient(0, 0, 0, 300);
+    gradPengeluaran.addColorStop(0,   'rgba(248,113,113,0.20)');
+    gradPengeluaran.addColorStop(1,   'rgba(248,113,113,0)');
+
+    new Chart(trendCtx, {
+        type: 'line',
         data: {
             labels,
-            datasets: [{
-                ...chartDefaults,
-                label: 'Donasi (Rp)',
-                data: buildChartData(donasiRaw),
-                backgroundColor: '#e2e8f0',
-                borderColor: '#475569',
-                hoverBackgroundColor: '#475569',
-            }]
+            datasets: [
+                {
+                    label: 'Donasi',
+                    data: donasiData,
+                    borderColor: '#334155',
+                    backgroundColor: gradDonasi,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#334155',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    fill: true,
+                },
+                {
+                    label: 'Pengeluaran',
+                    data: pengeluaranData,
+                    borderColor: '#f87171',
+                    backgroundColor: gradPengeluaran,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#f87171',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    fill: true,
+                }
+            ]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display: false } },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: '#94a3b8',
+                    bodyColor: '#f1f5f9',
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        label: ctx => ` ${ctx.dataset.label}: Rp ${(ctx.parsed.y/1000000).toFixed(2)} Jt`
+                    }
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: { color: '#f1f5f9' },
                     ticks: {
-                        callback: v => 'Rp ' + (v/1000000).toFixed(1) + 'Jt',
-                        color: '#94a3b8'
+                        color: '#94a3b8',
+                        callback: v => 'Rp ' + (v >= 1000000 ? (v/1000000).toFixed(1)+'Jt' : (v/1000).toFixed(0)+'Rb')
                     }
                 },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' }
+                }
             }
         }
     });
 
-    new Chart(document.getElementById('pengeluaranChart'), {
-        type: 'bar',
+    // ── Donut Chart ─────────────────────────────────────────────────────────
+    const donutCtx = document.getElementById('donutChart').getContext('2d');
+    const totalDonasi     = {{ $totalDonasi }};
+    const totalPengeluaran= {{ $totalPengeluaran }};
+
+    new Chart(donutCtx, {
+        type: 'doughnut',
         data: {
-            labels,
+            labels: ['Donasi', 'Pengeluaran'],
             datasets: [{
-                ...chartDefaults,
-                label: 'Pengeluaran (Rp)',
-                data: buildChartData(pengeluaranRaw),
-                backgroundColor: '#e2e8f0',
-                borderColor: '#94a3b8',
-                hoverBackgroundColor: '#94a3b8',
+                data: [totalDonasi || 0, totalPengeluaran || 0],
+                backgroundColor: ['#334155', '#f87171'],
+                hoverBackgroundColor: ['#1e293b', '#ef4444'],
+                borderWidth: 0,
+                borderRadius: 4,
+                spacing: 3,
             }]
         },
         options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#f1f5f9' },
-                    ticks: {
-                        callback: v => 'Rp ' + (v/1000000).toFixed(1) + 'Jt',
-                        color: '#94a3b8'
+            responsive: false,
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e293b',
+                    titleColor: '#94a3b8',
+                    bodyColor: '#f1f5f9',
+                    padding: 10,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: ctx => ` Rp ${(ctx.parsed/1000000).toFixed(2)} Jt`
                     }
-                },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                }
             }
         }
     });

@@ -23,7 +23,15 @@ class InventarisController extends Controller
 
     public function create()
     {
-        return view('inventaris.create');
+        $lastItem = InventarisPeralatan::orderBy('id_aset', 'desc')->first();
+        if ($lastItem && preg_match('/INV-(\d+)/', $lastItem->kode_barang, $matches)) {
+            $nextNumber = intval($matches[1]) + 1;
+        } else {
+            $nextNumber = $lastItem ? $lastItem->id_aset + 1 : 1;
+        }
+        $newKodeBarang = 'INV-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+        return view('inventaris.create', compact('newKodeBarang'));
     }
 
     public function store(Request $request)
