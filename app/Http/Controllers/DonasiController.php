@@ -198,6 +198,7 @@ class DonasiController extends Controller
         Donasi::create([
             'nama_donatur_manual' => $request->nama_donatur,
             'email_donatur_manual' => $request->email,
+            'no_hp_donatur_manual' => $request->no_hp,
             'nominal' => $request->nominal,
             'metode_pembayaran' => $request->metode,
             'bukti_pembayaran' => $filePath,

@@ -24,8 +24,8 @@
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
                     <input type="text" id="nominal" name="nominal" value="{{ old('nominal') }}"
-                           required oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.setCustomValidity('')"
-                           placeholder="50000"
+                           required oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12); this.setCustomValidity('')"
+                           placeholder="50000" maxlength="12"
                            class="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-transparent @error('nominal') border-red-500 @enderror">
                 </div>
                 @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
