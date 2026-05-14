@@ -25,4 +25,9 @@ class Pengeluaran extends Model
         'tanggal_pengeluaran' => 'date',
         'nominal'             => 'decimal:2',
     ];
+
+    public function bendahara()
+    {
+        return $this->belongsTo(User::class, 'id_bendahara', 'id_user');
+    }
 }

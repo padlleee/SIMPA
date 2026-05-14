@@ -91,9 +91,9 @@
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
                     <input type="text" id="nominal" name="nominal" value="{{ old('nominal') }}"
-                           placeholder="10000" required
+                           placeholder="10000" maxlength="12" required
                            oninvalid="this.setCustomValidity('Wajib diisi')"
-                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.setCustomValidity('')"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12); this.setCustomValidity('')"
                            class="w-full pl-12 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent @error('nominal') border-red-500 @enderror">
                 </div>
                 @error('nominal')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror

@@ -17,6 +17,7 @@ class Donasi extends Model
         'id_donatur',
         'nama_donatur_manual',      // for public donations without account
         'email_donatur_manual',     // email for public donations
+        'no_hp_donatur_manual',     // no hp for public donations
         'nominal',
         'metode_pembayaran',        // Transfer, QRIS, Tunai, BJB, BRI
         'bukti_pembayaran',         // file path to proof

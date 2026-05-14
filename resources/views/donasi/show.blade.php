@@ -28,7 +28,7 @@
 
                         <div class="border-b border-gray-200 pb-4">
                             <p class="text-sm text-gray-600 font-medium">Nomor Telepon</p>
-                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->user->donatur->no_hp ?? 'Tidak tersedia' }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ $donasi->user->donatur->no_hp ?? ($donasi->no_hp_donatur_manual ?? 'Tidak tersedia') }}</p>
                         </div>
 
                         <div>

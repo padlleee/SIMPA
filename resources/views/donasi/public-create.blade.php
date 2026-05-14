@@ -132,11 +132,13 @@
                         Nomor Telepon (Opsional)
                     </label>
                     <input
-                        type="tel"
+                        type="text"
                         id="no_hp"
                         name="no_hp"
                         value="{{ old('no_hp') }}"
                         placeholder="08xxxxxxxxxx"
+                        maxlength="15"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                     >
                 </div>
@@ -154,10 +156,11 @@
                             name="nominal"
                             value="{{ old('nominal') }}"
                             placeholder="10000"
+                            maxlength="12"
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('nominal') border-red-500 @enderror"
                             required
                             oninvalid="this.setCustomValidity('Wajib diisi')"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, ''); this.setCustomValidity('')"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12); this.setCustomValidity('')"
                         >
                     </div>
                     @error('nominal')
