@@ -45,6 +45,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Nomor Kontak</label>
                     <input type="text" name="nomor_kontak" value="{{ old('nomor_kontak', $donatur->nomor_kontak) }}"
+                           maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
             </div>

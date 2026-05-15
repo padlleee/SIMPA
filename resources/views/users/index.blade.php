@@ -14,19 +14,20 @@
 </div>
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100 bg-slate-50">
-                <th class="text-left px-6 py-4 font-semibold text-slate-600">Pengguna</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Email</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Role</th>
-                <th class="text-right px-6 py-4 font-semibold text-slate-600">Aksi</th>
-            </tr>
-        </thead>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Pengguna</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Email</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Role</th>
+                    <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
         <tbody class="divide-y divide-slate-100">
             @forelse($users as $user)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0 text-slate-600 font-semibold text-sm">
                             {{ strtoupper(substr($user->username, 0, 1)) }}
@@ -34,14 +35,14 @@
                         <span class="font-semibold text-slate-800">{{ $user->username }}</span>
                     </div>
                 </td>
-                <td class="px-4 py-4 text-slate-600">{{ $user->email }}</td>
-                <td class="px-4 py-4">
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $user->email }}</td>
+                <td class="px-4 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold
                         {{ $user->role === 'Admin' ? 'bg-slate-800 text-white' : ($user->role === 'Ketua' ? 'bg-slate-200 text-slate-700' : 'bg-green-100 text-green-700') }}">
                         {{ $user->role }}
                     </span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <a href="{{ route('users.edit', $user) }}" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -65,6 +66,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($users->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">{{ $users->links() }}</div>
     @endif

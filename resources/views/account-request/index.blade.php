@@ -29,26 +29,6 @@
     </a>
 </div>
 
-<!-- Flash Messages -->
-@if(session('success'))
-<div class="mb-5 bg-green-50 border border-green-200 text-green-800 rounded-xl px-5 py-4 flex items-start gap-3">
-    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-    <span class="text-sm font-medium">{{ session('success') }}</span>
-</div>
-@endif
-@if(session('info'))
-<div class="mb-5 bg-blue-50 border border-blue-200 text-blue-800 rounded-xl px-5 py-4 flex items-start gap-3">
-    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    <span class="text-sm">{{ session('info') }}</span>
-</div>
-@endif
-@if(session('error'))
-<div class="mb-5 bg-red-50 border border-red-200 text-red-800 rounded-xl px-5 py-4 flex items-start gap-3">
-    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-    <span class="text-sm">{{ session('error') }}</span>
-</div>
-@endif
-
 <!-- Table -->
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     @if($requests->isEmpty())
@@ -63,9 +43,9 @@
         <table class="w-full text-sm">
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Nama</th>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Tanggal</th>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Status</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Tanggal</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Status</th>
                     <th class="text-left px-6 py-4 font-semibold text-slate-600 w-[1%] whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
@@ -92,21 +72,29 @@
                     <td class="px-6 py-4 whitespace-nowrap w-[1%]">
                         <div class="flex gap-2 items-center">
                             @if($req->isPending())
-                                <form action="{{ route('account-request.approve', $req) }}" method="POST" class="m-0 p-0 flex" onsubmit="return confirm('Setujui permintaan dari {{ $req->nama_lengkap }}?')">
+                                {{-- Approve Button --}}
+                                <button type="button" title="Setujui"
+                                    onclick="showConfirmModal('approve', '{{ $req->id }}', '{{ addslashes($req->nama_lengkap) }}')"
+                                    class="flex items-center justify-center bg-green-100 text-green-700 p-2 rounded-lg hover:bg-green-200 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                </button>
+                                {{-- Hidden Approve Form --}}
+                                <form id="approve-form-{{ $req->id }}" action="{{ route('account-request.approve', $req) }}" method="POST" class="hidden">
                                     @csrf @method('PATCH')
-                                    <button type="submit" title="Setujui"
-                                            class="flex items-center justify-center bg-green-100 text-green-700 p-2 rounded-lg hover:bg-green-200 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    </button>
                                 </form>
-                                <form action="{{ route('account-request.reject', $req) }}" method="POST" class="m-0 p-0 flex" onsubmit="return confirm('Tolak permintaan dari {{ $req->nama_lengkap }}?')">
+
+                                {{-- Reject Button --}}
+                                <button type="button" title="Tolak"
+                                    onclick="showConfirmModal('reject', '{{ $req->id }}', '{{ addslashes($req->nama_lengkap) }}')"
+                                    class="flex items-center justify-center bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                                {{-- Hidden Reject Form --}}
+                                <form id="reject-form-{{ $req->id }}" action="{{ route('account-request.reject', $req) }}" method="POST" class="hidden">
                                     @csrf @method('PATCH')
-                                    <button type="submit" title="Tolak"
-                                            class="flex items-center justify-center bg-red-100 text-red-700 p-2 rounded-lg hover:bg-red-200 transition-colors">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    </button>
                                 </form>
                             @endif
+
                             <button type="button" title="Lihat Permintaan"
                                     onclick="showDetailModal('{{ addslashes($req->nama_lengkap) }}', '{{ addslashes($req->email) }}', '{{ addslashes($req->no_hp ?? '-') }}', '{{ addslashes($req->pesan ?? '-') }}')"
                                     class="flex items-center justify-center bg-blue-100 text-blue-700 p-2 rounded-lg hover:bg-blue-200 transition-colors">
@@ -133,17 +121,42 @@
 
 @endsection
 
+{{-- ===================== MODALS ===================== --}}
+
+<!-- Confirm Modal (Approve/Reject) -->
+<div id="confirmModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full overflow-hidden">
+        <!-- Header -->
+        <div id="confirmModal-header" class="p-6 pb-4">
+            <div class="flex items-center gap-4">
+                <div id="confirmModal-icon" class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"></div>
+                <div>
+                    <h3 id="confirmModal-title" class="text-base font-bold text-slate-800"></h3>
+                    <p id="confirmModal-sub" class="text-sm text-slate-500 mt-0.5"></p>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="px-6 pb-6 flex gap-3 justify-end">
+            <button onclick="closeConfirmModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
+                Batal
+            </button>
+            <button id="confirmModal-btn" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors">
+                Konfirmasi
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Detail Modal -->
 <div id="detailModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl max-w-md w-full">
-        <!-- Header -->
         <div class="border-b border-slate-200 p-6 flex justify-between items-center bg-slate-50 rounded-t-2xl">
             <h3 class="text-lg font-bold text-slate-800">Detail Permintaan</h3>
             <button onclick="closeDetailModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
-        <!-- Body -->
         <div class="p-6 space-y-5">
             <div>
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Nama Lengkap</p>
@@ -164,7 +177,6 @@
                 </div>
             </div>
         </div>
-        <!-- Footer -->
         <div class="border-t border-slate-200 p-4 text-right">
             <button onclick="closeDetailModal()" class="bg-slate-800 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-700 transition-colors">
                 Tutup
@@ -174,12 +186,58 @@
 </div>
 
 <script>
+    // ======= CONFIRM MODAL =======
+    let _confirmFormId = null;
+
+    function showConfirmModal(type, id, nama) {
+        const modal = document.getElementById('confirmModal');
+        const icon  = document.getElementById('confirmModal-icon');
+        const title = document.getElementById('confirmModal-title');
+        const sub   = document.getElementById('confirmModal-sub');
+        const btn   = document.getElementById('confirmModal-btn');
+
+        if (type === 'approve') {
+            icon.className  = 'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-green-100 text-green-600';
+            icon.innerHTML  = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            title.textContent = 'Setujui Permintaan?';
+            sub.textContent   = `Akun donatur untuk "${nama}" akan segera dibuat.`;
+            btn.className     = 'px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors bg-green-600 hover:bg-green-700';
+            btn.textContent   = 'Ya, Setujui';
+            _confirmFormId    = 'approve-form-' + id;
+        } else {
+            icon.className  = 'w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-red-100 text-red-600';
+            icon.innerHTML  = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+            title.textContent = 'Tolak Permintaan?';
+            sub.textContent   = `Permintaan dari "${nama}" akan ditolak.`;
+            btn.className     = 'px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors bg-red-600 hover:bg-red-700';
+            btn.textContent   = 'Ya, Tolak';
+            _confirmFormId    = 'reject-form-' + id;
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.add('hidden');
+        _confirmFormId = null;
+    }
+
+    document.getElementById('confirmModal-btn').addEventListener('click', function() {
+        if (_confirmFormId) {
+            document.getElementById(_confirmFormId).submit();
+        }
+    });
+
+    document.getElementById('confirmModal').addEventListener('click', function(e) {
+        if (e.target === this) closeConfirmModal();
+    });
+
+    // ======= DETAIL MODAL =======
     function showDetailModal(name, email, phone, message) {
-        document.getElementById('modalDetailName').textContent = name;
-        document.getElementById('modalDetailEmail').textContent = email;
-        document.getElementById('modalDetailPhone').textContent = phone;
+        document.getElementById('modalDetailName').textContent    = name;
+        document.getElementById('modalDetailEmail').textContent   = email;
+        document.getElementById('modalDetailPhone').textContent   = phone;
         document.getElementById('modalDetailMessage').textContent = message || '—';
-        
         document.getElementById('detailModal').classList.remove('hidden');
     }
 
@@ -187,16 +245,14 @@
         document.getElementById('detailModal').classList.add('hidden');
     }
 
-    // Close on click outside
     document.getElementById('detailModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeDetailModal();
-        }
+        if (e.target === this) closeDetailModal();
     });
 
-    // Close on Escape key
+    // Close both on Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            closeConfirmModal();
             closeDetailModal();
         }
     });

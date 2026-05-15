@@ -94,12 +94,12 @@
         <table class="w-full text-sm">
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Donatur</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Nominal</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Metode</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Tanggal</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Donatur</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Nominal</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Metode</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -126,19 +126,19 @@
                         @endif
                     </td>
                     {{-- Nominal --}}
-                    <td class="px-5 py-4 font-bold text-slate-800">{{ $item->nominal_formatted }}</td>
+                    <td class="px-5 py-4 font-bold text-slate-800 whitespace-nowrap">{{ $item->nominal_formatted }}</td>
                     {{-- Metode --}}
-                    <td class="px-5 py-4">
+                    <td class="px-5 py-4 whitespace-nowrap">
                         <span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium">
                             {{ $item->metode_pembayaran }}
                         </span>
                     </td>
                     {{-- Tanggal --}}
-                    <td class="px-5 py-4 text-slate-500 text-xs">
+                    <td class="px-5 py-4 text-slate-500 text-xs whitespace-nowrap">
                         {{ $item->tanggal_donasi?->locale('id_ID')?->translatedFormat('j M Y') ?? '-' }}
                     </td>
                     {{-- Status --}}
-                    <td class="px-5 py-4">
+                    <td class="px-5 py-4 whitespace-nowrap">
                         @if($item->status_verifikasi === 'Pending')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">⏳ Menunggu</span>
                         @elseif($item->status_verifikasi === 'Valid')
@@ -148,7 +148,7 @@
                         @endif
                     </td>
                     {{-- Aksi --}}
-                    <td class="px-5 py-4">
+                    <td class="px-5 py-4 whitespace-nowrap">
                         <a href="{{ route('donasi.show', $item) }}"
                            class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-700 transition">
                             Detail

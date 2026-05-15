@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AnakAsuhController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\StokController;
+use App\Http\Controllers\RiwayatStokController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PerpustakaanController;
 use App\Http\Controllers\PengeluaranController;
@@ -48,6 +49,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ubah-password', [AuthController::class, 'showChangePassword'])->name('password.change');
     Route::post('/ubah-password', [AuthController::class, 'updatePassword'])->name('password.update');
     Route::get('/ubah-password-sukses', [AuthController::class, 'passwordChangeSuccess'])->name('password.success');
+
+    // Shared Donasi Routes
+    Route::get('/donasi/{donasi}/kwitansi', [DonasiController::class, 'showReceipt'])->name('donasi.receipt');
+    Route::get('/donasi/{donasi}/kwitansi/download', [DonasiController::class, 'downloadReceipt'])->name('donasi.receipt.download');
 });
 
 /*
@@ -77,12 +82,11 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
     Route::patch('/donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
     Route::patch('/donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
-    Route::get('/donasi/{donasi}/kwitansi', [DonasiController::class, 'showReceipt'])->name('donasi.receipt');
-    Route::get('/donasi/{donasi}/kwitansi/download', [DonasiController::class, 'downloadReceipt'])->name('donasi.receipt.download');
     Route::delete('/donasi/{donasi}', [DonasiController::class, 'destroy'])->name('donasi.destroy');
 
     // Stok Panti (Gudang)
     Route::get('/stok', [StokController::class, 'index'])->name('stok.index');
+    Route::get('/stok/riwayat', [RiwayatStokController::class, 'index'])->name('stok.riwayat');
     Route::get('/stok/create', [StokController::class, 'create'])->name('stok.create');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
     Route::get('/stok/{stok}/edit', [StokController::class, 'edit'])->name('stok.edit');
@@ -100,7 +104,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     // Perpustakaan
     Route::get('/perpustakaan', [PerpustakaanController::class, 'index'])->name('perpustakaan.index');
     Route::get('/perpustakaan/create', [PerpustakaanController::class, 'create'])->name('perpustakaan.create');
+    Route::get('/perpustakaan/riwayat', [PerpustakaanController::class, 'riwayat'])->name('perpustakaan.riwayat');
     Route::post('/perpustakaan', [PerpustakaanController::class, 'store'])->name('perpustakaan.store');
+    Route::get('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'show'])->name('perpustakaan.show');
     Route::get('/perpustakaan/{perpustakaan}/edit', [PerpustakaanController::class, 'edit'])->name('perpustakaan.edit');
     Route::put('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'update'])->name('perpustakaan.update');
     Route::delete('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'destroy'])->name('perpustakaan.destroy');
@@ -112,8 +118,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran.index');
     Route::get('/pengeluaran/create', [PengeluaranController::class, 'create'])->name('pengeluaran.create');
     Route::post('/pengeluaran', [PengeluaranController::class, 'store'])->name('pengeluaran.store');
-    Route::get('/pengeluaran/{pengeluaran}/edit', [PengeluaranController::class, 'edit'])->name('pengeluaran.edit');
-    Route::put('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'update'])->name('pengeluaran.update');
+    Route::get('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'show'])->name('pengeluaran.show');
     Route::delete('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
 
     // User Management

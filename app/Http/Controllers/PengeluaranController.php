@@ -10,7 +10,7 @@ class PengeluaranController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pengeluaran::query();
+        $query = Pengeluaran::with('bendahara');
         if ($request->filled('bulan')) {
             $query->whereMonth('tanggal_pengeluaran', $request->bulan);
         }
@@ -38,29 +38,28 @@ class PengeluaranController extends Controller
             'keterangan'          => 'nullable|string',
         ]);
 
+        $totalDonasi = \App\Models\Donasi::valid()->sum('nominal');
+        $totalPengeluaran = Pengeluaran::sum('nominal');
+        $saldo = $totalDonasi - $totalPengeluaran;
+
+        if ($request->nominal > $saldo) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['nominal' => 'Saldo saat ini tidak mencukupi. Saldo tersedia: Rp ' . number_format($saldo, 0, ',', '.')]);
+        }
+
         Pengeluaran::create(array_merge($request->all(), [
             'id_bendahara' => Auth::user()->id_user,
         ]));
         return redirect()->route('pengeluaran.index')->with('success', 'Pengeluaran berhasil dicatat.');
     }
 
-    public function edit(Pengeluaran $pengeluaran)
+    public function show(Pengeluaran $pengeluaran)
     {
-        return view('pengeluaran.edit', compact('pengeluaran'));
+        return view('pengeluaran.show', compact('pengeluaran'));
     }
 
-    public function update(Request $request, Pengeluaran $pengeluaran)
-    {
-        $request->validate([
-            'tanggal_pengeluaran' => 'required|date',
-            'kategori_biaya'      => 'required|string|max:50',
-            'nominal'             => 'required|numeric|min:1',
-            'keterangan'          => 'nullable|string',
-        ]);
-
-        $pengeluaran->update($request->all());
-        return redirect()->route('pengeluaran.index')->with('success', 'Data pengeluaran berhasil diperbarui.');
-    }
+    // Edit and update removed as per user request
 
     public function destroy(Pengeluaran $pengeluaran)
     {

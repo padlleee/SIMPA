@@ -3,69 +3,50 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
-use App\Models\Donatur;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    /**
+     * Seed the application's database.
+     * Run: php artisan migrate:fresh --seed
+     */
+    public function run(): void
     {
-        // Check if seeds already exist to prevent duplicates
-        if (User::where('username', 'admin')->exists()) {
-            $this->command->info('Users already seeded. Skipping.');
-            return;
-        }
+        $this->command->info('🌱 Memulai seeding database SIMPA...');
 
-        // Admin Account
-        User::create([
-            'username' => 'admin',
-            'email'    => 'admin@simpa.test',
-            'password' => Hash::make('password'),
-            'role'     => 'Admin',
-        ]);
+        // 1. Users & Donatur (harus pertama karena FK dependency)
+        $this->command->comment('  → Membuat akun pengguna & data donatur...');
+        $this->call(UserSeeder::class);
 
-        // Ketua Yayasan Account
-        User::create([
-            'username' => 'ketua',
-            'email'    => 'ketua@simpa.test',
-            'password' => Hash::make('password'),
-            'role'     => 'Ketua',
-        ]);
+        // 2. Anak Asuh
+        $this->command->comment('  → Mengisi data anak asuh...');
+        $this->call(AnakAsuhSeeder::class);
 
-        // Bendahara Account
-        User::create([
-            'username' => 'bendahara',
-            'email'    => 'bendahara@simpa.test',
-            'password' => Hash::make('password'),
-            'role'     => 'Bendahara',
-        ]);
+        // 3. Donasi (butuh users/donatur sudah ada)
+        $this->command->comment('  → Mengisi riwayat donasi...');
+        $this->call(DonasiSeeder::class);
 
-        // Donatur Account
-        $donaturUser = User::create([
-            'username' => 'donatur1',
-            'email'    => 'donatur1@simpa.test',
-            'password' => Hash::make('password'),
-            'role'     => 'Donatur',
-        ]);
+        // 4. Pengeluaran
+        $this->command->comment('  → Mengisi data pengeluaran...');
+        $this->call(PengeluaranSeeder::class);
 
-        Donatur::create([
-            'id_user'      => $donaturUser->id_user,
-            'nama_donatur' => 'Budi Santoso',
-            'email'        => 'budi@example.com',
-            'no_hp'        => '081234567890',
-            'alamat'       => 'Jl. Contoh No. 10, Kota Anda',
-        ]);
+        // 5. Stok & Inventaris
+        $this->command->comment('  → Mengisi stok gudang & inventaris peralatan...');
+        $this->call(StokInventarisSeeder::class);
 
-        $this->command->info('✓ Users seeded:');
+        // 6. Perpustakaan
+        $this->command->comment('  → Mengisi koleksi buku perpustakaan...');
+        $this->call(PerpustakaanSeeder::class);
+
+        $this->command->info('');
+        $this->command->info('✅ Seeding selesai! Berikut akun yang tersedia:');
         $this->command->table(
-            ['Username', 'Email', 'Role', 'Password'],
+            ['Role', 'Email', 'Password'],
             [
-                ['admin',     'admin@simpa.test',     'Admin',     'password'],
-                ['ketua',     'ketua@simpa.test',     'Ketua',     'password'],
-                ['bendahara', 'bendahara@simpa.test', 'Bendahara', 'password'],
-                ['donatur1',  'donatur1@simpa.test',  'Donatur',   'password'],
+                ['Admin',      'admin@simpa.com',      'password'],
+                ['Ketua',      'ketua@simpa.com',      'password'],
+                ['Bendahara',  'bendahara@simpa.com',  'password'],
+                ['Donatur (1–10)', 'budi.santoso@gmail.com ... lina.marlina@gmail.com', 'password'],
             ]
         );
     }

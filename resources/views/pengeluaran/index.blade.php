@@ -34,35 +34,41 @@
 </div>
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100 bg-slate-50">
-                <th class="text-left px-6 py-4 font-semibold text-slate-600">Tanggal</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Kategori</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Keterangan</th>
-                <th class="text-right px-4 py-4 font-semibold text-slate-600">Jumlah</th>
-                <th class="text-right px-6 py-4 font-semibold text-slate-600">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Tanggal</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Kategori</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Dicatat Oleh</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600">Keterangan</th>
+                    <th class="text-right px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Jumlah</th>
+                    <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
             @forelse($pengeluaran as $item)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 text-slate-600">
+                <td class="px-6 py-4 text-slate-600 whitespace-nowrap">
                     {{ \Carbon\Carbon::parse($item->tanggal_pengeluaran)->format('d M Y') }}
                 </td>
-                <td class="px-4 py-4">
+                <td class="px-4 py-4 whitespace-nowrap">
                     <span class="bg-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1 rounded-full">
                         {{ $item->kategori_biaya }}
                     </span>
+                <td class="px-4 py-4 whitespace-nowrap">
+                    <span class="text-slate-600 text-xs font-medium">
+                        {{ $item->bendahara->username ?? '-' }}
+                    </span>
                 </td>
-                <td class="px-4 py-4 text-slate-500 text-xs">{{ $item->keterangan ?? '-' }}</td>
-                <td class="px-4 py-4 text-right font-bold text-slate-800">
+                <td class="px-4 py-4 text-slate-500 text-xs min-w-[200px]">{{ $item->keterangan ?? '-' }}</td>
+                <td class="px-4 py-4 text-right font-bold text-slate-800 whitespace-nowrap">
                     Rp {{ number_format($item->nominal, 0, ',', '.') }}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
-                        <a href="{{ route('pengeluaran.edit', $item) }}" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        <a href="{{ route('pengeluaran.show', $item) }}" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors" title="Lihat Detail">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </a>
                         <form action="{{ route('pengeluaran.destroy', $item) }}" method="POST" onsubmit="return confirm('Hapus pengeluaran ini?')">
                             @csrf @method('DELETE')
@@ -80,6 +86,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($pengeluaran->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">{{ $pengeluaran->links() }}</div>
     @endif

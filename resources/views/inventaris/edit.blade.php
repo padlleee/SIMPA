@@ -16,8 +16,8 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang</label>
-                <input type="text" name="kode_barang" value="{{ old('kode_barang', $inventaris->kode_barang) }}"
-                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                <input type="text" name="kode_barang" value="{{ old('kode_barang', $inventaris->kode_barang) }}" readonly
+                       class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed">
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah</label>
@@ -26,8 +26,17 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Satuan</label>
-                <input type="text" name="satuan" value="{{ old('satuan', $inventaris->satuan) }}"
-                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                <select name="satuan" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('satuan') border-red-400 @enderror">
+                    <option value="" disabled {{ old('satuan', $inventaris->satuan) ? '' : 'selected' }}>Pilih Satuan</option>
+                    <option value="Unit" {{ old('satuan', $inventaris->satuan) === 'Unit' ? 'selected' : '' }}>Unit</option>
+                    <option value="Buah" {{ old('satuan', $inventaris->satuan) === 'Buah' ? 'selected' : '' }}>Buah</option>
+                    <option value="Set" {{ old('satuan', $inventaris->satuan) === 'Set' ? 'selected' : '' }}>Set</option>
+                    <option value="Pcs" {{ old('satuan', $inventaris->satuan) === 'Pcs' ? 'selected' : '' }}>Pcs</option>
+                    <option value="Lusin" {{ old('satuan', $inventaris->satuan) === 'Lusin' ? 'selected' : '' }}>Lusin</option>
+                    <option value="Box" {{ old('satuan', $inventaris->satuan) === 'Box' ? 'selected' : '' }}>Box</option>
+                    <option value="Lainnya" {{ old('satuan', $inventaris->satuan) === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                </select>
+                @error('satuan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Lokasi</label>

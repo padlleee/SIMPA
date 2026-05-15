@@ -10,7 +10,7 @@ class StokPanti extends Model
     use HasFactory;
 
     protected $table = 'stok_panti';
-    protected $primaryKey = 'id_barang';
+    protected $primaryKey = 'id_stok';
     // Only has updated_at, no created_at standard
     public $timestamps = false;
 

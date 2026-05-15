@@ -30,8 +30,17 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Satuan</label>
-                <input type="text" name="satuan" value="{{ old('satuan', $stok->satuan) }}"
-                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                <select name="satuan" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                    @php $satuan = old('satuan', $stok->satuan); @endphp
+                    <option value="" disabled {{ $satuan ? '' : 'selected' }}>Pilih Satuan</option>
+                    <option value="Kg" {{ $satuan == 'Kg' ? 'selected' : '' }}>Kg (Kilogram)</option>
+                    <option value="Liter" {{ $satuan == 'Liter' ? 'selected' : '' }}>Liter</option>
+                    <option value="Pcs" {{ $satuan == 'Pcs' ? 'selected' : '' }}>Pcs (Pieces)</option>
+                    <option value="Dus" {{ $satuan == 'Dus' ? 'selected' : '' }}>Dus / Karton</option>
+                    <option value="Box" {{ $satuan == 'Box' ? 'selected' : '' }}>Box</option>
+                    <option value="Karung" {{ $satuan == 'Karung' ? 'selected' : '' }}>Karung</option>
+                    <option value="Lainnya" {{ !in_array($satuan, ['Kg', 'Liter', 'Pcs', 'Dus', 'Box', 'Karung', '']) ? 'selected' : '' }}>Lainnya</option>
+                </select>
             </div>
 
 
@@ -50,7 +59,8 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Barang Keluar <span class="text-red-500">*</span></label>
                     <input type="number" id="barang_keluar" name="barang_keluar" value="{{ old('barang_keluar', $stok->barang_keluar) }}" min="0" required
-                           class="calc-stok w-full border border-red-300 bg-red-50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                           class="calc-stok w-full border border-red-300 bg-red-50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('barang_keluar') border-red-500 @enderror">
+                    @error('barang_keluar')<p class="text-red-600 text-xs mt-1 font-semibold">{{ $message }}</p>@enderror
                 </div>
             </div>
 

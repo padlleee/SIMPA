@@ -47,6 +47,11 @@ class DashboardController extends Controller
 
         $pendingAccountRequests = AccountRequest::where('status', 'pending')->count();
 
+        $recentDonations = Donasi::with('user.donatur')
+            ->orderBy('tanggal_donasi', 'desc')
+            ->take(5)
+            ->get();
+
         $totalDonasiAbbr = $this->formatAbbreviated($totalDonasi);
         $saldoAbbr       = $this->formatAbbreviated($saldo);
         $totalPengeluaranAbbr = $this->formatAbbreviated($totalPengeluaran);
@@ -55,7 +60,7 @@ class DashboardController extends Controller
             'totalAnak', 'anakAktif', 'anakAlumni',
             'totalDonasi', 'donasiPending', 'totalPengeluaran', 'saldo',
             'donasiChart', 'pengeluaranChart', 'bulanLabels',
-            'pendingAccountRequests', 'totalDonasiAbbr', 'saldoAbbr', 'totalPengeluaranAbbr'
+            'pendingAccountRequests', 'recentDonations', 'totalDonasiAbbr', 'saldoAbbr', 'totalPengeluaranAbbr'
         ));
     }
 
