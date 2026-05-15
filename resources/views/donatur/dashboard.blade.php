@@ -55,7 +55,13 @@
                 </td>
                 <td class="px-4 py-4">
                     @if($item->status_verifikasi === 'Valid')
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✓ Terverifikasi</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 mb-2">✓ Terverifikasi</span>
+                        
+                        <a href="{{ route('donasi.receipt.download', $item->id_donasi) }}" target="_blank" class="flex items-center gap-1.5 bg-white border border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm w-max">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Unduh Kwitansi
+                        </a>
+
                         @if($item->catatan_verifikasi)
                             <div class="mt-2 text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
                                 <span class="font-semibold block mb-0.5">Catatan Admin:</span>

@@ -85,26 +85,27 @@
 @endif
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100 bg-slate-50">
-                <th class="text-left px-6 py-4 font-semibold text-slate-600">Nama Barang</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Stok Awal</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Masuk</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Keluar</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Stok Akhir</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Keterangan</th>
-                <th class="text-right px-6 py-4 font-semibold text-slate-600">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama Barang</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Stok Awal</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Masuk</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Keluar</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Stok Akhir</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600">Keterangan</th>
+                    <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
             @forelse($stok as $item)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-semibold text-slate-800">{{ $item->nama_barang }}</td>
-                <td class="px-4 py-4 text-center text-slate-600">{{ $item->stok_awal }}</td>
-                <td class="px-4 py-4 text-center text-green-600 font-medium">+{{ $item->barang_masuk }}</td>
-                <td class="px-4 py-4 text-center text-red-500 font-medium">-{{ $item->barang_keluar }}</td>
-                <td class="px-4 py-4 text-center">
+                <td class="px-6 py-4 font-semibold text-slate-800 whitespace-nowrap">{{ $item->nama_barang }}</td>
+                <td class="px-4 py-4 text-center text-slate-600 whitespace-nowrap">{{ $item->stok_awal }}</td>
+                <td class="px-4 py-4 text-center text-green-600 font-medium whitespace-nowrap">+{{ $item->barang_masuk }}</td>
+                <td class="px-4 py-4 text-center text-red-500 font-medium whitespace-nowrap">-{{ $item->barang_keluar }}</td>
+                <td class="px-4 py-4 text-center whitespace-nowrap">
                     <span class="font-bold {{ $item->stok_akhir <= 5 ? 'text-red-600' : 'text-green-600' }}">{{ $item->stok_akhir }}</span>
                     @if($item->stok_akhir <= 5)
                         <div class="mt-1">
@@ -116,8 +117,8 @@
                         </div>
                     @endif
                 </td>
-                <td class="px-4 py-4 text-slate-500 text-xs truncate max-w-xs">{{ $item->keterangan ?? '-' }}</td>
-                <td class="px-6 py-4">
+                <td class="px-4 py-4 text-slate-500 text-xs min-w-[200px]">{{ $item->keterangan ?? '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <a href="{{ route('stok.edit', $item) }}" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -139,6 +140,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($stok->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">{{ $stok->links() }}</div>
     @endif

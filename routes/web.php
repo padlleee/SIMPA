@@ -49,6 +49,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ubah-password', [AuthController::class, 'showChangePassword'])->name('password.change');
     Route::post('/ubah-password', [AuthController::class, 'updatePassword'])->name('password.update');
     Route::get('/ubah-password-sukses', [AuthController::class, 'passwordChangeSuccess'])->name('password.success');
+
+    // Shared Donasi Routes
+    Route::get('/donasi/{donasi}/kwitansi', [DonasiController::class, 'showReceipt'])->name('donasi.receipt');
+    Route::get('/donasi/{donasi}/kwitansi/download', [DonasiController::class, 'downloadReceipt'])->name('donasi.receipt.download');
 });
 
 /*
@@ -78,8 +82,6 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
     Route::patch('/donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
     Route::patch('/donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
-    Route::get('/donasi/{donasi}/kwitansi', [DonasiController::class, 'showReceipt'])->name('donasi.receipt');
-    Route::get('/donasi/{donasi}/kwitansi/download', [DonasiController::class, 'downloadReceipt'])->name('donasi.receipt.download');
     Route::delete('/donasi/{donasi}', [DonasiController::class, 'destroy'])->name('donasi.destroy');
 
     // Stok Panti (Gudang)

@@ -34,41 +34,42 @@
         <h3 class="font-bold text-slate-700">Koleksi Buku</h3>
         <span class="text-xs text-slate-400">{{ $buku->total() }} judul</span>
     </div>
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100">
-                <th class="text-left px-6 py-3 font-semibold text-slate-500 w-20">Kode</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Judul Buku</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Pengarang</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Kategori</th>
-                <th class="text-center px-4 py-3 font-semibold text-slate-500">Jml</th>
-                <th class="text-center px-4 py-3 font-semibold text-slate-500">Dipinjam</th>
-                <th class="text-right px-6 py-3 font-semibold text-slate-500">Aksi</th>
-            </tr>
-        </thead>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100">
+                    <th class="text-left px-6 py-3 font-semibold text-slate-500 w-20 whitespace-nowrap">Kode</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 min-w-[200px]">Judul Buku</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Pengarang</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Kategori</th>
+                    <th class="text-center px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Jml</th>
+                    <th class="text-center px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Dipinjam</th>
+                    <th class="text-right px-6 py-3 font-semibold text-slate-500 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
         <tbody class="divide-y divide-slate-100">
             @forelse($buku as $item)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-mono text-slate-400 text-xs">{{ $item->kode_buku }}</td>
-                <td class="px-4 py-4">
+                <td class="px-6 py-4 font-mono text-slate-400 text-xs whitespace-nowrap">{{ $item->kode_buku }}</td>
+                <td class="px-4 py-4 min-w-[200px]">
                     <a href="{{ route('perpustakaan.show', $item) }}" class="font-semibold text-slate-800 hover:text-slate-600 transition-colors">{{ $item->judul_buku }}</a>
                     @if($item->tahun_terbit)<div class="text-xs text-slate-400 mt-0.5">{{ $item->tahun_terbit }}</div>@endif
                 </td>
-                <td class="px-4 py-4 text-slate-600">{{ $item->pengarang }}</td>
-                <td class="px-4 py-4">
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $item->pengarang }}</td>
+                <td class="px-4 py-4 whitespace-nowrap">
                     @if($item->kategori_buku)
                     <span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-md">{{ $item->kategori_buku }}</span>
                     @else<span class="text-slate-300 text-xs">—</span>@endif
                 </td>
-                <td class="px-4 py-4 text-center text-slate-700 font-medium">{{ $item->jumlah_buku }}</td>
-                <td class="px-4 py-4 text-center">
+                <td class="px-4 py-4 text-center text-slate-700 font-medium whitespace-nowrap">{{ $item->jumlah_buku }}</td>
+                <td class="px-4 py-4 text-center whitespace-nowrap">
                     @if($item->dipinjam_count > 0)
                     <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">{{ $item->dipinjam_count }}</span>
                     @else
                     <span class="text-slate-300 text-xs">—</span>
                     @endif
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <a href="{{ route('perpustakaan.show', $item) }}" title="Detail" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -98,6 +99,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($buku->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">{{ $buku->links() }}</div>
     @endif
@@ -109,30 +111,31 @@
         <h3 class="font-bold text-slate-700">Peminjaman Aktif</h3>
         <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2.5 py-1 rounded-full">{{ $peminjamanAktif->count() }} Dipinjam</span>
     </div>
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100">
-                <th class="text-left px-6 py-3 font-semibold text-slate-500">Buku</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Peminjam</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Tgl Pinjam</th>
-                <th class="text-left px-4 py-3 font-semibold text-slate-500">Batas Kembali</th>
-                <th class="text-center px-4 py-3 font-semibold text-slate-500">Sisa Hari</th>
-                <th class="text-right px-6 py-3 font-semibold text-slate-500">Aksi</th>
-            </tr>
-        </thead>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100">
+                    <th class="text-left px-6 py-3 font-semibold text-slate-500 whitespace-nowrap">Buku</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Peminjam</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Tgl Pinjam</th>
+                    <th class="text-left px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Batas Kembali</th>
+                    <th class="text-center px-4 py-3 font-semibold text-slate-500 whitespace-nowrap">Sisa Hari</th>
+                    <th class="text-right px-6 py-3 font-semibold text-slate-500 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
         <tbody class="divide-y divide-slate-100">
             @forelse($peminjamanAktif as $pinjam)
             @php $sisaHari = $pinjam->sisa_hari; $terlambat = $pinjam->terlambat; @endphp
             <tr class="hover:bg-slate-50 transition-colors {{ $terlambat ? 'bg-red-50/50' : '' }}">
-                <td class="px-6 py-4 font-semibold text-slate-800">{{ $pinjam->buku?->judul_buku ?? '-' }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $pinjam->nama_peminjam }}</td>
-                <td class="px-4 py-4 text-slate-600 text-xs">{{ $pinjam->tanggal_pinjam?->format('d/m/Y') }}</td>
-                <td class="px-4 py-4">
+                <td class="px-6 py-4 font-semibold text-slate-800 min-w-[200px]">{{ $pinjam->buku?->judul_buku ?? '-' }}</td>
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $pinjam->nama_peminjam }}</td>
+                <td class="px-4 py-4 text-slate-600 text-xs whitespace-nowrap">{{ $pinjam->tanggal_pinjam?->format('d/m/Y') }}</td>
+                <td class="px-4 py-4 whitespace-nowrap">
                     <span class="{{ $terlambat ? 'text-red-600 font-semibold' : 'text-slate-600' }} text-xs">
                         {{ $pinjam->tanggal_kembali?->format('d/m/Y') ?? '-' }}
                     </span>
                 </td>
-                <td class="px-4 py-4 text-center">
+                <td class="px-4 py-4 text-center whitespace-nowrap">
                     @if($terlambat)
                         <span class="inline-flex items-center gap-1 bg-red-100 text-red-600 font-bold text-xs px-2.5 py-1 rounded-full">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></path></svg>
@@ -146,7 +149,7 @@
                         <span class="text-slate-500 text-xs font-medium">{{ $sisaHari }} hari</span>
                     @endif
                 </td>
-                <td class="px-6 py-4 text-right">
+                <td class="px-6 py-4 text-right whitespace-nowrap">
                     <form id="kembali-{{ $pinjam->id_pinjam }}" action="{{ route('peminjaman.kembalikan', $pinjam) }}" method="POST" class="hidden">
                         @csrf @method('PATCH')
                     </form>
@@ -162,6 +165,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 {{-- Delete Buku Modal --}}

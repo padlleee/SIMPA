@@ -68,25 +68,9 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4">
-                <a
-                    href="{{ url('/') }}"
-                    class="flex-1 bg-gray-900 text-white py-3 rounded-lg font-semibold text-center hover:bg-gray-800 transition"
-                >
-                    Kembali ke Beranda
-                </a>
-                <a
-                    href="{{ route('donasi.publicCreate') }}"
-                    class="flex-1 bg-gray-200 text-gray-900 py-3 rounded-lg font-semibold text-center hover:bg-gray-300 transition"
-                >
-                    Donasi Lagi
-                </a>
-            </div>
-
-            <!-- FAQ Section -->
-            <div class="mt-12 pt-8 border-t border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Pertanyaan Umum</h3>
+            <!-- FAQ Section (Moved Up) -->
+            <div class="mb-8 pt-8 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 text-left">Pertanyaan Umum</h3>
                 <div class="space-y-3 text-left">
                     <details class="bg-gray-50 p-4 rounded cursor-pointer">
                         <summary class="font-semibold text-gray-900">Berapa lama proses verifikasi?</summary>
@@ -103,6 +87,53 @@
                         <p class="mt-2 text-sm text-gray-600">Kwitansi akan dikirim otomatis ke email Anda setelah verifikasi selesai. Anda juga dapat mengunduhnya dari halaman riwayat donasi kami.</p>
                     </details>
                 </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button
+                    onclick="document.getElementById('ctaModal').classList.remove('hidden')"
+                    class="flex-1 bg-gray-900 text-white py-3 rounded-lg font-semibold text-center hover:bg-gray-800 transition"
+                >
+                    Kembali ke Beranda
+                </button>
+                <a
+                    href="{{ route('donasi.publicCreate') }}"
+                    class="flex-1 bg-gray-200 text-gray-900 py-3 rounded-lg font-semibold text-center hover:bg-gray-300 transition"
+                >
+                    Donasi Lagi
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Modal (Berminat Jadi Donatur Tetap) -->
+<div id="ctaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 opacity-20">
+                <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <div class="relative z-10">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">Berminat Jadi Donatur Tetap?</h3>
+                <p class="text-blue-100 text-sm leading-relaxed">
+                    Jadilah bagian dari keluarga besar Yayasan Amaliya. Dapatkan kemudahan melacak histori donasi dan laporan penyaluran dana secara transparan langsung dari dashboard Anda.
+                </p>
+            </div>
+        </div>
+        <div class="p-6 bg-slate-50">
+            <div class="flex flex-col gap-3">
+                <a href="{{ url('/') }}?register=true" class="w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold text-center hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2">
+                    Daftar Menjadi Donatur Tetap
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+                <a href="{{ url('/') }}" class="w-full bg-white border border-slate-300 text-slate-700 py-3.5 rounded-xl font-semibold text-center hover:bg-slate-50 transition-colors">
+                    Tidak, Kembali ke Beranda
+                </a>
             </div>
         </div>
     </div>

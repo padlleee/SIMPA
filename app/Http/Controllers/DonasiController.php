@@ -275,8 +275,15 @@ class DonasiController extends Controller
     {
         // Only show receipt if verified
         if (!$donasi->isVerified()) {
-            return redirect()->route('donasi.index')
+            return redirect()->back()
                 ->with('error', 'Kwitansi hanya tersedia untuk donasi yang telah diverifikasi.');
+        }
+
+        // Authorization check
+        $user = Auth::user();
+        $isAdmin = in_array($user->role, ['Admin', 'Ketua', 'Bendahara']);
+        if (!$isAdmin && $donasi->id_donatur !== $user->id_user) {
+            abort(403, 'Akses ditolak. Anda tidak memiliki izin untuk melihat kwitansi ini.');
         }
 
         // Load relations
@@ -293,6 +300,13 @@ class DonasiController extends Controller
     {
         if (!$donasi->isVerified()) {
             return redirect()->back()->with('error', 'Hanya donasi yang terverifikasi yang dapat diunduh.');
+        }
+
+        // Authorization check
+        $user = Auth::user();
+        $isAdmin = in_array($user->role, ['Admin', 'Ketua', 'Bendahara']);
+        if (!$isAdmin && $donasi->id_donatur !== $user->id_user) {
+            abort(403, 'Akses ditolak. Anda tidak memiliki izin untuk melihat kwitansi ini.');
         }
 
         // TODO: Implement PDF generation using tcpdf or barryvdh/laravel-dompdf

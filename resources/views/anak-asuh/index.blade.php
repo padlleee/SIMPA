@@ -29,22 +29,23 @@
 
 <!-- Table -->
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100 bg-slate-50">
-                <th class="text-left px-6 py-4 font-semibold text-slate-600">Nama</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Tgl Lahir</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">JK</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Pendidikan</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Tgl Masuk</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Status</th>
-                <th class="text-right px-6 py-4 font-semibold text-slate-600">Aksi</th>
-            </tr>
-        </thead>
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Tgl Lahir</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">JK</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Pendidikan</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Tgl Masuk</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Status</th>
+                    <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
         <tbody class="divide-y divide-slate-100">
             @forelse($anakAsuh as $anak)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center gap-3">
                         <div class="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -55,16 +56,16 @@
                         </div>
                     </div>
                 </td>
-                <td class="px-4 py-4 text-slate-600">{{ $anak->tanggal_lahir?->format('d/m/Y') }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $anak->jenis_kelamin === 'L' ? 'L' : 'P' }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $anak->pendidikan ?? '-' }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $anak->tanggal_masuk?->format('d/m/Y') }}</td>
-                <td class="px-4 py-4">
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $anak->tanggal_lahir?->format('d/m/Y') }}</td>
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $anak->jenis_kelamin === 'L' ? 'L' : 'P' }}</td>
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $anak->pendidikan ?? '-' }}</td>
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $anak->tanggal_masuk?->format('d/m/Y') }}</td>
+                <td class="px-4 py-4 whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ $anak->status_anak === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
                         {{ $anak->status_anak }}
                     </span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <!-- Toggle Status -->
                         <form action="{{ route('anak-asuh.toggle-status', $anak) }}" method="POST">
@@ -98,6 +99,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 
     @if($anakAsuh->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">

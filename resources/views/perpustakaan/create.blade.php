@@ -93,6 +93,16 @@
                     <input type="file" name="foto_buku" id="foto_buku" accept="image/*"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
                     <p class="text-xs text-slate-400 mt-2">Format: JPG, PNG, WebP. Maks. 2MB. Rasio ideal: 2:3 (potret).</p>
+
+                    {{-- Alert ukuran/tipe gambar --}}
+                    <div id="fotoAlert" class="hidden mt-3">
+                        <div class="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                            <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <p id="fotoAlertMsg" class="text-sm text-red-700 font-medium"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,15 +116,53 @@
 </div>
 
 <script>
+const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+const ALLOWED  = ['image/jpeg','image/png','image/webp','image/gif'];
+
 document.getElementById('foto_buku').addEventListener('change', function(e) {
-    const file = e.target.files[0];
+    const file       = e.target.files[0];
+    const alert      = document.getElementById('fotoAlert');
+    const alertMsg   = document.getElementById('fotoAlertMsg');
+    const submitBtn  = document.querySelector('button[type="submit"]');
+    const coverPreview = document.getElementById('coverPreview');
+    const coverIcon    = document.getElementById('coverIcon');
+
+    // Reset
+    alert.classList.add('hidden');
+    submitBtn.disabled = false;
+    submitBtn.classList.remove('opacity-50','cursor-not-allowed');
+
     if (!file) return;
+
+    // Cek tipe file
+    if (!ALLOWED.includes(file.type)) {
+        alertMsg.textContent = 'Format file tidak didukung. Gunakan JPG, PNG, atau WebP.';
+        alert.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50','cursor-not-allowed');
+        e.target.value = '';
+        return;
+    }
+
+    // Cek ukuran file
+    if (file.size > MAX_SIZE) {
+        const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+        alertMsg.textContent = `Ukuran gambar terlalu besar (${sizeMB} MB). Maksimal ukuran file yang diizinkan adalah 2 MB.`;
+        alert.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50','cursor-not-allowed');
+        e.target.value = '';
+        coverPreview.classList.add('hidden');
+        coverIcon.classList.remove('hidden');
+        return;
+    }
+
+    // OK — tampilkan preview
     const reader = new FileReader();
     reader.onload = function(ev) {
-        document.getElementById('coverIcon').classList.add('hidden');
-        const img = document.getElementById('coverPreview');
-        img.src = ev.target.result;
-        img.classList.remove('hidden');
+        coverIcon.classList.add('hidden');
+        coverPreview.src = ev.target.result;
+        coverPreview.classList.remove('hidden');
     };
     reader.readAsDataURL(file);
 });

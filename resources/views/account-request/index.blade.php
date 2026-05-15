@@ -43,9 +43,9 @@
         <table class="w-full text-sm">
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Nama</th>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Tanggal</th>
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600">Status</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Tanggal</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Status</th>
                     <th class="text-left px-6 py-4 font-semibold text-slate-600 w-[1%] whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>

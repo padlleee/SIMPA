@@ -27,32 +27,33 @@
 </div>
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
-        <thead>
-            <tr class="border-b border-slate-100 bg-slate-50">
-                <th class="text-left px-6 py-4 font-semibold text-slate-600">Nama Barang</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Kode</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Jumlah</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Satuan</th>
-                <th class="text-left px-4 py-4 font-semibold text-slate-600">Lokasi</th>
-                <th class="text-center px-4 py-4 font-semibold text-slate-600">Kondisi</th>
-                <th class="text-right px-6 py-4 font-semibold text-slate-600">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama Barang</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Kode</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Jumlah</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Satuan</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Lokasi</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Kondisi</th>
+                    <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
             @forelse($inventaris as $item)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-semibold text-slate-800">{{ $item->nama_barang }}</td>
-                <td class="px-4 py-4 font-mono text-slate-600 text-xs">{{ $item->kode_barang ?? '-' }}</td>
-                <td class="px-4 py-4 text-center text-slate-700 font-medium">{{ $item->jumlah }}</td>
-                <td class="px-4 py-4 text-slate-600">{{ $item->satuan }}</td>
-                <td class="px-4 py-4 text-slate-600 text-xs">{{ $item->lokasi ?? '-' }}</td>
-                <td class="px-4 py-4 text-center">
+                <td class="px-6 py-4 font-semibold text-slate-800 whitespace-nowrap">{{ $item->nama_barang }}</td>
+                <td class="px-4 py-4 font-mono text-slate-600 text-xs whitespace-nowrap">{{ $item->kode_barang ?? '-' }}</td>
+                <td class="px-4 py-4 text-center text-slate-700 font-medium whitespace-nowrap">{{ $item->jumlah }}</td>
+                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $item->satuan }}</td>
+                <td class="px-4 py-4 text-slate-600 text-xs whitespace-nowrap">{{ $item->lokasi ?? '-' }}</td>
+                <td class="px-4 py-4 text-center whitespace-nowrap">
                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ $item->kondisi === 'Baik' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600' }}">
                         {{ $item->kondisi }}
                     </span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <a href="{{ route('inventaris.edit', $item) }}" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -74,6 +75,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     @if($inventaris->hasPages())
     <div class="px-6 py-4 border-t border-slate-100">{{ $inventaris->links() }}</div>
     @endif
