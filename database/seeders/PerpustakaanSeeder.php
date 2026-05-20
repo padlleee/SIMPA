@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PerpustakaanSeeder extends Seeder
 {
@@ -27,7 +29,23 @@ class PerpustakaanSeeder extends Seeder
             ['judul' => 'Atlas Dunia Lengkap',              'pengarang' => 'Tim Kartografi',       'penerbit' => 'Gramedia',          'tahun' => 2020, 'isbn' => '978-602-06-4567-1', 'kat' => 'Ilmu Pengetahuan',   'jml' => 1, 'kondisi' => 'Baik'],
         ];
 
+        if (!Storage::disk('public')->exists('buku')) {
+            Storage::disk('public')->makeDirectory('buku');
+        }
+
         foreach ($books as $idx => $book) {
+            // Generate Random Synopsis
+            $sinopsis = "Buku " . $book['judul'] . " adalah sebuah karya luar biasa dari " . $book['pengarang'] . ". Buku ini diterbitkan oleh " . $book['penerbit'] . " pada tahun " . $book['tahun'] . ". Sangat cocok dibaca untuk menambah wawasan dan pengetahuan Anda.";
+
+            // Download Random Image
+            $imageContent = @file_get_contents('https://picsum.photos/400/600?random=' . $idx);
+            $fotoPath = null;
+            if ($imageContent) {
+                $filename = 'buku/seed_' . time() . '_' . Str::random(8) . '.jpg';
+                Storage::disk('public')->put($filename, $imageContent);
+                $fotoPath = $filename;
+            }
+
             DB::table('perpustakaan')->insert([
                 'kode_buku'    => 'BUK-' . str_pad($idx + 1, 4, '0', STR_PAD_LEFT),
                 'judul_buku'   => $book['judul'],
@@ -37,8 +55,8 @@ class PerpustakaanSeeder extends Seeder
                 'tahun_terbit' => $book['tahun'],
                 'isbn'         => $book['isbn'],
                 'kategori_buku'=> $book['kat'],
-                'sinopsis'     => null,
-                'foto_buku'    => null,
+                'sinopsis'     => $sinopsis,
+                'foto_buku'    => $fotoPath,
                 'jumlah_buku'  => $book['jml'],
                 'kondisi_buku' => $book['kondisi'],
                 'created_at'   => now(),
