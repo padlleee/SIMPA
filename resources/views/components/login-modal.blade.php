@@ -84,25 +84,7 @@
     </div>
 </div>
 
-<!-- Styles -->
-<style>
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    .animate-fade-in {
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    #loginModal:not(.hidden) {
-        display: flex;
-    }
-</style>
+{{-- Styles moved to public/css/simpa-style.css --}}
 
 <!-- Scripts -->
 <script>
