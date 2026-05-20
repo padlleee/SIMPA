@@ -12,7 +12,7 @@
         <!-- Left Side: Benefits & FAQ (Scrollable on mobile) -->
         <div class="w-full md:w-5/12 bg-gradient-to-br from-slate-50 to-blue-50 border-r border-slate-200 p-8 md:p-10 overflow-y-auto max-h-[40vh] md:max-h-[90vh]">
             <div class="flex items-center gap-3 mb-8">
-                <img src="/storage/img/logo-panti-single.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm">
+                <img src="/images/logo-panti-single.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm">
                 <div>
                     <h2 class="text-xl font-bold text-slate-800 leading-tight">Yayasan Amaliya</h2>
                     <p class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Portal Donatur</p>

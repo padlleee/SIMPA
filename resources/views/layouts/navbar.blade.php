@@ -9,7 +9,7 @@
 
         {{-- Logo --}}
         <div class="flex items-center gap-3">
-            <img src="/storage/img/logo-panti.png"
+            <img src="/images/logo-panti.png"
                  alt="Logo Panti Asuhan Amaliya"
                  class="h-10 md:h-12 w-auto object-contain"
                  style="aspect-ratio: 1019/277;">

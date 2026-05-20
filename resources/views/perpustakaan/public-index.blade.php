@@ -50,7 +50,7 @@
 <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <img src="/storage/img/logo-panti.png" alt="Logo Panti Asuhan Amaliya"
+            <img src="/images/logo-panti.png" alt="Logo Panti Asuhan Amaliya"
                  class="h-10 md:h-12 w-auto object-contain" style="aspect-ratio:1019/277"
                  onerror="this.style.display='none'">
         </div>

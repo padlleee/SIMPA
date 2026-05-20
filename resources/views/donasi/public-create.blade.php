@@ -197,7 +197,7 @@
                     </div>
                     <div id="info-qris" class="hidden mt-3 text-center">
                         <p class="text-sm font-semibold text-gray-700 mb-2">Scan QRIS berikut untuk pembayaran:</p>
-                        <img src="{{ asset('storage/img/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya"
+                        <img src="{{ asset('images/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya"
                              class="mx-auto h-48 object-contain rounded-lg border border-gray-200 p-2 bg-white">
                     </div>
                 </div>
