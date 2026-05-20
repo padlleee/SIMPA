@@ -13,6 +13,7 @@ use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AccountRequestController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'show'])->name('pengeluaran.show');
     Route::delete('/pengeluaran/{pengeluaran}', [PengeluaranController::class, 'destroy'])->name('pengeluaran.destroy');
 
+    // Laporan
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+
     // User Management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -144,7 +148,7 @@ Route::middleware(['auth', 'role:Donatur'])->group(function () {
     Route::get('/donatur/dashboard', [DonaturController::class, 'dashboard'])->name('donatur.dashboard');
     Route::get('/donatur/profile', [DonaturController::class, 'profile'])->name('donatur.profile');
     Route::put('/donatur/profile', [DonaturController::class, 'profileUpdate'])->name('donatur.profile.update');
-    
+
     // Donasi from registered Donatur
     Route::get('/donatur/donasi/create', [DonasiController::class, 'userCreate'])->name('donatur.donasi.create');
     Route::post('/donatur/donasi', [DonasiController::class, 'userStore'])->name('donatur.donasi.store');
