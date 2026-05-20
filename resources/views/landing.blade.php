@@ -51,8 +51,8 @@
                     Daftar sebagai Donatur
                 </button>
                 @else
-                <a href="#program" class="border border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-colors">
-                    Lihat Program
+                <a href="#tentang-kami" class="border border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-colors">
+                    Tentang Kami
                 </a>
                 @endguest
             </div>
@@ -98,106 +98,7 @@
     </div>
 </section>
 
-{{-- TARGET DONASI --}}
-<section id="donasi-progress" class="py-20 bg-slate-50 border-t border-slate-100">
-    <div class="max-w-4xl mx-auto px-6">
-        <div class="text-center mb-12">
-            <span class="text-slate-500 font-medium text-sm uppercase tracking-wider">Transparansi</span>
-            <h2 class="text-3xl font-bold text-slate-800 mt-3">Target Donasi Kami</h2>
-            <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Setiap donasi Anda membantu kami memberikan yang terbaik untuk anak-anak asuh.</p>
-        </div>
 
-        @php
-            $donasiController = new \App\Http\Controllers\DonasiController();
-            $stats = $donasiController->getPublicStats();
-        @endphp
-
-        <div class="bg-white rounded-3xl p-8 md:p-10 shadow-xl shadow-slate-100 border border-slate-100">
-            <div class="mb-8">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
-                    <div>
-                        <p class="text-slate-500 text-sm font-medium">Terkumpul</p>
-                        <p class="text-4xl font-extrabold text-slate-800 mt-1">Rp {{ number_format($stats['totalVerified'], 0, ',', '.') }}</p>
-                    </div>
-                    <div class="md:text-right">
-                        <p class="text-slate-500 text-sm font-medium">Target</p>
-                        <p class="text-2xl font-bold text-slate-700 mt-1">Rp {{ number_format($stats['donationGoal'], 0, ',', '.') }}</p>
-                    </div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="w-full h-5 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200/50">
-                    <div class="progress-fill h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full transition-all duration-1000" style="width: {{ $stats['percentage'] }}%;"></div>
-                </div>
-
-                <div class="flex justify-between items-center mt-4">
-                    <span class="inline-flex items-center bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-emerald-100">
-                        {{ $stats['percentage'] }}% Terkumpul
-                    </span>
-                    <p class="text-slate-600 text-sm font-medium">Sisa: Rp {{ number_format(max(0, $stats['donationGoal'] - $stats['totalVerified']), 0, ',', '.') }} lagi</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-6 pt-8 border-t border-slate-100 text-center">
-                <div>
-                    <p class="text-slate-500 text-sm font-medium">Pendidikan</p>
-                    <p class="text-2xl font-extrabold text-slate-800 mt-1">30%</p>
-                </div>
-                <div>
-                    <p class="text-slate-500 text-sm font-medium">Kesehatan &amp; Gizi</p>
-                    <p class="text-2xl font-extrabold text-slate-800 mt-1">50%</p>
-                </div>
-                <div>
-                    <p class="text-slate-500 text-sm font-medium">Operasional</p>
-                    <p class="text-2xl font-extrabold text-slate-800 mt-1">20%</p>
-                </div>
-            </div>
-
-            <p class="text-center text-slate-400 text-xs mt-8">Alokasi dana disalurkan secara transparan untuk tiga pilar pengembangan utama.</p>
-        </div>
-    </div>
-</section>
-
-{{-- PROGRAM --}}
-<section id="program" class="py-24 bg-slate-50">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="text-slate-500 font-medium text-sm uppercase tracking-wider">Program Kami</span>
-            <h2 class="text-4xl font-bold text-slate-800 mt-3">Pilar Pengembangan Anak</h2>
-            <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Tiga program utama yang kami jalankan untuk memastikan setiap anak mendapat perhatian penuh.</p>
-        </div>
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="card-hover bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-                <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Pendidikan</h3>
-                <p class="text-slate-600 leading-relaxed">Mendukung pendidikan formal dari SD hingga perguruan tinggi dengan bimbingan belajar dan fasilitas perpustakaan.</p>
-            </div>
-            <div class="card-hover bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-                <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Kesehatan</h3>
-                <p class="text-slate-600 leading-relaxed">Pemeriksaan rutin, gizi seimbang, dan catatan kesehatan yang terpantau untuk setiap anak asuh kami.</p>
-            </div>
-            <div class="card-hover bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-                <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 mb-3">Pangan &amp; Gizi</h3>
-                <p class="text-slate-600 leading-relaxed">Pemenuhan kebutuhan pangan bergizi sehari-hari dengan pengelolaan stok yang transparan dan terorganisir.</p>
-            </div>
-        </div>
-    </div>
-</section>
 
 {{-- PUBLIC LIBRARY PREVIEW --}}
 <section class="py-16 bg-white">

@@ -294,7 +294,6 @@
                 <h4 class="font-semibold text-white mb-4">Navigasi</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a href="/" class="hover:text-white transition-colors">Beranda</a></li>
-                    <li><a href="#program" class="hover:text-white transition-colors">Program</a></li>
                     <li><a href="{{ route('perpustakaan.public.index') }}" class="hover:text-white transition-colors">Perpustakaan</a></li>
                 </ul>
             </div>
