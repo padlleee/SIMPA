@@ -27,6 +27,9 @@ class UserController extends Controller
             'email'    => 'required|email|max:150|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role'     => 'required|in:Admin,Ketua,Bendahara,Donatur',
+        ], [
+            'email.unique' => 'Email sudah terdaftar. Silakan gunakan email lain.',
+            'username.unique' => 'Username sudah digunakan. Silakan pilih username lain.',
         ]);
 
         $user = User::create([

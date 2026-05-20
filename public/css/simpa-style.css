@@ -1,0 +1,214 @@
+/* ==========================================================================
+   SIMPA – Sistem Informasi Manajemen Panti Asuhan Amaliya
+   External Stylesheet | public/css/simpa-style.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL BASE
+   -------------------------------------------------------------------------- */
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. ANIMATIONS
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInSimple {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+.animate-fade-in {
+    animation: fadeInSimple 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.25s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. ADMIN SIDEBAR
+   -------------------------------------------------------------------------- */
+.sidebar-item {
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-item.active {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.sidebar-item.active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: #1e293b;
+    border-radius: 2px 0 0 2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. LANDING PAGE – HERO BACKGROUND CROSSFADE
+   -------------------------------------------------------------------------- */
+.hero-background {
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.bg-slide:nth-child(1) { background-image: url('/images/land1.jpg'); }
+.bg-slide:nth-child(2) { background-image: url('/images/land2.png'); }
+
+.bg-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.82) 0%,
+        rgba(30, 41, 59, 0.78) 50%,
+        rgba(51, 65, 85, 0.75) 100%
+    );
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --------------------------------------------------------------------------
+   5. LANDING PAGE – CARD & NAV INTERACTIONS
+   -------------------------------------------------------------------------- */
+.card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link {
+    transition: color 0.15s ease;
+}
+
+
+/* --------------------------------------------------------------------------
+   6. LANDING PAGE – PROGRESS BAR & COUNTER
+   -------------------------------------------------------------------------- */
+.progress-fill {
+    transition: width 1s ease-out;
+}
+
+.counter {
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. LANDING PAGE – PROFILE DROPDOWN
+   -------------------------------------------------------------------------- */
+.profile-dropdown {
+    display: none;
+}
+
+.profile-dropdown.open {
+    display: block;
+}
+
+
+/* --------------------------------------------------------------------------
+   8. LOGIN / REGISTER MODAL
+   -------------------------------------------------------------------------- */
+#loginModal:not(.hidden) {
+    display: flex;
+}
+
+#registerModal:not(.hidden) {
+    display: flex;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. NOTIFICATION PANEL
+   -------------------------------------------------------------------------- */
+#notif-panel {
+    /* Controlled via Tailwind .hidden class — no extra override needed */
+}
+
+
+/* --------------------------------------------------------------------------
+   10. UTILITY OVERRIDES
+   -------------------------------------------------------------------------- */
+
+/* Smooth scrollbar for sidebar navigation */
+.sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 9999px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}
+
+/* Focus ring reset – use Tailwind ring instead */
+*:focus {
+    outline: none;
+}
