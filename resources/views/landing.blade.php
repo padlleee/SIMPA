@@ -98,6 +98,66 @@
     </div>
 </section>
 
+{{-- TARGET DONASI --}}
+<section id="donasi-progress" class="py-20 bg-slate-50 border-t border-slate-100">
+    <div class="max-w-4xl mx-auto px-6">
+        <div class="text-center mb-12">
+            <span class="text-slate-500 font-medium text-sm uppercase tracking-wider">Transparansi</span>
+            <h2 class="text-3xl font-bold text-slate-800 mt-3">Target Donasi Kami</h2>
+            <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Setiap donasi Anda membantu kami memberikan yang terbaik untuk anak-anak asuh.</p>
+        </div>
+
+        @php
+            $donasiController = new \App\Http\Controllers\DonasiController();
+            $stats = $donasiController->getPublicStats();
+        @endphp
+
+        <div class="bg-white rounded-3xl p-8 md:p-10 shadow-xl shadow-slate-100 border border-slate-100">
+            <div class="mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
+                    <div>
+                        <p class="text-slate-500 text-sm font-medium">Terkumpul</p>
+                        <p class="text-4xl font-extrabold text-slate-800 mt-1">Rp {{ number_format($stats['totalVerified'], 0, ',', '.') }}</p>
+                    </div>
+                    <div class="md:text-right">
+                        <p class="text-slate-500 text-sm font-medium">Target</p>
+                        <p class="text-2xl font-bold text-slate-700 mt-1">Rp {{ number_format($stats['donationGoal'], 0, ',', '.') }}</p>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full h-5 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200/50">
+                    <div class="progress-fill h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full transition-all duration-1000" style="width: {{ $stats['percentage'] }}%;"></div>
+                </div>
+
+                <div class="flex justify-between items-center mt-4">
+                    <span class="inline-flex items-center bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-emerald-100">
+                        {{ $stats['percentage'] }}% Terkumpul
+                    </span>
+                    <p class="text-slate-600 text-sm font-medium">Sisa: Rp {{ number_format(max(0, $stats['donationGoal'] - $stats['totalVerified']), 0, ',', '.') }} lagi</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6 pt-8 border-t border-slate-100 text-center">
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Pendidikan</p>
+                    <p class="text-2xl font-extrabold text-slate-800 mt-1">30%</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Kesehatan &amp; Gizi</p>
+                    <p class="text-2xl font-extrabold text-slate-800 mt-1">50%</p>
+                </div>
+                <div>
+                    <p class="text-slate-500 text-sm font-medium">Operasional</p>
+                    <p class="text-2xl font-extrabold text-slate-800 mt-1">20%</p>
+                </div>
+            </div>
+
+            <p class="text-center text-slate-400 text-xs mt-8">Alokasi dana disalurkan secara transparan untuk tiga pilar pengembangan utama.</p>
+        </div>
+    </div>
+</section>
+
 {{-- PROGRAM --}}
 <section id="program" class="py-24 bg-slate-50">
     <div class="max-w-6xl mx-auto px-6">

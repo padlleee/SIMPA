@@ -20,6 +20,7 @@
             <a href="#program" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Program</a>
             <a href="{{ route('perpustakaan.public.index') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Perpustakaan</a>
             <a href="#tentang-kami" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Tentang Kami</a>
+            <a href="#donasi-progress" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Target Donasi</a>
 
             @auth
             {{-- Profile Dropdown (Authenticated) --}}
