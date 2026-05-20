@@ -12,37 +12,43 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // ── 1. Admin ──────────────────────────────────────────
-        User::create([
-            'username'              => 'Admin SIMPA',
-            'email'                 => 'admin@simpa.com',
-            'password'              => Hash::make('password'),
-            'role'                  => 'Admin',
-            'kode_akses'            => 'ADM-001',
-            'force_password_change' => false,
-            'status'                => 'active',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@simpa.com'],
+            [
+                'username'              => 'Admin SIMPA',
+                'password'              => Hash::make('password'),
+                'role'                  => 'Admin',
+                'kode_akses'            => 'ADM-001',
+                'force_password_change' => false,
+                'status'                => 'active',
+            ]
+        );
 
         // ── 2. Ketua ──────────────────────────────────────────
-        User::create([
-            'username'              => 'Ketua Yayasan',
-            'email'                 => 'ketua@simpa.com',
-            'password'              => Hash::make('password'),
-            'role'                  => 'Ketua',
-            'kode_akses'            => 'KET-001',
-            'force_password_change' => false,
-            'status'                => 'active',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'ketua@simpa.com'],
+            [
+                'username'              => 'Ketua Yayasan',
+                'password'              => Hash::make('password'),
+                'role'                  => 'Ketua',
+                'kode_akses'            => 'KET-001',
+                'force_password_change' => false,
+                'status'                => 'active',
+            ]
+        );
 
         // ── 3. Bendahara ──────────────────────────────────────
-        User::create([
-            'username'              => 'Bendahara Panti',
-            'email'                 => 'bendahara@simpa.com',
-            'password'              => Hash::make('password'),
-            'role'                  => 'Bendahara',
-            'kode_akses'            => 'BEN-001',
-            'force_password_change' => false,
-            'status'                => 'active',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'bendahara@simp.com'],
+            [
+                'username'              => 'Bendahara Panti',
+                'password'              => Hash::make('password'),
+                'role'                  => 'Bendahara',
+                'kode_akses'            => 'BEN-001',
+                'force_password_change' => false,
+                'status'                => 'active',
+            ]
+        );
 
         // ── 4. Donatur (10 registered donors) ─────────────────
         $donaturData = [
@@ -59,23 +65,27 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($donaturData as $idx => $d) {
-            $user = User::create([
-                'username'              => $d['nama'],
-                'email'                 => $d['email'],
-                'password'              => Hash::make('password'),
-                'role'                  => 'Donatur',
-                'kode_akses'            => 'DON-' . str_pad($idx + 1, 3, '0', STR_PAD_LEFT),
-                'force_password_change' => false,
-                'status'                => 'active',
-            ]);
+            $user = User::updateOrCreate(
+                ['email' => $d['email']],
+                [
+                    'username'              => $d['nama'],
+                    'password'              => Hash::make('password'),
+                    'role'                  => 'Donatur',
+                    'kode_akses'            => 'DON-' . str_pad($idx + 1, 3, '0', STR_PAD_LEFT),
+                    'force_password_change' => false,
+                    'status'                => 'active',
+                ]
+            );
 
-            Donatur::create([
-                'id_user'      => $user->id_user,
-                'nama_donatur' => $d['nama'],
-                'email'        => $d['email'],
-                'no_hp'        => $d['no_hp'],
-                'alamat'       => 'Jl. ' . fake()->streetName() . ', ' . $d['kota'],
-            ]);
+            Donatur::updateOrCreate(
+                ['id_user' => $user->id_user],
+                [
+                    'nama_donatur' => $d['nama'],
+                    'email'        => $d['email'],
+                    'no_hp'        => $d['no_hp'],
+                    'alamat'       => 'Jl. ' . fake()->streetName() . ', ' . $d['kota'],
+                ]
+            );
         }
     }
 }
