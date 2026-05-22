@@ -51,7 +51,7 @@
                     Daftar sebagai Donatur
                 </button>
                 @else
-                <a href="#tentang-kami" class="border border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-colors">
+                <a href="{{ route('tentang-kami') }}" class="border border-white/30 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-colors">
                     Tentang Kami
                 </a>
                 @endguest
@@ -92,7 +92,7 @@
                 Yayasan Panti Asuhan Amaliya didedikasikan untuk memberikan masa depan yang lebih baik bagi anak-anak asuh kami melalui pendidikan, kesehatan, dan pemenuhan gizi yang layak.
             </p>
         </div>
-        <a href="#" class="inline-block bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-700 hover:shadow-lg transition-all">
+        <a href="{{ route('tentang-kami') }}" class="inline-block bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-700 hover:shadow-lg transition-all">
             Identitas Yayasan &amp; Lebih Lanjut
         </a>
     </div>

@@ -38,6 +38,14 @@ class DatabaseSeeder extends Seeder
         $this->command->comment('  → Mengisi koleksi buku perpustakaan...');
         $this->call(PerpustakaanSeeder::class);
 
+        // 7. Blog / Artikel Kegiatan
+        $this->command->comment('  → Mengisi artikel blog & kegiatan...');
+        $this->call(ArticleSeeder::class);
+
+        // 8. Calon Anak Asuh (Pendaftaran Digital)
+        $this->command->comment('  → Mengisi data pendaftaran calon anak asuh...');
+        $this->call(CalonAnakAsuhSeeder::class);
+
         $this->command->info('');
         $this->command->info('✅ Seeding selesai! Berikut akun yang tersedia:');
         $this->command->table(
@@ -49,5 +57,9 @@ class DatabaseSeeder extends Seeder
                 ['Donatur (1–10)', 'budi.santoso@gmail.com ... lina.marlina@gmail.com', 'password'],
             ]
         );
+        $this->command->info('');
+        $this->command->info('📝 Blog: 6 artikel kegiatan telah ditambahkan');
+        $this->command->info('📋 Pendaftaran: 6 calon anak asuh (3 Pending, 2 Disetujui, 1 Ditolak)');
     }
 }
+

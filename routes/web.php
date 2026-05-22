@@ -14,6 +14,8 @@ use App\Http\Controllers\DonaturController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AccountRequestController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PendaftaranAnakController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,19 @@ Route::get('/perpustakaan-publik', [PerpustakaanController::class, 'publicIndex'
 // Public Account Request
 Route::get('/minta-akun', [AccountRequestController::class, 'publicCreate'])->name('account-request.create');
 Route::post('/minta-akun', [AccountRequestController::class, 'publicStore'])->name('account-request.store');
+
+// Tentang Kami
+Route::get('/tentang-kami', function () {
+    return view('tentang-kami');
+})->name('tentang-kami');
+
+// Blog / Kegiatan (Public)
+Route::get('/blog', [ArticleController::class, 'publicIndex'])->name('blog.index');
+Route::get('/blog/{slug}', [ArticleController::class, 'publicShow'])->name('blog.show');
+
+// Pendaftaran Anak Asuh (Public)
+Route::get('/pendaftaran-anak', [PendaftaranAnakController::class, 'create'])->name('pendaftaran-anak.create');
+Route::post('/pendaftaran-anak', [PendaftaranAnakController::class, 'store'])->name('pendaftaran-anak.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -137,7 +152,19 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/account-requests', [AccountRequestController::class, 'index'])->name('account-request.index');
     Route::patch('/account-requests/{accountRequest}/approve', [AccountRequestController::class, 'approve'])->name('account-request.approve');
     Route::patch('/account-requests/{accountRequest}/reject', [AccountRequestController::class, 'reject'])->name('account-request.reject');
+
+    // Blog / Kegiatan (Admin CRUD)
+    Route::get('/admin/blog', [ArticleController::class, 'adminIndex'])->name('admin.blog.index');
+    Route::get('/admin/blog/create', [ArticleController::class, 'create'])->name('admin.blog.create');
+    Route::post('/admin/blog', [ArticleController::class, 'store'])->name('admin.blog.store');
+    Route::delete('/admin/blog/{article}', [ArticleController::class, 'destroy'])->name('admin.blog.destroy');
+
+    // Pendaftaran Anak Asuh (Admin Review)
+    Route::get('/admin/pendaftaran-requests', [PendaftaranAnakController::class, 'adminIndex'])->name('admin.pendaftaran.index');
+    Route::patch('/admin/pendaftaran-requests/{calon}/approve', [PendaftaranAnakController::class, 'approve'])->name('admin.pendaftaran.approve');
+    Route::patch('/admin/pendaftaran-requests/{calon}/reject', [PendaftaranAnakController::class, 'reject'])->name('admin.pendaftaran.reject');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -150,6 +177,8 @@ Route::middleware(['auth', 'role:Donatur'])->group(function () {
     Route::put('/donatur/profile', [DonaturController::class, 'profileUpdate'])->name('donatur.profile.update');
 
     // Donasi from registered Donatur
+    Route::get('/donatur/laporan', [DonaturController::class, 'laporan'])->name('donatur.laporan');
     Route::get('/donatur/donasi/create', [DonasiController::class, 'userCreate'])->name('donatur.donasi.create');
+
     Route::post('/donatur/donasi', [DonasiController::class, 'userStore'])->name('donatur.donasi.store');
 });

@@ -4,8 +4,54 @@
 @section('page-title', 'Laporan Keuangan')
 @section('page-subtitle', 'Rekapitulasi donasi dan pengeluaran secara otomatis')
 
+@push('styles')
+<style>
+@media print {
+    /* Sembunyikan elemen UI yang tidak perlu */
+    #sidebar,
+    nav,
+    .topbar-area,
+    .no-print,
+    .pagination,
+    nav[aria-label="Pagination Navigation"] { display: none !important; }
+
+    /* Reset layout agar konten memenuhi halaman */
+    body { background: white !important; }
+    .flex.h-screen { display: block !important; }
+    .ml-64 { margin-left: 0 !important; }
+    main { padding: 0 !important; overflow: visible !important; }
+
+    /* Header print */
+    .print-header { display: block !important; }
+
+    /* Pastikan semua tabel dan kartu tercetak penuh */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Cegah potong di tengah baris tabel */
+    tr { page-break-inside: avoid; }
+    thead { display: table-header-group; }
+}
+</style>
+@endpush
+
 @section('content')
-<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6">
+
+{{-- Print Header (hanya muncul saat print) --}}
+<div class="print-header hidden mb-6 pb-4 border-b-2 border-slate-800">
+    <h1 class="text-xl font-bold text-slate-800">Laporan Keuangan – Yayasan Amaliya Subang</h1>
+    <p class="text-sm text-slate-500 mt-1">
+        Dicetak pada: {{ now()->locale('id')->translatedFormat('j F Y, H:i') }}
+        @if(request('dari_tanggal') || request('sampai_tanggal'))
+            &nbsp;·&nbsp; Periode:
+            {{ request('dari_tanggal') ? \Carbon\Carbon::parse(request('dari_tanggal'))->locale('id')->translatedFormat('j F Y') : '—' }}
+            s.d.
+            {{ request('sampai_tanggal') ? \Carbon\Carbon::parse(request('sampai_tanggal'))->locale('id')->translatedFormat('j F Y') : 'sekarang' }}
+        @endif
+    </p>
+</div>
+
+{{-- Filter + Tombol Print --}}
+<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6 no-print">
     <form method="GET" class="grid gap-4 xl:grid-cols-[1fr_auto] items-end">
         <div class="grid gap-4 lg:grid-cols-3">
             <div class="flex-1 min-w-[140px]">
@@ -53,8 +99,17 @@
 </div>
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4">
+    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 flex items-center justify-between">
         <h2 class="text-sm font-semibold uppercase text-slate-500">Detail Transaksi</h2>
+        {{-- Tombol Print --}}
+        <button onclick="window.print()"
+                class="no-print inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 active:scale-95 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            Cetak / Print
+        </button>
     </div>
     @if($paginated->count())
         <div class="overflow-x-auto">
@@ -79,9 +134,16 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot class="border-t-2 border-slate-300 bg-slate-50">
+                    <tr>
+                        <td colspan="3" class="px-5 py-3 text-xs font-bold text-slate-600 uppercase">Total Keseluruhan</td>
+                        <td class="px-5 py-3 text-right font-bold text-emerald-700">Rp {{ number_format($totalDonasi, 0, ',', '.') }}</td>
+                        <td class="px-5 py-3 text-right font-bold text-rose-700">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
-        <div class="px-5 py-4 border-t border-slate-100">
+        <div class="px-5 py-4 border-t border-slate-100 no-print">
             {{ $paginated->links('pagination::tailwind') }}
         </div>
     @else
