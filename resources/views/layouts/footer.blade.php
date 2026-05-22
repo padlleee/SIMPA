@@ -41,8 +41,20 @@
                     </li>
                     <li class="flex items-start gap-4 text-slate-600">
                         <svg class="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        <span class="text-sm">Blok Suka Asih I RT. 64/18 Kel. Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat, 41211, Indonesia.</span>
+                        <div>
+                            <span class="text-sm">Blok Suka Asih I RT. 64/18 Kel. Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat, 41211, Indonesia.</span>
+                            <a href="https://maps.google.com/?q=-6.570183,107.757358"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors group">
+                                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                                Lihat di Google Maps
+                            </a>
+                        </div>
                     </li>
+
                 </ul>
             </div>
 

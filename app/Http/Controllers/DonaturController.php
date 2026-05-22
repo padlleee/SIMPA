@@ -6,6 +6,7 @@ use App\Models\Donasi;
 use App\Models\Donatur;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,6 +27,44 @@ class DonaturController extends Controller
             ->sum('nominal');
 
         return view('donatur.dashboard', compact('user', 'donatur', 'donasi', 'totalDonasi'));
+    }
+
+    public function laporan(Request $request)
+    {
+        $user = Auth::user();
+
+        $query = Donasi::where('id_donatur', $user->id_user);
+
+        if ($request->filled('dari_tanggal')) {
+            $query->whereDate('tanggal_donasi', '>=', $request->dari_tanggal);
+        }
+
+        if ($request->filled('sampai_tanggal')) {
+            $query->whereDate('tanggal_donasi', '<=', $request->sampai_tanggal);
+        }
+
+        $totalDonasi          = (clone $query)->where('status_verifikasi', 'Valid')->sum('nominal');
+        $totalTransaksi       = (clone $query)->count();
+        $totalTerverifikasi   = (clone $query)->where('status_verifikasi', 'Valid')->count();
+
+        $page    = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $all     = $query->latest('tanggal_donasi')->get();
+
+        $paginated = new LengthAwarePaginator(
+            $all->slice(($page - 1) * $perPage, $perPage)->values(),
+            $all->count(),
+            $perPage,
+            $page,
+            [
+                'path'  => LengthAwarePaginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return view('donatur.laporan', compact(
+            'user', 'paginated', 'totalDonasi', 'totalTransaksi', 'totalTerverifikasi'
+        ));
     }
 
     public function profile()
