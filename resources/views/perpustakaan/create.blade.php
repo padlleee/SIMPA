@@ -107,6 +107,55 @@
             </div>
         </div>
 
+
+        <hr class="border-slate-100">
+
+        {{-- SECTION: Kurasi Halaman Publik --}}
+        <div>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Kurasi Halaman Publik</h3>
+            <p class="text-xs text-slate-400 mb-4">Tampilkan buku ini di bagian perpustakaan pada halaman utama (landing page) publik.</p>
+
+            {{-- Toggle is_featured --}}
+            <label class="flex items-center gap-3 cursor-pointer select-none mb-5 group">
+                <div class="relative">
+                    <input type="checkbox" name="is_featured" id="is_featured" value="1"
+                           {{ old('is_featured') ? 'checked' : '' }}
+                           class="sr-only peer"
+                           onchange="toggleKategoriLanding(this)">
+                    <div class="w-11 h-6 bg-slate-200 peer-checked:bg-slate-800 rounded-full transition-colors duration-200"></div>
+                    <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-5"></div>
+                </div>
+                <div>
+                    <span class="text-sm font-semibold text-slate-700 group-hover:text-slate-900">Tampilkan di Landing Page</span>
+                    <p class="text-xs text-slate-400">Buku akan muncul di salah satu seksi kurasi pada halaman publik</p>
+                </div>
+            </label>
+
+            {{-- Dropdown kategori_landing (tampil hanya jika is_featured dicentang) --}}
+            <div id="kategori-landing-wrap" class="{{ old('is_featured') ? '' : 'hidden' }}">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">
+                    Bagian Kurasi <span class="text-red-500">*</span>
+                </label>
+                <select name="kategori_landing" id="kategori_landing"
+                        class="w-full md:w-72 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kategori_landing') border-red-400 @enderror">
+                    <option value="">— Pilih Bagian —</option>
+                    <option value="sering_dipinjam" {{ old('kategori_landing') === 'sering_dipinjam' ? 'selected' : '' }}>
+                        📚 Buku Sering Dipinjam
+                    </option>
+                    <option value="buku_baru" {{ old('kategori_landing') === 'buku_baru' ? 'selected' : '' }}>
+                        ✨ Buku Baru
+                    </option>
+                    <option value="buku_unik" {{ old('kategori_landing') === 'buku_unik' ? 'selected' : '' }}>
+                        🌟 Buku Unik
+                    </option>
+                </select>
+                @error('kategori_landing')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+                <p class="text-xs text-slate-400 mt-2">Maksimal 4 buku per bagian yang akan ditampilkan.</p>
+            </div>
+        </div>
+
         <div class="flex gap-3 pt-2">
             <button type="submit" class="bg-slate-800 text-white px-8 py-3 rounded-xl font-semibold hover:bg-slate-700 transition-colors">Simpan</button>
             <a href="{{ route('perpustakaan.index') }}" class="bg-slate-100 text-slate-700 px-8 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-colors">Batal</a>
@@ -166,5 +215,16 @@ document.getElementById('foto_buku').addEventListener('change', function(e) {
     };
     reader.readAsDataURL(file);
 });
+
+// Toggle visibility dropdown kategori_landing
+function toggleKategoriLanding(checkbox) {
+    const wrap = document.getElementById('kategori-landing-wrap');
+    if (checkbox.checked) {
+        wrap.classList.remove('hidden');
+    } else {
+        wrap.classList.add('hidden');
+        document.getElementById('kategori_landing').value = '';
+    }
+}
 </script>
 @endsection

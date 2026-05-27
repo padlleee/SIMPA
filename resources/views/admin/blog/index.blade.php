@@ -6,8 +6,6 @@
 
 @section('content')
 
-@include('layouts.partials.flash')
-
 <div class="flex items-center justify-between mb-6">
     <div></div>
     <a href="{{ route('admin.blog.create') }}"

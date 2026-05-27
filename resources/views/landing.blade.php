@@ -6,7 +6,7 @@
 @extends('layouts.master')
 
 @section('title', 'Beranda')
-@section('meta-description', 'Sistem Informasi Manajemen Panti Asuhan Amaliya – transparansi donasi dan pengelolaan panti.')
+@section('meta-description', 'Mendukung Kehidupan yang Lebih Baik – Sistem Informasi Manajemen Panti Asuhan Amaliya.')
 @section('body-class', 'bg-white text-slate-800')
 
 @section('body')
@@ -28,7 +28,7 @@
                 <span class="text-slate-300">Tumbuhkan Harapan</span>
             </h1>
             <p class="text-slate-300 text-lg leading-relaxed mb-10">
-                SIMPA hadir untuk mengelola yayasan panti asuhan secara transparan dan profesional. Setiap donasi Anda langsung tercatat dan terverifikasi.
+                Mendukung Kehidupan yang Lebih Baik <span class="text-white/50">|</span> <em>Support for Better Life</em>
             </p>
             <div class="flex flex-wrap gap-4">
                 @auth
@@ -83,36 +83,408 @@
     </div>
 </section>
 
-{{-- TENTANG KAMI --}}
-<section id="tentang-kami" class="py-16 bg-gradient-to-r from-slate-50 to-slate-100">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-        <div class="mb-10">
-            <h2 class="text-3xl font-bold text-slate-800 mb-3">Tentang Kami</h2>
-            <p class="text-slate-600 text-lg leading-relaxed">
-                Yayasan Panti Asuhan Amaliya didedikasikan untuk memberikan masa depan yang lebih baik bagi anak-anak asuh kami melalui pendidikan, kesehatan, dan pemenuhan gizi yang layak.
-            </p>
+{{-- ============================================================ --}}
+{{-- SECTION A: TENTANG KAMI BILINGUAL                           --}}
+{{-- ============================================================ --}}
+<section id="tentang-kami" class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-14">
+            <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Tentang Kami · About Us</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Misi Kami untuk Masa Depan Anak Bangsa</h2>
         </div>
-        <a href="{{ route('tentang-kami') }}" class="inline-block bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-700 hover:shadow-lg transition-all">
-            Identitas Yayasan &amp; Lebih Lanjut
-        </a>
+
+        <div class="grid md:grid-cols-2 gap-12 items-start mb-12">
+            {{-- Kolom Indonesia --}}
+            <div class="space-y-5">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-8 h-1 bg-slate-800 rounded-full block"></span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Bahasa Indonesia</span>
+                </div>
+                <p class="text-slate-700 leading-relaxed text-[15px]">
+                    Yayasan Panti Asuhan Amaliya berdiri sebagai wadah kasih dan harapan bagi anak-anak yang membutuhkan. Kami berkomitmen untuk memberikan perlindungan, pendidikan berkualitas, dan lingkungan tumbuh kembang yang sehat bagi setiap anak asuh kami.
+                </p>
+                <p class="text-slate-600 leading-relaxed text-[15px]">
+                    Melalui program pembinaan karakter, bimbingan belajar, dan dukungan kesehatan, kami mendorong setiap anak untuk meraih potensi terbaik mereka dan menjadi generasi penerus bangsa yang tangguh dan berakhlak mulia.
+                </p>
+            </div>
+
+            {{-- Kolom English --}}
+            <div class="space-y-5 border-l-0 md:border-l border-slate-200 md:pl-12">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-8 h-1 bg-slate-300 rounded-full block"></span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">English</span>
+                </div>
+                <p class="text-slate-500 leading-relaxed text-[15px] italic">
+                    Amaliya Orphanage Foundation stands as a vessel of love and hope for children in need. We are committed to providing protection, quality education, and a healthy environment for growth and development for each of our children.
+                </p>
+                <p class="text-slate-400 leading-relaxed text-[15px] italic">
+                    Through character-building programs, tutoring, and healthcare support, we empower every child to reach their full potential and grow into a resilient and noble generation of the nation.
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ route('tentang-kami') }}"
+               class="inline-flex items-center gap-2 bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-slate-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                Lihat Selengkapnya
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
     </div>
 </section>
 
-
-
-{{-- PUBLIC LIBRARY PREVIEW --}}
-<section class="py-16 bg-white">
+{{-- ============================================================ --}}
+{{-- SECTION B: HOW YOU CAN HELP (FAQ PREVIEW GRID)              --}}
+{{-- ============================================================ --}}
+<section class="py-20 bg-white">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-12">
-            <span class="text-slate-500 font-medium text-sm uppercase tracking-wider">Koleksi Kami</span>
-            <h2 class="text-3xl font-bold text-slate-800 mt-3">Perpustakaan Digital</h2>
-            <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Akses koleksi buku kami yang terus berkembang untuk mendukung pendidikan anak-anak asuh.</p>
+        <div class="text-center mb-14">
+            <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Cara Berkontribusi · How You Can Help</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Ada Banyak Cara untuk Berbagi Kebaikan</h2>
+            <p class="text-slate-500 mt-4 max-w-2xl mx-auto">Setiap kontribusi Anda, sekecil apapun, memiliki dampak nyata bagi kehidupan anak-anak asuh kami.</p>
         </div>
-        <div class="text-center">
-            <a href="{{ route('perpustakaan.public.index') }}" class="inline-block bg-slate-800 text-white px-10 py-4 rounded-xl font-semibold hover:bg-slate-700 hover:shadow-lg transition-all">
-                Lihat Perpustakaan Lengkap →
+
+        <div class="grid md:grid-cols-3 gap-8">
+            {{-- Card 1: Donasi --}}
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-1">Memberikan Donasi</h3>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Send Donation</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Salurkan donasi uang tunai, sembako, pakaian, atau peralatan belajar. Setiap donasi dicatat secara transparan dan terverifikasi di sistem kami.
+                </p>
+                <p class="text-slate-400 text-xs italic mb-6">
+                    Donate cash, food staples, clothing, or school supplies. Every donation is transparently recorded and verified in our system.
+                </p>
+                <a href="{{ route('faq') }}#donasi" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
+                    Pelajari Lebih Lanjut <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            {{-- Card 2: Relawan --}}
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-1">Menjadi Relawan</h3>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Become a Volunteer</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Dedikasikan waktu dan keahlian Anda untuk mengajar, membimbing, atau mendampingi anak-anak asuh kami dalam kegiatan dan program pembinaan.
+                </p>
+                <p class="text-slate-400 text-xs italic mb-6">
+                    Dedicate your time and skills to teach, guide, or accompany our children in daily activities and development programs.
+                </p>
+                <a href="{{ route('faq') }}#relawan" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
+                    Pelajari Lebih Lanjut <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            {{-- Card 3: Beasiswa --}}
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div class="w-14 h-14 bg-slate-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-1">Mensponsori Beasiswa</h3>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Sponsor for Scholarship</p>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Sponsori biaya pendidikan seorang anak asuh dari SD hingga perguruan tinggi. Investasi terbaik untuk masa depan generasi bangsa.
+                </p>
+                <p class="text-slate-400 text-xs italic mb-6">
+                    Sponsor the education costs from elementary to university. The best investment for the nation's future generation.
+                </p>
+                <a href="{{ route('faq') }}#beasiswa" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors">
+                    Pelajari Lebih Lanjut <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ============================================================ --}}
+{{-- SECTION C: TESTIMONIALS / KISAH ANAK ASUH                   --}}
+{{-- ============================================================ --}}
+<section class="py-20 bg-gradient-to-br from-slate-800 to-slate-900">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-14">
+            <span class="inline-block text-xs font-bold text-slate-400 uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full mb-4">Kisah Nyata · Real Stories</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-white">Mereka yang Telah Kami Dampingi</h2>
+            <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Setiap kisah adalah bukti nyata bahwa kepedulian bersama dapat mengubah takdir seorang anak.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            {{-- Titi --}}
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">T</div>
+                    <div>
+                        <div class="font-bold text-white text-lg">Titi</div>
+                        <div class="text-slate-400 text-sm">Perempuan, 16 tahun &middot; Female, 16 y.o.</div>
+                        <div class="flex gap-0.5 mt-1">
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <blockquote class="text-slate-300 text-[15px] leading-relaxed mb-5 italic">
+                    "Sejak tinggal di panti, saya merasakan hangat keluarga yang sesungguhnya. Bapak dan Ibu pengasuh selalu mendukung impian saya untuk menjadi guru. Di sini saya belajar bahwa keterbatasan bukanlah penghalang untuk berprestasi."
+                </blockquote>
+                <p class="text-slate-500 text-sm italic leading-relaxed">
+                    "Since living at the orphanage, I have felt the warmth of a true family. The caregivers always support my dream of becoming a teacher. Here I learn that limitations are not a barrier to achievement."
+                </p>
+            </div>
+
+            {{-- Handani --}}
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">H</div>
+                    <div>
+                        <div class="font-bold text-white text-lg">Handani</div>
+                        <div class="text-slate-400 text-sm">Laki-laki, 17 tahun &middot; Male, 17 y.o.</div>
+                        <div class="flex gap-0.5 mt-1">
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        </div>
+                    </div>
+                </div>
+                <blockquote class="text-slate-300 text-[15px] leading-relaxed mb-5 italic">
+                    "Yayasan Amaliya bukan sekadar tempat tinggal. Ini adalah rumah yang membentuk karakter dan mental saya. Program belajar mandiri dan bimbingan karir yang diberikan membantu saya menemukan passion di bidang teknologi informasi."
+                </blockquote>
+                <p class="text-slate-500 text-sm italic leading-relaxed">
+                    "The Amaliya Foundation is not just a place to live. It is a home that has shaped my character and mindset. The self-study programs and career guidance have helped me discover my passion in information technology."
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ============================================================ --}}
+{{-- SECTION D: RECENT ACTIVITIES / BLOG PREVIEW                 --}}
+{{-- ============================================================ --}}
+<section class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+            <div>
+                <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Aktivitas Terkini · Recent Activities</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Kabar Terbaru dari Kami</h2>
+                <p class="text-slate-500 mt-3 max-w-xl">Ikuti perkembangan terkini kegiatan dan program yang berjalan di Yayasan Amaliya.</p>
+            </div>
+            <a href="{{ route('blog.index') }}"
+               class="flex-shrink-0 inline-flex items-center gap-2 border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-semibold hover:border-slate-800 hover:text-slate-800 transition-all duration-200">
+                Lihat Semua Blog
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
             </a>
         </div>
+
+        @if(isset($recent_posts) && $recent_posts->count())
+        <div class="grid md:grid-cols-3 gap-7">
+            @foreach($recent_posts as $post)
+            <a href="{{ route('blog.show', $post->slug) }}"
+               class="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                <div class="w-full h-48 bg-slate-100 overflow-hidden relative">
+                    @if($post->image)
+                        <img src="{{ asset('storage/' . $post->image) }}"
+                             alt="{{ $post->title }}"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                            <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                    @endif
+                    <span class="absolute top-3 left-3 bg-white/95 text-slate-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Kegiatan</span>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        {{ $post->created_at->locale('id')->translatedFormat('j F Y') }}
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base mb-2 leading-snug group-hover:text-slate-600 transition-colors line-clamp-2">
+                        {{ $post->title }}
+                    </h3>
+                    <p class="text-slate-500 text-sm leading-relaxed line-clamp-3">{{ $post->excerpt }}</p>
+                    <div class="mt-4 text-xs font-bold text-slate-600 group-hover:text-slate-900 flex items-center gap-1 transition-all">
+                        Baca Selengkapnya
+                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+            @endforeach
+        </div>
+        @else
+        <div class="text-center py-16 bg-slate-50 rounded-2xl border border-slate-200">
+            <div class="text-5xl mb-4">📰</div>
+            <p class="text-slate-500 font-semibold">Belum ada artikel yang dipublikasikan.</p>
+            <p class="text-slate-400 text-sm mt-2">Pantau terus halaman blog kami!</p>
+            <a href="{{ route('blog.index') }}" class="inline-block mt-6 bg-slate-800 text-white px-6 py-3 rounded-xl font-semibold hover:bg-slate-700 transition-colors text-sm">
+                Ke Halaman Blog
+            </a>
+        </div>
+        @endif
+    </div>
+</section>
+
+{{-- ============================================================ --}}
+{{-- SECTION E: VOLUNTEER RECRUITMENT CTA BANNER                 --}}
+{{-- ============================================================ --}}
+<section class="py-0 bg-white">
+    <div class="max-w-6xl mx-auto px-6 pb-20">
+        <div class="relative bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 rounded-3xl overflow-hidden">
+            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+            <div class="relative z-10 px-8 md:px-14 py-14 flex flex-col md:flex-row items-center justify-between gap-10">
+                <div class="text-center md:text-left max-w-xl">
+                    <span class="inline-block text-xs font-bold text-slate-300 uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full mb-5">Relawan Pendidikan · Educational Volunteers</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+                        Kami Membutuhkan<br>Relawan Berdedikasi
+                    </h2>
+                    <p class="text-slate-300 text-[15px] leading-relaxed mb-3">
+                        Bergabunglah bersama kami sebagai relawan pengajar untuk membimbing anak-anak asuh dalam berbagai bidang — dari matematika dan sains hingga seni dan teknologi.
+                    </p>
+                    <p class="text-slate-400 text-sm italic">
+                        Join us as a teaching volunteer to guide our children in various fields — from mathematics and science to arts and technology.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row md:flex-col gap-4 flex-shrink-0">
+                    <a href="{{ route('blog.index') }}"
+                       class="inline-flex items-center justify-center gap-2 bg-white text-slate-800 px-8 py-4 rounded-xl font-bold hover:bg-slate-100 hover:shadow-lg transition-all duration-200 whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Info Detail
+                    </a>
+                    <a href="mailto:info.amaliyasubang@gmail.com"
+                       class="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/10 hover:border-white/70 transition-all duration-200 whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        Hubungi Kami
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ============================================================ --}}
+{{-- SECTION: PERPUSTAKAAN KURASI (3 BAGIAN DINAMIS)             --}}
+{{-- ============================================================ --}}
+<section id="perpustakaan" class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-6xl mx-auto px-6">
+        {{-- Header --}}
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div>
+                <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Perpustakaan Kami</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Koleksi Buku Pilihan</h2>
+                <p class="text-slate-500 mt-3 max-w-xl">Jelajahi koleksi buku perpustakaan kami yang terus berkembang untuk mendukung pendidikan anak-anak asuh.</p>
+            </div>
+            <a href="{{ route('perpustakaan.public.index') }}"
+               class="flex-shrink-0 inline-flex items-center gap-2 border border-slate-300 text-slate-700 px-6 py-3 rounded-xl font-semibold hover:border-slate-800 hover:text-slate-800 transition-all duration-200">
+                Lihat Semua Koleksi
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+        {{-- Tab Navigation --}}
+        <div class="flex gap-2 mb-10 border-b border-slate-200 overflow-x-auto pb-0">
+            <button id="lib-tab-sering" onclick="switchLibTab('sering_dipinjam')"
+                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
+                           border-slate-800 text-slate-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Sering Dipinjam
+                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-800 text-white rounded-full">
+                    {{ $bukuSeringDipinjam->count() }}
+                </span>
+            </button>
+            <button id="lib-tab-baru" onclick="switchLibTab('buku_baru')"
+                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
+                           border-transparent text-slate-500 hover:text-slate-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Buku Baru
+                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full">
+                    {{ $bukuBaru->count() }}
+                </span>
+            </button>
+            <button id="lib-tab-unik" onclick="switchLibTab('buku_unik')"
+                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
+                           border-transparent text-slate-500 hover:text-slate-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+                Buku Unik
+                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full">
+                    {{ $bukuUnik->count() }}
+                </span>
+            </button>
+        </div>
+
+        {{-- ── Panel: Sering Dipinjam ─────────────────────────────── --}}
+        <div id="lib-panel-sering_dipinjam" class="lib-panel">
+            @if($bukuSeringDipinjam->count())
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                @foreach($bukuSeringDipinjam as $buku)
+                @include('landing._book_card', ['buku' => $buku, 'badge' => 'Sering Dipinjam', 'badgeClass' => 'bg-slate-800 text-white'])
+                @endforeach
+            </div>
+            @else
+            @include('landing._empty_books', ['icon' => '📊', 'label' => 'Buku Sering Dipinjam'])
+            @endif
+        </div>
+
+        {{-- ── Panel: Buku Baru ──────────────────────────────────── --}}
+        <div id="lib-panel-buku_baru" class="lib-panel hidden">
+            @if($bukuBaru->count())
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                @foreach($bukuBaru as $buku)
+                @include('landing._book_card', ['buku' => $buku, 'badge' => 'Buku Baru', 'badgeClass' => 'bg-emerald-100 text-emerald-800'])
+                @endforeach
+            </div>
+            @else
+            @include('landing._empty_books', ['icon' => '✨', 'label' => 'Buku Baru'])
+            @endif
+        </div>
+
+        {{-- ── Panel: Buku Unik ──────────────────────────────────── --}}
+        <div id="lib-panel-buku_unik" class="lib-panel hidden">
+            @if($bukuUnik->count())
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                @foreach($bukuUnik as $buku)
+                @include('landing._book_card', ['buku' => $buku, 'badge' => 'Buku Unik', 'badgeClass' => 'bg-amber-100 text-amber-800'])
+                @endforeach
+            </div>
+            @else
+            @include('landing._empty_books', ['icon' => '🌟', 'label' => 'Buku Unik'])
+            @endif
+        </div>
+
     </div>
 </section>
 
@@ -153,15 +525,9 @@
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
     </svg>
     <p class="text-sm font-medium">{{ session('success') }}</p>
-    <button onclick="document.getElementById('landing-flash').remove()" class="ml-2 text-white/70 hover:text-white">✕</button>
+    <button onclick="document.getElementById('landing-flash').remove()" class="ml-2 text-white/70 hover:text-white">&#x2715;</button>
 </div>
 @endif
-
-{{-- LOGIN MODAL --}}
-@include('components.login-modal')
-
-{{-- REGISTER MODAL --}}
-@include('components.register-modal')
 
 {{-- FOOTER --}}
 @include('layouts.footer')
@@ -183,5 +549,36 @@
 
     showSlide(0);
     setInterval(function() { showSlide(current === 0 ? 1 : 0); }, 5000);
+
+    // ── LIBRARY TAB SWITCHER ─────────────────────────────────────
+    const tabMap = {
+        'sering_dipinjam': { tab: 'lib-tab-sering', panel: 'lib-panel-sering_dipinjam', badge: 'bg-slate-800 text-white' },
+        'buku_baru':       { tab: 'lib-tab-baru',   panel: 'lib-panel-buku_baru',        badge: 'bg-emerald-100 text-emerald-800' },
+        'buku_unik':       { tab: 'lib-tab-unik',   panel: 'lib-panel-buku_unik',        badge: 'bg-amber-100 text-amber-800' },
+    };
+
+    function switchLibTab(key) {
+        // Hide all panels, deactivate all tabs
+        document.querySelectorAll('.lib-panel').forEach(function(p) { p.classList.add('hidden'); });
+        document.querySelectorAll('.lib-tab').forEach(function(t) {
+            t.classList.remove('border-slate-800', 'text-slate-800');
+            t.classList.add('border-transparent', 'text-slate-500');
+            // Reset badge color
+            const badge = t.querySelector('span');
+            if (badge) { badge.className = 'inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full'; }
+        });
+
+        // Activate selected tab & panel
+        const cfg = tabMap[key];
+        if (!cfg) return;
+        document.getElementById(cfg.panel).classList.remove('hidden');
+        const activeTab = document.getElementById(cfg.tab);
+        if (activeTab) {
+            activeTab.classList.remove('border-transparent', 'text-slate-500');
+            activeTab.classList.add('border-slate-800', 'text-slate-800');
+            const badge = activeTab.querySelector('span');
+            if (badge) { badge.className = 'inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-800 text-white rounded-full'; }
+        }
+    }
 </script>
 @endpush

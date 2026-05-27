@@ -8,6 +8,9 @@
     {{-- Dynamic Page Title --}}
     <title>@yield('title', 'SIMPA') – Panti Asuhan Amaliya</title>
 
+    {{-- Favicon / Icon Tab Website --}}
+    <link rel="icon" href="{{ asset('images/logo-panti-single.png') }}" type="image/png">
+
     {{-- SEO Meta --}}
     <meta name="description" content="@yield('meta-description', 'Sistem Informasi Manajemen Panti Asuhan Amaliya – transparansi donasi dan pengelolaan panti.')">
 

@@ -6,8 +6,6 @@
 
 @section('content')
 
-@include('layouts.partials.flash')
-
 {{-- Filter --}}
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 mb-6 no-print">
     <form method="GET" class="flex flex-wrap items-end gap-3">

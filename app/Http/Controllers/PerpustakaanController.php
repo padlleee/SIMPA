@@ -43,24 +43,36 @@ class PerpustakaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_buku'    => 'required|string|unique:perpustakaan,kode_buku',
-            'judul_buku'   => 'required|string|max:255',
-            'pengarang'    => 'required|string|max:150',
-            'penulis'      => 'nullable|string|max:150',
-            'penerbit'     => 'nullable|string|max:150',
-            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn'         => 'nullable|string|max:30',
-            'kategori_buku'=> 'nullable|string|max:80',
-            'sinopsis'     => 'nullable|string',
-            'foto_buku'    => 'nullable|image|max:2048',
-            'jumlah_buku'  => 'required|integer|min:1',
-            'kondisi_buku' => 'nullable|string|max:50',
+            'kode_buku'        => 'required|string|unique:perpustakaan,kode_buku',
+            'judul_buku'       => 'required|string|max:255',
+            'pengarang'        => 'required|string|max:150',
+            'penulis'          => 'nullable|string|max:150',
+            'penerbit'         => 'nullable|string|max:150',
+            'tahun_terbit'     => 'nullable|integer|min:1900|max:' . date('Y'),
+            'isbn'             => 'nullable|string|max:30',
+            'kategori_buku'    => 'nullable|string|max:80',
+            'sinopsis'         => 'nullable|string',
+            'foto_buku'        => 'nullable|image|max:2048',
+            'jumlah_buku'      => 'required|integer|min:1',
+            'kondisi_buku'     => 'nullable|string|max:50',
+            'is_featured'      => 'nullable|boolean',
+            'kategori_landing' => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
         ]);
 
         $data = $request->only([
             'kode_buku','judul_buku','pengarang','penulis','penerbit',
             'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku','kondisi_buku',
         ]);
+
+        // Boolean checkbox: jika tidak dicentang, default false
+        $data['is_featured']      = $request->boolean('is_featured');
+        $data['kategori_landing'] = $request->input('kategori_landing');
+
+        // Jika tidak featured, hapus kategori landing
+        if (!$data['is_featured']) {
+            $data['kategori_landing'] = null;
+        }
+
         if ($request->hasFile('foto_buku')) {
             $uploadDir = public_path('storage/buku');
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
@@ -88,24 +100,36 @@ class PerpustakaanController extends Controller
     public function update(Request $request, Perpustakaan $perpustakaan)
     {
         $request->validate([
-            'kode_buku'    => 'required|string|unique:perpustakaan,kode_buku,' . $perpustakaan->id_buku . ',id_buku',
-            'judul_buku'   => 'required|string|max:255',
-            'pengarang'    => 'required|string|max:150',
-            'penulis'      => 'nullable|string|max:150',
-            'penerbit'     => 'nullable|string|max:150',
-            'tahun_terbit' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn'         => 'nullable|string|max:30',
-            'kategori_buku'=> 'nullable|string|max:80',
-            'sinopsis'     => 'nullable|string',
-            'foto_buku'    => 'nullable|image|max:2048',
-            'jumlah_buku'  => 'required|integer|min:1',
-            'kondisi_buku' => 'nullable|string|max:50',
+            'kode_buku'        => 'required|string|unique:perpustakaan,kode_buku,' . $perpustakaan->id_buku . ',id_buku',
+            'judul_buku'       => 'required|string|max:255',
+            'pengarang'        => 'required|string|max:150',
+            'penulis'          => 'nullable|string|max:150',
+            'penerbit'         => 'nullable|string|max:150',
+            'tahun_terbit'     => 'nullable|integer|min:1900|max:' . date('Y'),
+            'isbn'             => 'nullable|string|max:30',
+            'kategori_buku'    => 'nullable|string|max:80',
+            'sinopsis'         => 'nullable|string',
+            'foto_buku'        => 'nullable|image|max:2048',
+            'jumlah_buku'      => 'required|integer|min:1',
+            'kondisi_buku'     => 'nullable|string|max:50',
+            'is_featured'      => 'nullable|boolean',
+            'kategori_landing' => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
         ]);
 
         $data = $request->only([
             'kode_buku','judul_buku','pengarang','penulis','penerbit',
             'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku','kondisi_buku',
         ]);
+
+        // Boolean checkbox: jika tidak dicentang, default false
+        $data['is_featured']      = $request->boolean('is_featured');
+        $data['kategori_landing'] = $request->input('kategori_landing');
+
+        // Jika tidak featured, hapus kategori landing
+        if (!$data['is_featured']) {
+            $data['kategori_landing'] = null;
+        }
+
         if ($request->hasFile('foto_buku')) {
             $uploadDir = public_path('storage/buku');
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);

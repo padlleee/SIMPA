@@ -19,6 +19,7 @@
         <div class="hidden md:flex items-center gap-8">
             <a href="{{ route('perpustakaan.public.index') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Perpustakaan</a>
             <a href="{{ route('blog.index') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Blog</a>
+            <a href="{{ route('faq') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">FAQ</a>
             <a href="{{ route('tentang-kami') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Tentang Kami</a>
             <a href="{{ route('pendaftaran-anak.create') }}" class="nav-link text-slate-600 hover:text-slate-900 font-medium">Daftar Anak Asuh</a>
 
@@ -103,6 +104,12 @@
 
     </div>
 </nav>
+
+{{-- Global Guest Modals --}}
+@guest
+    @include('components.login-modal')
+    @include('components.register-modal')
+@endguest
 
 @push('scripts')
 <script>

@@ -59,16 +59,54 @@
         {!! nl2br(e($article->content)) !!}
     </div>
 
-    {{-- Back link --}}
-    <div class="mt-12 pt-8 border-t border-slate-200">
-        <a href="{{ route('blog.index') }}"
-           class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-800 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Kembali ke Blog
-        </a>
-    </div>
+    {{-- Prev / Next Navigation --}}
+    <nav class="mt-12 pt-8 border-t border-slate-200">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {{-- Previous Article --}}
+            @if($previous)
+            <a href="{{ route('blog.show', $previous->slug) }}"
+               class="group flex flex-col gap-1 p-5 rounded-2xl border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all duration-200">
+                <span class="flex items-center gap-1.5 text-xs font-semibold text-slate-400 group-hover:text-slate-600 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Artikel Sebelumnya
+                </span>
+                <span class="font-semibold text-slate-700 text-sm leading-snug line-clamp-2 group-hover:text-slate-900 transition-colors">
+                    {{ $previous->title }}
+                </span>
+            </a>
+            @else
+            <div></div>
+            @endif
+
+            {{-- Next Article --}}
+            @if($next)
+            <a href="{{ route('blog.show', $next->slug) }}"
+               class="group flex flex-col gap-1 p-5 rounded-2xl border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all duration-200 sm:text-right sm:items-end">
+                <span class="flex items-center gap-1.5 text-xs font-semibold text-slate-400 group-hover:text-slate-600 transition-colors sm:flex-row-reverse">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    Artikel Selanjutnya
+                </span>
+                <span class="font-semibold text-slate-700 text-sm leading-snug line-clamp-2 group-hover:text-slate-900 transition-colors">
+                    {{ $next->title }}
+                </span>
+            </a>
+            @endif
+        </div>
+
+        <div class="mt-6 text-center">
+            <a href="{{ route('blog.index') }}"
+               class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                Lihat Semua Artikel
+            </a>
+        </div>
+    </nav>
 </article>
 
 @include('layouts.footer')

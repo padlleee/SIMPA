@@ -25,7 +25,14 @@ class Perpustakaan extends Model
         'foto_buku',
         'jumlah_buku',
         'kondisi_buku',
+        'is_featured',
+        'kategori_landing',
     ];
+
+    protected $casts = [
+        'is_featured' => 'boolean',
+    ];
+
 
     public function peminjaman()
     {

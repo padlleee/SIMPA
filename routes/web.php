@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AnakAsuhController;
 use App\Http\Controllers\DonasiController;
@@ -16,15 +17,17 @@ use App\Http\Controllers\AccountRequestController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PendaftaranAnakController;
+use App\Http\Controllers\FaqController;
 
 /*
 |--------------------------------------------------------------------------
 | PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('landing');
-})->name('landing');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// FAQ Public Page (dynamic — data from DB)
+Route::get('/faq', [FaqController::class, 'publicIndex'])->name('faq');
 
 // Public Donation Form (No Authentication Required)
 Route::get('/form-donasi', [DonasiController::class, 'publicCreate'])->name('donasi.publicCreate');
@@ -158,6 +161,14 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/admin/blog/create', [ArticleController::class, 'create'])->name('admin.blog.create');
     Route::post('/admin/blog', [ArticleController::class, 'store'])->name('admin.blog.store');
     Route::delete('/admin/blog/{article}', [ArticleController::class, 'destroy'])->name('admin.blog.destroy');
+
+    // FAQ (Admin CRUD)
+    Route::get('/admin/faq', [FaqController::class, 'adminIndex'])->name('admin.faq.index');
+    Route::get('/admin/faq/create', [FaqController::class, 'create'])->name('admin.faq.create');
+    Route::post('/admin/faq', [FaqController::class, 'store'])->name('admin.faq.store');
+    Route::get('/admin/faq/{faq}/edit', [FaqController::class, 'edit'])->name('admin.faq.edit');
+    Route::put('/admin/faq/{faq}', [FaqController::class, 'update'])->name('admin.faq.update');
+    Route::delete('/admin/faq/{faq}', [FaqController::class, 'destroy'])->name('admin.faq.destroy');
 
     // Pendaftaran Anak Asuh (Admin Review)
     Route::get('/admin/pendaftaran-requests', [PendaftaranAnakController::class, 'adminIndex'])->name('admin.pendaftaran.index');

@@ -21,7 +21,12 @@ class ArticleController extends Controller
     public function publicShow(string $slug)
     {
         $article = Article::where('slug', $slug)->firstOrFail();
-        return view('blog.show', compact('article'));
+
+        // Find previous and next articles by id
+        $previous = Article::where('id', '<', $article->id)->latest('id')->first();
+        $next     = Article::where('id', '>', $article->id)->oldest('id')->first();
+
+        return view('blog.show', compact('article', 'previous', 'next'));
     }
 
     // ─── ADMIN ───────────────────────────────────────────────────────────────
