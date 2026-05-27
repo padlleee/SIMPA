@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Donasi;
 use App\Models\Donatur;
 use App\Models\User;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,9 @@ class DonaturController extends Controller
             ->where('status_verifikasi', 'Valid')
             ->sum('nominal');
 
-        return view('donatur.dashboard', compact('user', 'donatur', 'donasi', 'totalDonasi'));
+        $latestArticles = Article::latest()->take(3)->get();
+
+        return view('donatur.dashboard', compact('user', 'donatur', 'donasi', 'totalDonasi', 'latestArticles'));
     }
 
     public function laporan(Request $request)
