@@ -72,11 +72,11 @@
                                     </a>
 
                                     {{-- Delete --}}
-                                    <form action="{{ route('admin.faq.destroy', $item->id) }}" method="POST"
-                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus FAQ ini?');">
+                                    <form id="faqDel-{{ $item->id }}" action="{{ route('admin.faq.destroy', $item->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
+                                        <button type="button"
+                                                onclick="simpaConfirm({ title:'Hapus FAQ', message:'Yakin ingin menghapus pertanyaan ini secara permanen?', confirmText:'Ya, Hapus', type:'danger', onConfirm:()=>document.getElementById('faqDel-{{ $item->id }}').submit() })"
                                                 class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 transition-colors"
                                                 title="Hapus FAQ">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

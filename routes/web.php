@@ -63,6 +63,9 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 Route::post('/login', [AuthController::class, 'login'])->name('login.post')->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Self-service reset password untuk Donatur (public, tidak perlu login)
+Route::post('/lupa-password', [AuthController::class, 'requestPasswordReset'])->name('password.request-reset');
+
 // Password Management (First-Login & User-Initiated)
 Route::middleware(['auth'])->group(function () {
     Route::get('/ubah-password', [AuthController::class, 'showChangePassword'])->name('password.change');
@@ -150,6 +153,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 
     // Account Requests (Admin)
     Route::get('/account-requests', [AccountRequestController::class, 'index'])->name('account-request.index');

@@ -47,11 +47,11 @@
                     {{ $article->created_at->locale('id')->translatedFormat('j M Y') }}
                 </td>
                 <td class="px-5 py-4 text-center">
-                    <form action="{{ route('admin.blog.destroy', $article->id) }}" method="POST"
-                          onsubmit="return confirm('Hapus artikel ini? Tindakan tidak dapat diurungkan.')">
+                    <form id="blogDel-{{ $article->id }}" action="{{ route('admin.blog.destroy', $article) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
+                        <button type="button"
+                                onclick="simpaConfirm({ title:'Hapus Artikel', message:'Hapus artikel ini? Tindakan tidak dapat diurungkan.', confirmText:'Ya, Hapus', type:'danger', onConfirm:()=>document.getElementById('blogDel-{{ $article->id }}').submit() })"
                                 class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>

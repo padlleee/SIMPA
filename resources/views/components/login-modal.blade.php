@@ -45,6 +45,56 @@
                 <button type="submit" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-700 transition-colors">
                     Masuk ke Sistem
                 </button>
+
+                {{-- Lupa Password --}}
+                <div class="text-center">
+                    <button type="button" onclick="toggleForgotPanel()"
+                            class="text-sm text-slate-400 hover:text-slate-600 transition-colors">
+                        Lupa password?
+                    </button>
+                </div>
+
+                {{-- Panel Lupa Password (awalnya tersembunyi) --}}
+                <div id="forgotPanel" class="hidden">
+                    {{-- Separator --}}
+                    <div class="border-t border-slate-100 pt-4">
+                        <p class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                            </svg>
+                            Lupa Password
+                        </p>
+
+                        {{-- Form Input Email --}}
+                        <div id="forgotForm">
+                            <p class="text-xs text-slate-500 mb-3">
+                                Khusus donatur: masukkan email terdaftar Anda. Admin akan mengirimkan password baru.
+                            </p>
+                            <div class="flex gap-2">
+                                <input type="email" id="forgotEmail"
+                                       placeholder="email@terdaftar.com"
+                                       class="flex-1 border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 transition placeholder:text-slate-400">
+                                <button type="button" id="forgotSubmitBtn"
+                                        onclick="submitForgotPassword()"
+                                        class="bg-slate-800 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-700 transition-colors whitespace-nowrap">
+                                    Kirim
+                                </button>
+                            </div>
+                            <p id="forgotEmailError" class="text-xs text-red-500 mt-1.5 hidden"></p>
+                        </div>
+
+                        {{-- Hasil AJAX (awalnya tersembunyi) --}}
+                        <div id="forgotResult" class="hidden mt-3 rounded-xl p-3.5 text-sm"></div>
+
+                        {{-- Tombol kembali ke form --}}
+                        <button type="button" id="forgotRetryBtn"
+                                onclick="resetForgotForm()"
+                                class="hidden mt-2 text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                            ← Coba email lain
+                        </button>
+                    </div>
+                </div>
             </form>
 
             <!-- Divider -->
@@ -98,6 +148,94 @@
         // Clear errors
         document.getElementById('loginErrors').innerHTML = '';
         document.getElementById('loginErrors').classList.add('hidden');
+        // Hide forgot panel
+        const fp = document.getElementById('forgotPanel');
+        if (fp) fp.classList.add('hidden');
+    }
+
+    function toggleForgotPanel() {
+        const panel = document.getElementById('forgotPanel');
+        if (panel) {
+            panel.classList.toggle('hidden');
+            // Reset ke form saat panel dibuka kembali
+            if (!panel.classList.contains('hidden')) {
+                resetForgotForm();
+            }
+        }
+    }
+
+    function resetForgotForm() {
+        document.getElementById('forgotEmail').value    = '';
+        document.getElementById('forgotEmailError').classList.add('hidden');
+        document.getElementById('forgotResult').classList.add('hidden');
+        document.getElementById('forgotRetryBtn').classList.add('hidden');
+        document.getElementById('forgotForm').classList.remove('hidden');
+    }
+
+    async function submitForgotPassword() {
+        const emailInput = document.getElementById('forgotEmail');
+        const emailError = document.getElementById('forgotEmailError');
+        const resultDiv  = document.getElementById('forgotResult');
+        const submitBtn  = document.getElementById('forgotSubmitBtn');
+        const retryBtn   = document.getElementById('forgotRetryBtn');
+        const formDiv    = document.getElementById('forgotForm');
+        const email      = emailInput.value.trim();
+
+        // Validasi sederhana di client
+        emailError.classList.add('hidden');
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailError.textContent = 'Masukkan alamat email yang valid.';
+            emailError.classList.remove('hidden');
+            return;
+        }
+
+        // Loading state
+        submitBtn.disabled    = true;
+        submitBtn.textContent = 'Mengirim...';
+
+        try {
+            // Ambil CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+                           || document.querySelector('input[name="_token"]')?.value
+                           || '';
+
+            const res  = await fetch('{{ route("password.request-reset") }}', {
+                method : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept'      : 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            // Konfigurasi tampilan per status
+            const config = {
+                success         : { bg: 'bg-green-50 border border-green-200 text-green-700',  icon: '✅' },
+                already_requested: { bg: 'bg-amber-50 border border-amber-200 text-amber-700', icon: '⏳' },
+                not_allowed     : { bg: 'bg-slate-50 border border-slate-200 text-slate-600',  icon: 'ℹ️' },
+                not_found       : { bg: 'bg-red-50 border border-red-200 text-red-600',        icon: '❌' },
+            };
+
+            const cfg = config[data.status] || config.not_found;
+            resultDiv.className = `mt-3 rounded-xl p-3.5 text-sm ${cfg.bg}`;
+            resultDiv.innerHTML = `<span class="mr-1">${cfg.icon}</span>${data.message}`;
+
+            // Tampilkan hasil, sembunyikan form
+            formDiv.classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            retryBtn.classList.remove('hidden');
+
+        } catch (err) {
+            resultDiv.className = 'mt-3 rounded-xl p-3.5 text-sm bg-red-50 border border-red-200 text-red-600';
+            resultDiv.innerHTML = '❌ Terjadi kesalahan. Silakan coba lagi.';
+            resultDiv.classList.remove('hidden');
+        } finally {
+            submitBtn.disabled    = false;
+            submitBtn.textContent = 'Kirim';
+        }
     }
 
     // Close modal when clicking outside

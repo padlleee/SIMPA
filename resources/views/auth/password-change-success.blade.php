@@ -58,7 +58,10 @@
             @endif
 
             <!-- CTA Button -->
-            <a href="{{ route('dashboard') }}" class="inline-block w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors mb-4">
+            @php
+                $dashboardRoute = auth()->user()->role === 'Donatur' ? route('donatur.dashboard') : route('dashboard');
+            @endphp
+            <a href="{{ $dashboardRoute }}" class="inline-block w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors mb-4">
                 Lanjut ke Dashboard →
             </a>
 

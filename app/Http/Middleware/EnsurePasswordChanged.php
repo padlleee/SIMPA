@@ -15,8 +15,8 @@ class EnsurePasswordChanged
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Allow password change routes to process without redirect
-        if ($request->routeIs('password.change', 'password.update')) {
+        // Allow password change routes and logout to process without redirect
+        if ($request->routeIs('password.change', 'password.update', 'logout')) {
             return $next($request);
         }
 

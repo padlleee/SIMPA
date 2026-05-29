@@ -14,6 +14,63 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+/* --------------------------------------------------------------------------
+   14. DASHBOARD COMPACT SCALE (Option A – Scoped, not global html)
+   Applies only to the admin/donatur dashboard shell.
+   Landing page, blog, and public pages are NOT affected.
+   Strategy: Scale the wrapper div to 80% rem equivalent at desktop.
+   -------------------------------------------------------------------------- */
+@media (min-width: 1024px) {
+    /* Scoped to the dashboard flex wrapper inside layouts/app.blade.php */
+    body.dashboard-body {
+        font-size: 13px; /* ~80% of 16px default — cascades to all rem children */
+    }
+
+    /* Compensate sidebar: keep it visually correct at smaller font */
+    body.dashboard-body aside#sidebar {
+        width: 220px;
+    }
+
+    body.dashboard-body .dashboard-main-offset {
+        margin-left: 220px;
+    }
+
+    /* Tighter main content padding */
+    body.dashboard-body main.dashboard-main {
+        padding: 1.25rem 1.5rem; /* ~p-5 px-6 equivalent */
+    }
+
+    /* Topbar height reduction */
+    body.dashboard-body .dashboard-topbar {
+        padding-top: 0.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    /* Metric cards: tighter padding */
+    body.dashboard-body .metric-card {
+        padding: 1rem 1.25rem;
+    }
+
+    /* Chart containers: hard max-height so they align in one viewport */
+    body.dashboard-body .chart-container {
+        max-height: 320px;
+        overflow: hidden;
+    }
+
+    /* Card titles — tighter */
+    body.dashboard-body .card-title {
+        font-size: 0.875rem; /* text-sm */
+        line-height: 1.3;
+    }
+
+    /* Table rows: denser */
+    body.dashboard-body table td,
+    body.dashboard-body table th {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+}
+
 
 /* --------------------------------------------------------------------------
    2. ANIMATIONS
@@ -42,6 +99,17 @@ body {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -155,8 +223,70 @@ body {
 
 
 /* --------------------------------------------------------------------------
-   7. LANDING PAGE – PROFILE DROPDOWN
+   7. GLOBAL DROPDOWN COMPONENT
+   Dipakai untuk navbar profile dropdown, navbar pendaftaran dropdown,
+   dan semua dropdown di seluruh aplikasi.
    -------------------------------------------------------------------------- */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
+    z-index: 999;
+    overflow: hidden;
+
+    /* Default: hidden */
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #374151;
+    text-decoration: none;
+    transition: background-color 0.12s ease;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f8fafc;
+}
+
+.dropdown-item.danger {
+    color: #dc2626;
+}
+
+.dropdown-item.danger:hover {
+    background-color: #fef2f2;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0;
+}
+
+/* Legacy support — remove after migration */
 .profile-dropdown {
     display: none;
 }
@@ -167,7 +297,329 @@ body {
 
 
 /* --------------------------------------------------------------------------
-   8. LOGIN / REGISTER MODAL
+   8. LIBRARY – CAPSULE PILL TABS
+   (Menggantikan border-bottom underline tabs)
+   -------------------------------------------------------------------------- */
+.pill-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pill-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.pill-tab:hover {
+    border-color: #94a3b8;
+    color: #1e293b;
+    background: #f1f5f9;
+}
+
+.pill-tab.active {
+    background: #1e293b;
+    border-color: #1e293b;
+    color: #ffffff;
+}
+
+.pill-tab .pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.25);
+    color: inherit;
+}
+
+.pill-tab.active .pill-count {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. BOOK CARD COMPONENT (Image 3 Style)
+   -------------------------------------------------------------------------- */
+.book-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+    text-decoration: none;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+}
+
+.book-card-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background: #f1f5f9;
+    overflow: hidden;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.book-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    transition: transform 0.4s ease;
+}
+
+.book-card:hover .book-card-cover img {
+    transform: scale(1.03);
+}
+
+.book-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+}
+
+.book-card-body {
+    padding: 14px 14px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.book-card-author {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.book-card-genre {
+    display: inline-block;
+    font-size: 10px;
+    color: #64748b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+
+/* --------------------------------------------------------------------------
+   10. FEATURED BLOG POST BANNER
+   -------------------------------------------------------------------------- */
+.featured-post {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #1e293b;
+    display: block;
+    text-decoration: none;
+}
+
+.featured-post-img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+}
+
+.featured-post:hover .featured-post-img {
+    opacity: 0.65;
+}
+
+.featured-post-placeholder {
+    width: 100%;
+    height: 420px;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.featured-post-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px;
+    background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 60%, transparent 100%);
+}
+
+.featured-post-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #e2e8f0;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+}
+
+.featured-post-title {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.featured-post-meta {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* Chevron nav buttons on featured post */
+.featured-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.featured-nav-btn:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.featured-nav-btn.prev { left: 16px; }
+.featured-nav-btn.next { right: 16px; }
+
+
+/* --------------------------------------------------------------------------
+   11. ROW CARD – Dashboard Transaction List
+   (Menggantikan tabel border)
+   -------------------------------------------------------------------------- */
+.row-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.row-card:hover {
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.row-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.row-card-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.row-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-card-sub {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.row-card-right {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.row-card-amount {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.row-card-status {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+
+/* --------------------------------------------------------------------------
+   12. LOGIN / REGISTER MODAL
    -------------------------------------------------------------------------- */
 #loginModal:not(.hidden) {
     display: flex;
@@ -179,15 +631,7 @@ body {
 
 
 /* --------------------------------------------------------------------------
-   9. NOTIFICATION PANEL
-   -------------------------------------------------------------------------- */
-#notif-panel {
-    /* Controlled via Tailwind .hidden class — no extra override needed */
-}
-
-
-/* --------------------------------------------------------------------------
-   10. UTILITY OVERRIDES
+   13. UTILITY OVERRIDES
    -------------------------------------------------------------------------- */
 
 /* Smooth scrollbar for sidebar navigation */
@@ -208,7 +652,29 @@ body {
     background: #cbd5e1;
 }
 
+/* Category pill horizontal scroll (perpustakaan) */
+.cat-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+
 /* Focus ring reset – use Tailwind ring instead */
 *:focus {
     outline: none;
+}
+
+/* Line-clamp utilities */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

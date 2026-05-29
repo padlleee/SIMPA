@@ -84,13 +84,17 @@ class DonaturController extends Controller
         $request->validate([
             'username'     => 'required|string|max:50|unique:users,username,' . $user->id_user . ',id_user',
             'nama_donatur' => 'nullable|string|max:100',
-            'email'        => 'nullable|email|max:100',
+            'email'        => 'nullable|email|max:100|unique:users,email,' . $user->id_user . ',id_user',
             'no_hp'        => 'nullable|string|max:20',
             'alamat'       => 'nullable|string',
             'password'     => 'nullable|string|min:8|confirmed',
         ]);
 
-        $user->update(['username' => $request->username]);
+        // Sinkronkan data utama ke tabel users
+        $user->update([
+            'username' => $request->username,
+            'email'    => $request->email,
+        ]);
 
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);

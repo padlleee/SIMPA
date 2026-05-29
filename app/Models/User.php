@@ -25,6 +25,7 @@ class User extends Authenticatable
         'force_password_change',
         'last_login_at',
         'password_changed_at',
+        'password_reset_requested_at',
         'status',
     ];
 
@@ -37,6 +38,7 @@ class User extends Authenticatable
         'force_password_change' => 'boolean',
         'last_login_at' => 'datetime',
         'password_changed_at' => 'datetime',
+        'password_reset_requested_at' => 'datetime',
     ];
 
     /**

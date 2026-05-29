@@ -4,7 +4,7 @@
      @include('layouts.partials.topbar')
      ============================================================ --}}
 
-<header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between flex-shrink-0">
+<header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between flex-shrink-0 dashboard-topbar">
 
     {{-- Page Title & Subtitle --}}
     <div>

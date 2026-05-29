@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -124,6 +125,63 @@ class AuthController extends Controller
         }
 
         return view('auth.password-change-success');
+    }
+
+    /**
+     * Self-service: Donatur mengajukan permintaan reset password via email
+     */
+    public function requestPasswordReset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email'    => 'Format email tidak valid.',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Email tidak ditemukan di database
+        if (!$user) {
+            return response()->json([
+                'status'  => 'not_found',
+                'message' => 'Email tidak terdaftar di sistem SIMPA.',
+            ]);
+        }
+
+        // Role bukan Donatur — arahkan ke admin langsung
+        if ($user->role !== 'Donatur') {
+            return response()->json([
+                'status'  => 'not_allowed',
+                'message' => 'Akun ini tidak dapat direset secara mandiri. Hubungi Admin SIMPA secara langsung.',
+            ]);
+        }
+
+        // Jika sudah ada permintaan aktif yang belum diproses
+        if ($user->password_reset_requested_at) {
+            return response()->json([
+                'status'  => 'already_requested',
+                'message' => 'Permintaan reset password sudah pernah dikirim dan sedang menunggu diproses oleh admin.',
+            ]);
+        }
+
+        // Tandai permintaan reset
+        $user->update([
+            'password_reset_requested_at' => now(),
+        ]);
+
+        // Stub: log sebagai pengganti pengiriman email sesungguhnya
+        Log::info('[SIMPA] Password reset request dari donatur', [
+            'user_id'  => $user->id_user,
+            'username' => $user->username,
+            'email'    => $user->email,
+            'waktu'    => now()->toDateTimeString(),
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Permintaan berhasil dikirim! Admin akan segera memproses dan mengirim password baru ke email Anda.',
+        ]);
     }
 
     /**

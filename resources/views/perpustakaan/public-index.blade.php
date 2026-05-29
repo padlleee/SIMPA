@@ -1,65 +1,41 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan – SIMPA Amaliya</title>
-    <meta name="description" content="Jelajahi koleksi buku perpustakaan Panti Asuhan Amaliya Subang.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', sans-serif; }
+@extends('layouts.master')
 
-        /* Hero same style as landing.blade.php */
-        .hero-bg {
-            background: linear-gradient(135deg, rgba(15,23,42,0.90) 0%, rgba(30,41,59,0.85) 50%, rgba(51,65,85,0.80) 100%);
-        }
-        .card-hover { transition: transform 0.22s ease, box-shadow 0.22s ease; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.13); }
+@section('title', 'Perpustakaan')
+@section('meta-description', 'Jelajahi koleksi buku perpustakaan Panti Asuhan Amaliya Subang.')
+@section('body-class', 'bg-white text-slate-800')
 
-        /* Horizontal slider within book card */
-        .card-info-slider { overflow: hidden; position: relative; }
-        .card-info-track {
-            display: flex;
-            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-            will-change: transform;
-        }
-        .card-info-slide { flex: 0 0 100%; min-width: 0; }
+@push('styles')
+<style>
+    /* Hero same style as landing.blade.php */
+    .hero-bg {
+        background: linear-gradient(135deg, rgba(15,23,42,0.90) 0%, rgba(30,41,59,0.85) 50%, rgba(51,65,85,0.80) 100%);
+    }
 
-        /* Dot indicators */
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1; transition: background 0.2s; }
-        .dot.active { background: #475569; }
+    /* Horizontal slider within book card */
+    .card-info-slider { overflow: hidden; position: relative; }
+    .card-info-track {
+        display: flex;
+        transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+        will-change: transform;
+    }
+    .card-info-slide { flex: 0 0 100%; min-width: 0; }
 
-        /* Category pill scroll */
-        .cat-scroll { scrollbar-width: none; }
-        .cat-scroll::-webkit-scrollbar { display: none; }
+    /* Dot indicators */
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1; transition: background 0.2s; }
+    .dot.active { background: #475569; }
 
-        /* Gradient placeholders */
-        .grad-1 { background: linear-gradient(135deg,#1e293b,#334155); }
-        .grad-2 { background: linear-gradient(135deg,#1d4ed8,#3b82f6); }
-        .grad-3 { background: linear-gradient(135deg,#7c3aed,#a78bfa); }
-        .grad-4 { background: linear-gradient(135deg,#065f46,#10b981); }
-        .grad-5 { background: linear-gradient(135deg,#92400e,#f59e0b); }
-        .grad-6 { background: linear-gradient(135deg,#9f1239,#f43f5e); }
-    </style>
-</head>
-<body class="bg-white text-slate-800">
+    /* Gradient placeholders */
+    .grad-1 { background: linear-gradient(135deg,#1e293b,#334155); }
+    .grad-2 { background: linear-gradient(135deg,#1d4ed8,#3b82f6); }
+    .grad-3 { background: linear-gradient(135deg,#7c3aed,#a78bfa); }
+    .grad-4 { background: linear-gradient(135deg,#065f46,#10b981); }
+    .grad-5 { background: linear-gradient(135deg,#92400e,#f59e0b); }
+    .grad-6 { background: linear-gradient(135deg,#9f1239,#f43f5e); }
+</style>
+@endpush
 
-<!-- NAVBAR — same as landing.blade.php -->
-<nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <img src="/images/logo-panti.png" alt="Logo Panti Asuhan Amaliya"
-                 class="h-10 md:h-12 w-auto object-contain" style="aspect-ratio:1019/277"
-                 onerror="this.style.display='none'">
-        </div>
-        <div class="hidden md:flex items-center gap-6">
-            <a href="/" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">Beranda</a>
-            <a href="{{ route('login') }}" class="bg-slate-800 text-white px-5 py-2 rounded-lg hover:bg-slate-700 font-medium transition-colors">Masuk</a>
-        </div>
-    </div>
-</nav>
+@section('body')
+@include('layouts.navbar')
 
 <!-- HERO — same dark overlay style as landing -->
 <section class="relative min-h-[420px] flex items-center pt-20 overflow-hidden bg-slate-900">
@@ -121,19 +97,19 @@
 <!-- CATEGORY FILTER (same sticky style as landing nav) -->
 @if($kategori->isNotEmpty())
 <section class="bg-white border-b border-slate-100 sticky top-[73px] z-40">
-    <div class="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto cat-scroll">
-        <a href="{{ route('perpustakaan.public.index', array_filter(['search' => request('search')])) }}"
-           class="shrink-0 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors
-                  {{ !request('kategori') ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            Semua
-        </a>
-        @foreach($kategori as $kat)
-        <a href="{{ route('perpustakaan.public.index', array_filter(['search' => request('search'), 'kategori' => $kat])) }}"
-           class="shrink-0 px-4 py-1.5 rounded-lg text-sm font-medium transition-colors
-                  {{ request('kategori') === $kat ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-            {{ $kat }}
-        </a>
-        @endforeach
+    <div class="max-w-6xl mx-auto px-6 py-3">
+        <div class="pill-tabs cat-scroll">
+            <a href="{{ route('perpustakaan.public.index', array_filter(['search' => request('search')])) }}"
+               class="pill-tab {{ !request('kategori') ? 'active' : '' }}">
+                Semua
+            </a>
+            @foreach($kategori as $kat)
+            <a href="{{ route('perpustakaan.public.index', array_filter(['search' => request('search'), 'kategori' => $kat])) }}"
+               class="pill-tab {{ request('kategori') === $kat ? 'active' : '' }}">
+                {{ $kat }}
+            </a>
+            @endforeach
+        </div>
     </div>
 </section>
 @endif
@@ -308,6 +284,7 @@
     </div>
 </footer>
 
+@push('scripts')
 <script>
 // Track current slide per card
 const slideState = {};
@@ -345,5 +322,7 @@ document.querySelectorAll('.card-info-slider').forEach(slider => {
     }, { passive: true });
 });
 </script>
-</body>
-</html>
+@endpush
+
+@include('layouts.footer')
+@endsection

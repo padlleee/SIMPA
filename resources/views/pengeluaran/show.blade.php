@@ -39,9 +39,11 @@
                 <a href="{{ route('pengeluaran.index') }}" class="flex-1 bg-slate-100 text-slate-700 px-6 py-3 rounded-xl font-semibold text-center hover:bg-slate-200 transition-colors">
                     Kembali
                 </a>
-                <form action="{{ route('pengeluaran.destroy', $pengeluaran) }}" method="POST" class="flex-1" onsubmit="return confirm('Hapus permanen catatan pengeluaran ini?')">
+                <form id="penShowDel" action="{{ route('pengeluaran.destroy', $pengeluaran) }}" method="POST" class="flex-1">
                     @csrf @method('DELETE')
-                    <button type="submit" class="w-full bg-red-50 text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-100 transition-colors border border-red-100">
+                    <button type="button"
+                            onclick="simpaConfirm({ title:'Hapus Catatan Pengeluaran', message:'Hapus permanen catatan pengeluaran Rp {{ number_format($pengeluaran->nominal, 0, ',', '.') }} ini? Data tidak dapat dikembalikan.', confirmText:'Ya, Hapus Permanen', type:'danger', onConfirm:()=>document.getElementById('penShowDel').submit() })"
+                            class="w-full bg-red-50 text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-100 transition-colors border border-red-100">
                         Hapus Catatan
                     </button>
                 </form>

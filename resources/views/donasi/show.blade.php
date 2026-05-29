@@ -209,12 +209,13 @@
                     </div>
                 @endif
 
-                <!-- Delete Button -->
                 <div class="mt-4">
-                    <form action="{{ route('donasi.destroy', $donasi) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus donasi ini?');">
+                    <form id="donasiDel" action="{{ route('donasi.destroy', $donasi) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-full bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition text-sm">
+                        <button type="button"
+                                onclick="simpaConfirm({ title:'Hapus Donasi', message:'Yakin ingin menghapus donasi {{ $donasi->nominal_formatted }} ini secara permanen?', confirmText:'Ya, Hapus', type:'danger', onConfirm:()=>document.getElementById('donasiDel').submit() })"
+                                class="w-full bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition text-sm">
                             🗑️ Hapus
                         </button>
                     </form>

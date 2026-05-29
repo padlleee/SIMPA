@@ -279,7 +279,7 @@
 {{-- ============================================================ --}}
 <section class="py-20 bg-white">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
                 <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Aktivitas Terkini · Recent Activities</span>
                 <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Kabar Terbaru dari Kami</h2>
@@ -295,45 +295,81 @@
         </div>
 
         @if(isset($recent_posts) && $recent_posts->count())
-        <div class="grid md:grid-cols-3 gap-7">
-            @foreach($recent_posts as $post)
+
+        {{-- Featured Post Banner --}}
+        @php $featuredPost = $recent_posts->first(); @endphp
+        <div id="featured-post-container" class="mb-8 relative">
+            <a href="{{ route('blog.show', $featuredPost->slug) }}" class="featured-post block" id="featured-post-link">
+                @if($featuredPost->image)
+                    <img src="{{ asset('storage/' . $featuredPost->image) }}"
+                         alt="{{ $featuredPost->title }}"
+                         class="featured-post-img w-full"
+                         id="featured-post-img">
+                @else
+                    <div class="featured-post-placeholder" id="featured-post-img"></div>
+                @endif
+                <div class="featured-post-content">
+                    <span class="featured-post-label">Artikel Unggulan</span>
+                    <h3 class="featured-post-title" id="featured-post-title">{{ $featuredPost->title }}</h3>
+                    <p class="featured-post-meta" id="featured-post-meta">
+                        {{ $featuredPost->created_at->locale('id')->translatedFormat('j F Y') }}
+                        @if($featuredPost->author) · {{ $featuredPost->author->username }} @endif
+                    </p>
+                </div>
+            </a>
+
+            @if($recent_posts->count() > 1)
+            {{-- Chevron Prev --}}
+            <button class="featured-nav-btn prev" onclick="featuredNav(-1)" aria-label="Artikel sebelumnya">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            {{-- Chevron Next --}}
+            <button class="featured-nav-btn next" onclick="featuredNav(1)" aria-label="Artikel berikutnya">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+
+            {{-- Dot indicators --}}
+            <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20" id="featured-dots">
+                @foreach($recent_posts as $i => $p)
+                    <button onclick="featuredGoTo({{ $i }})" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-all {{ $i === 0 ? '!bg-white w-6' : '' }}"
+                            id="featured-dot-{{ $i }}"></button>
+                @endforeach
+            </div>
+            @endif
+        </div>
+
+        {{-- Remaining articles grid --}}
+        @if($recent_posts->count() > 1)
+        <div class="grid md:grid-cols-3 gap-6">
+            @foreach($recent_posts->skip(1) as $post)
             <a href="{{ route('blog.show', $post->slug) }}"
-               class="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                <div class="w-full h-48 bg-slate-100 overflow-hidden relative">
+               class="group flex gap-4 items-start bg-white border border-slate-200 rounded-2xl p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                     @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}"
-                             alt="{{ $post->title }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-                            <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16M14 14l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01"/>
                             </svg>
                         </div>
                     @endif
-                    <span class="absolute top-3 left-3 bg-white/95 text-slate-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">Kegiatan</span>
                 </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        {{ $post->created_at->locale('id')->translatedFormat('j F Y') }}
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base mb-2 leading-snug group-hover:text-slate-600 transition-colors line-clamp-2">
-                        {{ $post->title }}
-                    </h3>
-                    <p class="text-slate-500 text-sm leading-relaxed line-clamp-3">{{ $post->excerpt }}</p>
-                    <div class="mt-4 text-xs font-bold text-slate-600 group-hover:text-slate-900 flex items-center gap-1 transition-all">
-                        Baca Selengkapnya
-                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                        </svg>
-                    </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs text-slate-400 mb-1">{{ $post->created_at->locale('id')->translatedFormat('j M Y') }}</p>
+                    <h3 class="font-bold text-slate-800 text-sm leading-snug line-clamp-2 group-hover:text-slate-600 transition-colors">{{ $post->title }}</h3>
+                    <p class="text-xs text-slate-500 mt-1 line-clamp-2">{{ $post->excerpt }}</p>
                 </div>
             </a>
             @endforeach
         </div>
+        @endif
+
         @else
         <div class="text-center py-16 bg-slate-50 rounded-2xl border border-slate-200">
             <div class="text-5xl mb-4">📰</div>
@@ -409,40 +445,31 @@
             </a>
         </div>
 
-        {{-- Tab Navigation --}}
-        <div class="flex gap-2 mb-10 border-b border-slate-200 overflow-x-auto pb-0">
+        {{-- Tab Navigation – Capsule Pill Style (Image 3) --}}
+        <div class="pill-tabs mb-10 cat-scroll">
             <button id="lib-tab-sering" onclick="switchLibTab('sering_dipinjam')"
-                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
-                           border-slate-800 text-slate-800">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="pill-tab lib-tab active">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
                 Sering Dipinjam
-                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-800 text-white rounded-full">
-                    {{ $bukuSeringDipinjam->count() }}
-                </span>
+                <span class="pill-count">{{ $bukuSeringDipinjam->count() }}</span>
             </button>
             <button id="lib-tab-baru" onclick="switchLibTab('buku_baru')"
-                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
-                           border-transparent text-slate-500 hover:text-slate-800">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="pill-tab lib-tab">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
                 Buku Baru
-                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full">
-                    {{ $bukuBaru->count() }}
-                </span>
+                <span class="pill-count">{{ $bukuBaru->count() }}</span>
             </button>
             <button id="lib-tab-unik" onclick="switchLibTab('buku_unik')"
-                    class="lib-tab flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 -mb-px transition-all duration-200 whitespace-nowrap
-                           border-transparent text-slate-500 hover:text-slate-800">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="pill-tab lib-tab">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                 </svg>
                 Buku Unik
-                <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full">
-                    {{ $bukuUnik->count() }}
-                </span>
+                <span class="pill-count">{{ $bukuUnik->count() }}</span>
             </button>
         </div>
 
@@ -558,14 +585,10 @@
     };
 
     function switchLibTab(key) {
-        // Hide all panels, deactivate all tabs
+        // Deactivate all panels and tabs
         document.querySelectorAll('.lib-panel').forEach(function(p) { p.classList.add('hidden'); });
         document.querySelectorAll('.lib-tab').forEach(function(t) {
-            t.classList.remove('border-slate-800', 'text-slate-800');
-            t.classList.add('border-transparent', 'text-slate-500');
-            // Reset badge color
-            const badge = t.querySelector('span');
-            if (badge) { badge.className = 'inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-200 text-slate-600 rounded-full'; }
+            t.classList.remove('active');
         });
 
         // Activate selected tab & panel
@@ -574,11 +597,56 @@
         document.getElementById(cfg.panel).classList.remove('hidden');
         const activeTab = document.getElementById(cfg.tab);
         if (activeTab) {
-            activeTab.classList.remove('border-transparent', 'text-slate-500');
-            activeTab.classList.add('border-slate-800', 'text-slate-800');
-            const badge = activeTab.querySelector('span');
-            if (badge) { badge.className = 'inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-slate-800 text-white rounded-full'; }
+            activeTab.classList.add('active');
         }
     }
+
+    // ── FEATURED POST SLIDER ──────────────────────────────────────
+    @if(isset($recent_posts) && $recent_posts->count() > 1)
+    @php
+        $fpData = $recent_posts->map(function($p) {
+            return [
+                'title'  => $p->title,
+                'url'    => route('blog.show', $p->slug),
+                'image'  => $p->image ? asset('storage/' . $p->image) : null,
+                'date'   => $p->created_at->locale('id')->translatedFormat('j F Y'),
+                'author' => optional($p->author)->username,
+            ];
+        })->values();
+    @endphp
+    const featuredPosts = {!! json_encode($fpData) !!};
+    let featuredIdx = 0;
+
+    function featuredNav(dir) {
+        featuredGoTo((featuredIdx + dir + featuredPosts.length) % featuredPosts.length);
+    }
+
+    function featuredGoTo(idx) {
+        featuredIdx = idx;
+        const p = featuredPosts[idx];
+        const link   = document.getElementById('featured-post-link');
+        const imgEl  = document.getElementById('featured-post-img');
+        const titleEl = document.getElementById('featured-post-title');
+        const metaEl  = document.getElementById('featured-post-meta');
+
+        if (link) link.href = p.url;
+        if (titleEl) titleEl.textContent = p.title;
+        if (metaEl)  metaEl.textContent  = p.date + (p.author ? ' · ' + p.author : '');
+        if (imgEl && p.image) {
+            imgEl.src = p.image;
+            imgEl.alt = p.title;
+        }
+
+        document.querySelectorAll('[id^="featured-dot-"]').forEach(function(dot, i) {
+            if (i === idx) {
+                dot.style.width = '24px';
+                dot.style.background = 'rgba(255,255,255,0.9)';
+            } else {
+                dot.style.width = '8px';
+                dot.style.background = 'rgba(255,255,255,0.35)';
+            }
+        });
+    }
+    @endif
 </script>
 @endpush

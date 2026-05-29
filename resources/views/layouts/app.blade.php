@@ -7,6 +7,9 @@
      ============================================================ --}}
 @extends('layouts.master')
 
+{{-- Override body-class to include dashboard-body for compact CSS scoping --}}
+@section('body-class', 'bg-slate-50 text-slate-800 dashboard-body')
+
 @section('body')
 <div class="flex h-screen overflow-hidden">
 
@@ -14,13 +17,13 @@
     @include('layouts.partials.sidebar')
 
     {{-- MAIN CONTENT AREA --}}
-    <div class="flex-1 ml-64 flex flex-col overflow-hidden">
+    <div class="flex-1 ml-64 dashboard-main-offset flex flex-col overflow-hidden">
 
         {{-- TOP BAR (extracted partial – includes notification logic) --}}
         @include('layouts.partials.topbar')
 
         {{-- PAGE CONTENT --}}
-        <main class="flex-1 overflow-y-auto p-8">
+        <main class="flex-1 overflow-y-auto p-8 dashboard-main">
 
             {{-- Flash Messages (extracted partial) --}}
             @include('layouts.partials.flash')
