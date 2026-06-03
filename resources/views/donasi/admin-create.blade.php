@@ -14,7 +14,7 @@
                 <label for="nama_donatur" class="block text-sm font-semibold text-slate-700 mb-2">Nama Donatur <span class="text-red-500">*</span></label>
                 <input type="text" id="nama_donatur" name="nama_donatur" value="{{ old('nama_donatur') }}"
                        required oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.setCustomValidity('')"
-                       placeholder="Contoh: Hamba Allah / Bapak Budi"
+                       placeholder="Masukkan nama lengkap Anda / Nama instansi"
                        class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-transparent @error('nama_donatur') border-red-500 @enderror">
                 @error('nama_donatur')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
@@ -25,7 +25,7 @@
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
                     <input type="text" id="nominal" name="nominal" value="{{ old('nominal') }}"
                            required oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12); this.setCustomValidity('')"
-                           placeholder="50000" maxlength="12"
+                           placeholder="Masukkan nominal donasi (Min. Rp 10.000)" maxlength="12"
                            class="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-transparent @error('nominal') border-red-500 @enderror">
                 </div>
                 @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror

@@ -21,19 +21,19 @@
                     @error('kode_buku')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah Eksemplar <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah Halaman <span class="text-red-500">*</span></label>
                     <input type="number" name="jumlah_buku" value="{{ old('jumlah_buku', 1) }}" min="1"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Judul Buku <span class="text-red-500">*</span></label>
-                    <input type="text" name="judul_buku" value="{{ old('judul_buku') }}" placeholder="Masukkan judul buku"
+                    <input type="text" name="judul_buku" value="{{ old('judul_buku') }}" placeholder="Judul lengkap buku"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('judul_buku') border-red-400 @enderror">
                     @error('judul_buku')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Pengarang / Penulis <span class="text-red-500">*</span></label>
-                    <input type="text" name="pengarang" value="{{ old('pengarang') }}" placeholder="Nama pengarang"
+                    <input type="text" name="pengarang" value="{{ old('pengarang') }}" placeholder="Nama penulis/pengarang"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('pengarang') border-red-400 @enderror">
                     @error('pengarang')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -44,12 +44,12 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Tahun Terbit</label>
-                    <input type="number" name="tahun_terbit" value="{{ old('tahun_terbit') }}" placeholder="cth: 2022" min="1900" max="{{ date('Y') }}"
+                    <input type="number" name="tahun_terbit" value="{{ old('tahun_terbit') }}" placeholder="Contoh: 2022" min="1900" max="{{ date('Y') }}"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">ISBN</label>
-                    <input type="text" name="isbn" value="{{ old('isbn') }}" placeholder="cth: 978-623-xxx-xxx-x"
+                    <input type="text" name="isbn" value="{{ old('isbn') }}" placeholder="Nomor ISBN lengkap"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
                 <div>
@@ -63,16 +63,29 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Kondisi Buku</label>
-                    <select name="kondisi_buku" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                        <option value="Baik" {{ old('kondisi_buku', 'Baik') === 'Baik' ? 'selected' : '' }}>Baik</option>
-                        <option value="Cukup Baik" {{ old('kondisi_buku') === 'Cukup Baik' ? 'selected' : '' }}>Cukup Baik</option>
-                        <option value="Rusak Ringan" {{ old('kondisi_buku') === 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                        <option value="Rusak Berat" {{ old('kondisi_buku') === 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
+                    <select name="kondisi_buku" id="kondisi_buku" onchange="toggleKondisiLainnya(this.value)"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                        <option value="" disabled {{ old('kondisi_buku') ? '' : 'selected' }}>Pilih Kondisi</option>
+                        <option value="Baru" {{ old('kondisi_buku') === 'Baru' ? 'selected' : '' }}>Baru</option>
+                        <option value="Bekas" {{ old('kondisi_buku') === 'Bekas' ? 'selected' : '' }}>Bekas</option>
+                        @php $stdKondisi = ['Baru','Bekas']; $oldKondisi = old('kondisi_buku'); @endphp
+                        @if($oldKondisi && !in_array($oldKondisi, $stdKondisi) && $oldKondisi !== 'Lainnya')
+                            <option value="{{ $oldKondisi }}" selected>{{ $oldKondisi }}</option>
+                        @endif
+                        <option value="Lainnya" {{ old('kondisi_buku') === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
+
+                    <div id="kondisi_lainnya_container" class="mt-3 {{ (old('kondisi_buku') && !in_array(old('kondisi_buku'), ['Baru','Bekas','Lainnya',''])) || old('kondisi_buku') === 'Lainnya' ? '' : 'hidden' }}">
+                        <input type="text" id="kondisi_buku_lainnya" name="kondisi_buku_lainnya"
+                               value="{{ old('kondisi_buku_lainnya') }}"
+                               placeholder="Contoh: Rusak Ringan, Seperti Baru..."
+                               class="w-full border border-indigo-300 bg-indigo-50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('kondisi_buku_lainnya') border-red-400 @enderror">
+                        @error('kondisi_buku_lainnya')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Sinopsis / Deskripsi</label>
-                    <textarea name="sinopsis" rows="4" placeholder="Deskripsi singkat tentang buku ini..."
+                    <textarea name="sinopsis" rows="4" placeholder="Ringkasan / sinopsis..."
                               class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 resize-none">{{ old('sinopsis') }}</textarea>
                 </div>
             </div>
@@ -112,7 +125,7 @@
 
         {{-- SECTION: Kurasi Halaman Publik --}}
         <div>
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Kurasi Halaman Publik</h3>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Kategori Halaman Publik</h3>
             <p class="text-xs text-slate-400 mb-4">Tampilkan buku ini di bagian perpustakaan pada halaman utama (landing page) publik.</p>
 
             {{-- Toggle is_featured --}}
@@ -134,19 +147,19 @@
             {{-- Dropdown kategori_landing (tampil hanya jika is_featured dicentang) --}}
             <div id="kategori-landing-wrap" class="{{ old('is_featured') ? '' : 'hidden' }}">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                    Bagian Kurasi <span class="text-red-500">*</span>
+                    Bagian Galeri <span class="text-red-500">*</span>
                 </label>
                 <select name="kategori_landing" id="kategori_landing"
                         class="w-full md:w-72 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kategori_landing') border-red-400 @enderror">
-                    <option value="">— Pilih Bagian —</option>
+                    <option value="">Pilih Bagian</option>
                     <option value="sering_dipinjam" {{ old('kategori_landing') === 'sering_dipinjam' ? 'selected' : '' }}>
-                        📚 Buku Sering Dipinjam
+                        Buku Sering Dipinjam
                     </option>
                     <option value="buku_baru" {{ old('kategori_landing') === 'buku_baru' ? 'selected' : '' }}>
-                        ✨ Buku Baru
+                        Buku Baru
                     </option>
                     <option value="buku_unik" {{ old('kategori_landing') === 'buku_unik' ? 'selected' : '' }}>
-                        🌟 Buku Unik
+                        Buku Unik
                     </option>
                 </select>
                 @error('kategori_landing')
@@ -224,6 +237,21 @@ function toggleKategoriLanding(checkbox) {
     } else {
         wrap.classList.add('hidden');
         document.getElementById('kategori_landing').value = '';
+    }
+}
+
+// Toggle input kondisi lainnya
+function toggleKondisiLainnya(value) {
+    const container = document.getElementById('kondisi_lainnya_container');
+    const input     = document.getElementById('kondisi_buku_lainnya');
+    if (value === 'Lainnya') {
+        container.classList.remove('hidden');
+        input.required = true;
+        input.focus();
+    } else {
+        container.classList.add('hidden');
+        input.required = false;
+        input.value = '';
     }
 }
 </script>

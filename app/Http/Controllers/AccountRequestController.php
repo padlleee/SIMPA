@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\AccountApprovedMail;
 
 class AccountRequestController extends Controller
 {
@@ -118,8 +120,18 @@ class AccountRequestController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return back()->with('success',
-            "Akun berhasil dibuat. Username: {$username} | Password sementara: {$tempPassword} — Harap sampaikan kepada donatur.");
+        try {
+            Mail::to($accountRequest->email)->send(new AccountApprovedMail([
+                'name'     => $accountRequest->nama_lengkap,
+                'username' => $username,
+                'password' => $tempPassword,
+            ]));
+            $msg = "Akun berhasil disetujui. Email berisi kredensial telah dikirim ke {$accountRequest->email}.";
+        } catch (\Exception $e) {
+            $msg = "Akun berhasil disetujui, namun gagal mengirim email. Username: {$username} | Password: {$tempPassword}";
+        }
+
+        return back()->with('success', $msg);
     }
 
     /**

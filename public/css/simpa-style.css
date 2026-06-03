@@ -678,3 +678,10 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* Hide password visibility toggle in Edge */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+

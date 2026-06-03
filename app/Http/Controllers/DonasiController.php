@@ -7,6 +7,9 @@ use App\Models\Donatur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DonationVerifiedMail;
+use App\Mail\DonationRejectedMail;
 
 class DonasiController extends Controller
 {
@@ -77,8 +80,27 @@ class DonasiController extends Controller
         $donasi->verify(Auth::user()->id_user, $request->catatan);
 
         $nama = $donasi->nama_donatur_display;
-        return redirect()->route('donasi.index')
-            ->with('success', "Donasi dari {$nama} (Rp " . number_format($donasi->nominal, 0, ',', '.') . ") berhasil diverifikasi.");
+        $email = $donasi->user->email ?? $donasi->email_donatur_manual;
+        
+        $msg = "Donasi dari {$nama} (Rp " . number_format($donasi->nominal, 0, ',', '.') . ") berhasil diverifikasi.";
+
+        if ($email) {
+            try {
+                Mail::to($email)->send(new DonationVerifiedMail([
+                    'name' => $nama,
+                    'id_donasi' => $donasi->id_donasi,
+                    'nominal' => $donasi->nominal,
+                    'metode' => $donasi->metode_pembayaran,
+                    'tanggal' => $donasi->tanggal_verifikasi->format('d M Y H:i'),
+                    'is_member' => $donasi->id_donatur ? true : false,
+                ]));
+                $msg .= " Email konfirmasi telah dikirim.";
+            } catch (\Exception $e) {
+                $msg .= " (Gagal mengirim email konfirmasi).";
+            }
+        }
+
+        return redirect()->route('donasi.index')->with('success', $msg);
     }
 
     /**
@@ -101,8 +123,25 @@ class DonasiController extends Controller
         // Reject donation
         $donasi->reject(Auth::user()->id_user, $request->catatan);
 
-        return redirect()->route('donasi.index')
-            ->with('success', 'Donasi berhasil ditolak dengan catatan disimpan.');
+        $nama = $donasi->nama_donatur_display;
+        $email = $donasi->user->email ?? $donasi->email_donatur_manual;
+        
+        $msg = "Donasi berhasil ditolak dengan catatan disimpan.";
+
+        if ($email) {
+            try {
+                Mail::to($email)->send(new DonationRejectedMail([
+                    'name' => $nama,
+                    'nominal' => $donasi->nominal,
+                    'catatan' => $request->catatan,
+                ]));
+                $msg .= " Email penolakan telah dikirim.";
+            } catch (\Exception $e) {
+                $msg .= " (Gagal mengirim email penolakan).";
+            }
+        }
+
+        return redirect()->route('donasi.index')->with('success', $msg);
     }
 
     public function destroy(Donasi $donasi)

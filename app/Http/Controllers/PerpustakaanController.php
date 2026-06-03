@@ -6,12 +6,13 @@ use App\Models\Perpustakaan;
 use App\Models\PeminjamanBuku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PerpustakaanController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Perpustakaan::withCount(['peminjamanAktif as dipinjam_count']);
+        $query = Perpustakaan::withCount(['peminjamanAktif as dipinjam_count'])->with('peminjamanAktif');
         if ($request->filled('search')) {
             $query->where('judul_buku', 'like', '%' . $request->search . '%')
                   ->orWhere('pengarang', 'like', '%' . $request->search . '%')
@@ -43,26 +44,33 @@ class PerpustakaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_buku'        => 'required|string|unique:perpustakaan,kode_buku',
-            'judul_buku'       => 'required|string|max:255',
-            'pengarang'        => 'required|string|max:150',
-            'penulis'          => 'nullable|string|max:150',
-            'penerbit'         => 'nullable|string|max:150',
-            'tahun_terbit'     => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn'             => 'nullable|string|max:30',
-            'kategori_buku'    => 'nullable|string|max:80',
-            'sinopsis'         => 'nullable|string',
-            'foto_buku'        => 'nullable|image|max:2048',
-            'jumlah_buku'      => 'required|integer|min:1',
-            'kondisi_buku'     => 'nullable|string|max:50',
-            'is_featured'      => 'nullable|boolean',
-            'kategori_landing' => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
+            'kode_buku'             => 'required|string|unique:perpustakaan,kode_buku',
+            'judul_buku'            => 'required|string|max:255',
+            'pengarang'             => 'required|string|max:150',
+            'penulis'               => 'nullable|string|max:150',
+            'penerbit'              => 'nullable|string|max:150',
+            'tahun_terbit'          => 'nullable|integer|min:1900|max:' . date('Y'),
+            'isbn'                  => 'nullable|string|max:30',
+            'kategori_buku'         => 'nullable|string|max:80',
+            'sinopsis'              => 'nullable|string',
+            'foto_buku'             => 'nullable|image|max:2048',
+            'jumlah_buku'           => 'required|integer|min:1',
+            'kondisi_buku'          => 'nullable|string|max:50',
+            'kondisi_buku_lainnya'  => 'required_if:kondisi_buku,Lainnya|nullable|string|max:50',
+            'is_featured'           => 'nullable|boolean',
+            'kategori_landing'      => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
         ]);
+
+        // Resolve kondisi: jika pilih Lainnya, pakai nilai teks input
+        $kondisi = $request->kondisi_buku === 'Lainnya'
+            ? $request->kondisi_buku_lainnya
+            : $request->kondisi_buku;
 
         $data = $request->only([
             'kode_buku','judul_buku','pengarang','penulis','penerbit',
-            'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku','kondisi_buku',
+            'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku',
         ]);
+        $data['kondisi_buku'] = $kondisi;
 
         // Boolean checkbox: jika tidak dicentang, default false
         $data['is_featured']      = $request->boolean('is_featured');
@@ -88,7 +96,7 @@ class PerpustakaanController extends Controller
 
     public function show(Perpustakaan $perpustakaan)
     {
-        $perpustakaan->load('peminjaman');
+        $perpustakaan->load(['peminjaman', 'peminjamanAktif']);
         return view('perpustakaan.show', compact('perpustakaan'));
     }
 
@@ -99,27 +107,41 @@ class PerpustakaanController extends Controller
 
     public function update(Request $request, Perpustakaan $perpustakaan)
     {
+        $activeLoans = $perpustakaan->peminjamanAktif()->count();
+        $minBuku = max(1, $activeLoans);
+
         $request->validate([
-            'kode_buku'        => 'required|string|unique:perpustakaan,kode_buku,' . $perpustakaan->id_buku . ',id_buku',
-            'judul_buku'       => 'required|string|max:255',
-            'pengarang'        => 'required|string|max:150',
-            'penulis'          => 'nullable|string|max:150',
-            'penerbit'         => 'nullable|string|max:150',
-            'tahun_terbit'     => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn'             => 'nullable|string|max:30',
-            'kategori_buku'    => 'nullable|string|max:80',
-            'sinopsis'         => 'nullable|string',
-            'foto_buku'        => 'nullable|image|max:2048',
-            'jumlah_buku'      => 'required|integer|min:1',
-            'kondisi_buku'     => 'nullable|string|max:50',
-            'is_featured'      => 'nullable|boolean',
-            'kategori_landing' => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
+            'kode_buku'             => 'required|string|unique:perpustakaan,kode_buku,' . $perpustakaan->id_buku . ',id_buku',
+            'judul_buku'            => 'required|string|max:255',
+            'pengarang'             => 'required|string|max:150',
+            'penulis'               => 'nullable|string|max:150',
+            'penerbit'              => 'nullable|string|max:150',
+            'tahun_terbit'          => 'nullable|integer|min:1900|max:' . date('Y'),
+            'isbn'                  => 'nullable|string|max:30',
+            'kategori_buku'         => 'nullable|string|max:80',
+            'sinopsis'              => 'nullable|string',
+            'foto_buku'             => 'nullable|image|max:2048',
+            'jumlah_buku'           => ['required', 'integer', 'min:' . $minBuku],
+            'kondisi_buku'          => 'nullable|string|max:50',
+            'kondisi_buku_lainnya'  => 'required_if:kondisi_buku,Lainnya|nullable|string|max:50',
+            'is_featured'           => 'nullable|boolean',
+            'kategori_landing'      => 'nullable|in:sering_dipinjam,buku_baru,buku_unik',
+        ], [
+            'jumlah_buku.min' => $activeLoans > 0 
+                ? "Jumlah buku tidak boleh kurang dari jumlah yang sedang dipinjam ({$activeLoans} buku)."
+                : 'Jumlah buku minimal 1.',
         ]);
+
+        // Resolve kondisi: jika pilih Lainnya, pakai nilai teks input
+        $kondisi = $request->kondisi_buku === 'Lainnya'
+            ? $request->kondisi_buku_lainnya
+            : $request->kondisi_buku;
 
         $data = $request->only([
             'kode_buku','judul_buku','pengarang','penulis','penerbit',
-            'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku','kondisi_buku',
+            'tahun_terbit','isbn','kategori_buku','sinopsis','jumlah_buku',
         ]);
+        $data['kondisi_buku'] = $kondisi;
 
         // Boolean checkbox: jika tidak dicentang, default false
         $data['is_featured']      = $request->boolean('is_featured');
@@ -191,9 +213,68 @@ class PerpustakaanController extends Controller
     {
         $peminjaman->update([
             'status'               => 'Dikembalikan',
-            'tanggal_dikembalikan' => now()->toDateString(), // record actual return date
+            'tanggal_dikembalikan' => now()->toDateString(),
         ]);
         return redirect()->route('perpustakaan.index')->with('success', 'Buku berhasil dikembalikan.');
+    }
+
+    // ===================== MULTI-PINJAM =====================
+
+    public function multiPinjamCreate(Request $request)
+    {
+        // Ambil semua buku yang masih ada stok tersedia
+        $bukuTersedia = Perpustakaan::withCount(['peminjamanAktif as dipinjam_count'])
+            ->get()
+            ->filter(fn($b) => ($b->jumlah_buku - $b->dipinjam_count) > 0)
+            ->values();
+
+        // Pre-select jika ada query ?buku_id=...
+        $preselected = $request->input('buku_id');
+
+        return view('perpustakaan.multi-pinjam', compact('bukuTersedia', 'preselected'));
+    }
+
+    public function multiPinjamStore(Request $request)
+    {
+        $request->validate([
+            'nama_peminjam'   => 'required|string|max:255',
+            'tanggal_pinjam'  => 'required|date',
+            'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
+            'buku_ids'        => 'required|array|min:1',
+            'buku_ids.*'      => 'exists:perpustakaan,id_buku',
+        ], [
+            'buku_ids.required' => 'Pilih minimal satu buku untuk dipinjamkan.',
+            'buku_ids.min'      => 'Pilih minimal satu buku untuk dipinjamkan.',
+        ]);
+
+        $berhasil = 0;
+        $gagal    = [];
+
+        foreach ($request->buku_ids as $idBuku) {
+            $buku     = Perpustakaan::find($idBuku);
+            $dipinjam = $buku->peminjamanAktif()->count();
+
+            if ($dipinjam >= $buku->jumlah_buku) {
+                $gagal[] = $buku->judul_buku;
+                continue;
+            }
+
+            PeminjamanBuku::create([
+                'id_buku'         => $idBuku,
+                'nama_peminjam'   => $request->nama_peminjam,
+                'tanggal_pinjam'  => $request->tanggal_pinjam,
+                'tanggal_kembali' => $request->tanggal_kembali,
+                'status'          => 'Dipinjam',
+            ]);
+            $berhasil++;
+        }
+
+        $msg = "{$berhasil} buku berhasil dipinjamkan kepada {$request->nama_peminjam}.";
+        if (!empty($gagal)) {
+            $msg .= ' Buku berikut gagal (stok habis): ' . implode(', ', $gagal) . '.';
+        }
+
+        return redirect()->route('perpustakaan.index')->with('success', $msg);
     }
 
     // ===================== RIWAYAT =====================

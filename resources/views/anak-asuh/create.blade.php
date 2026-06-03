@@ -55,13 +55,13 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Kelas / Tingkat</label>
-                    <input type="text" name="kelas" value="{{ old('kelas') }}" placeholder="cth: Kelas 1 / Semester 3"
+                    <input type="text" name="kelas" value="{{ old('kelas') }}" placeholder="Contoh: Kelas 1 / Semester 3"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Jenis Layanan</label>
-                    <input type="text" name="jenis_layanan" value="{{ old('jenis_layanan') }}" placeholder="cth: Panti Asuhan / Panti Bina Remaja"
+                    <input type="text" name="jenis_layanan" value="{{ old('jenis_layanan') }}" placeholder="Spesifikasi layanan..."
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
             </div>
@@ -119,13 +119,13 @@
                 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Perkembangan Akademik</label>
-                    <textarea name="perkembangan_akademik" rows="2" placeholder="Informasi pendidikan/akademik anak"
+                    <textarea name="perkembangan_akademik" rows="2" placeholder="Perkembangan akademik..."
                               class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">{{ old('perkembangan_akademik') }}</textarea>
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Catatan Kesehatan</label>
-                    <textarea name="catatan_kesehatan" rows="2" placeholder="Kondisi kesehatan, riwayat penyakit, dll."
+                    <textarea name="catatan_kesehatan" rows="2" placeholder="Riwayat kesehatan..."
                               class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">{{ old('catatan_kesehatan') }}</textarea>
                 </div>
             </div>

@@ -68,14 +68,14 @@
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
                             <input type="text" name="nama_donatur" value="{{ old('nama_donatur') }}"
                                    class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 bg-slate-50 focus:bg-white transition-colors"
-                                   placeholder="Fulan bin Fulan">
+                                   placeholder="Masukkan nama lengkap Anda / Nama instansi">
                             @error('nama_donatur')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">No. Handphone (Opsional)</label>
                             <input type="text" name="nomor_kontak" value="{{ old('nomor_kontak') }}"
                                    class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 bg-slate-50 focus:bg-white transition-colors"
-                                   placeholder="08xxxxxxxxxx">
+                                   placeholder="0812xxxx (WhatsApp aktif)">
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
                                 <input type="number" name="nominal" value="{{ old('nominal') }}" min="10000"
                                        class="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 bg-slate-50 focus:bg-white transition-colors"
-                                       placeholder="50000">
+                                       placeholder="Masukkan nominal donasi (Min. Rp 10.000)">
                             </div>
                             @error('nominal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                         </div>

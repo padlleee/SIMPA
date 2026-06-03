@@ -32,14 +32,14 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
                     <input type="email" name="email" id="modalEmail" required autofocus
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 transition placeholder:text-slate-400"
-                           placeholder="contoh@email.com">
+                           placeholder="Email terdaftar">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
                     <input type="password" name="password" id="modalPassword" required
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 transition placeholder:text-slate-400"
-                           placeholder="••••••••">
+                           placeholder="Kata sandi Anda">
                 </div>
 
                 <button type="submit" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-700 transition-colors">
@@ -73,7 +73,7 @@
                             </p>
                             <div class="flex gap-2">
                                 <input type="email" id="forgotEmail"
-                                       placeholder="email@terdaftar.com"
+                                       placeholder="Email terdaftar"
                                        class="flex-1 border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 transition placeholder:text-slate-400">
                                 <button type="button" id="forgotSubmitBtn"
                                         onclick="submitForgotPassword()"
@@ -215,8 +215,8 @@
             const config = {
                 success         : { bg: 'bg-green-50 border border-green-200 text-green-700',  icon: '✅' },
                 already_requested: { bg: 'bg-amber-50 border border-amber-200 text-amber-700', icon: '⏳' },
-                not_allowed     : { bg: 'bg-slate-50 border border-slate-200 text-slate-600',  icon: 'ℹ️' },
-                not_found       : { bg: 'bg-red-50 border border-red-200 text-red-600',        icon: '❌' },
+                not_allowed     : { bg: 'bg-slate-50 border border-slate-200 text-slate-600',  icon: 'ℹ' },
+                not_found       : { bg: 'bg-red-50 border border-red-200 text-red-600',        icon: '' },
             };
 
             const cfg = config[data.status] || config.not_found;
@@ -230,7 +230,7 @@
 
         } catch (err) {
             resultDiv.className = 'mt-3 rounded-xl p-3.5 text-sm bg-red-50 border border-red-200 text-red-600';
-            resultDiv.innerHTML = '❌ Terjadi kesalahan. Silakan coba lagi.';
+            resultDiv.innerHTML = ' Terjadi kesalahan. Silakan coba lagi.';
             resultDiv.classList.remove('hidden');
         } finally {
             submitBtn.disabled    = false;

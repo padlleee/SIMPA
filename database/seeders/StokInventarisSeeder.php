@@ -44,31 +44,6 @@ class StokInventarisSeeder extends Seeder
             ]);
         }
 
-        // ── Inventaris Peralatan (10 items, mix kondisi) ─────────────────────
-        $inventarisItems = [
-            ['nama' => 'Meja Belajar',      'jml' => 20, 'sat' => 'Buah', 'lokasi' => 'Ruang Belajar',  'kondisi' => 'Baik'],
-            ['nama' => 'Kursi Plastik',     'jml' => 30, 'sat' => 'Buah', 'lokasi' => 'Ruang Makan',    'kondisi' => 'Baik'],
-            ['nama' => 'Lemari Pakaian',    'jml' => 6,  'sat' => 'Buah', 'lokasi' => 'Kamar Tidur',    'kondisi' => 'Baik'],
-            ['nama' => 'Laptop',            'jml' => 2,  'sat' => 'Unit', 'lokasi' => 'Kantor',          'kondisi' => 'Baik'],
-            ['nama' => 'Printer',           'jml' => 1,  'sat' => 'Unit', 'lokasi' => 'Kantor',          'kondisi' => 'Rusak'],
-            ['nama' => 'Kipas Angin',       'jml' => 8,  'sat' => 'Unit', 'lokasi' => 'Asrama',          'kondisi' => 'Baik'],
-            ['nama' => 'Kasur Spring Bed',  'jml' => 15, 'sat' => 'Buah', 'lokasi' => 'Kamar Tidur',    'kondisi' => 'Baik'],
-            ['nama' => 'Papan Tulis',       'jml' => 3,  'sat' => 'Buah', 'lokasi' => 'Ruang Belajar',  'kondisi' => 'Baik'],
-            ['nama' => 'TV LED 32"',        'jml' => 2,  'sat' => 'Unit', 'lokasi' => 'Ruang Keluarga', 'kondisi' => 'Rusak'],
-            ['nama' => 'Kulkas',            'jml' => 1,  'sat' => 'Unit', 'lokasi' => 'Dapur',           'kondisi' => 'Baik'],
-        ];
-
-        foreach ($inventarisItems as $idx => $item) {
-            DB::table('inventaris_peralatan')->insert([
-                'kode_barang'  => 'INV-' . str_pad($idx + 1, 3, '0', STR_PAD_LEFT),
-                'nama_barang'  => $item['nama'],
-                'jumlah'       => $item['jml'],
-                'satuan'       => $item['sat'],
-                'lokasi'       => $item['lokasi'],
-                'kondisi'      => $item['kondisi'],
-                'created_at'   => now(),
-                'updated_at'   => now(),
-            ]);
-        }
+        // InventarisPeralatan di-seed oleh InventarisPeralatanSeeder (terpisah)
     }
 }

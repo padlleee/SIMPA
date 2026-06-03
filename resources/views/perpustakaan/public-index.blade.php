@@ -61,7 +61,7 @@
                 <form method="GET" action="{{ route('perpustakaan.public.index') }}" class="flex gap-3 max-w-lg">
                     <div class="flex-1 relative">
                         <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <input type="text" name="search" placeholder="Cari buku, penulis, atau kategori..." value="{{ request('search') }}"
+                        <input type="text" name="search" placeholder="Cari nama/kata kunci..." value="{{ request('search') }}"
                                class="w-full pl-11 pr-5 py-3.5 rounded-xl bg-white text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400">
                     </div>
                     <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-colors whitespace-nowrap">
@@ -252,37 +252,6 @@
         @endif
     </div>
 </section>
-
-<!-- FOOTER — same as landing -->
-<footer class="bg-slate-800 text-gray-300 py-12">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13"/></svg>
-                    </div>
-                    <span class="text-xl font-bold text-white">SIMPA</span>
-                </div>
-                <p class="text-sm leading-relaxed">Sistem Informasi Manajemen Panti Asuhan Amaliya</p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-white mb-4">Navigasi</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="/" class="hover:text-white transition-colors">Beranda</a></li>
-                    <li><a href="{{ route('perpustakaan.public.index') }}" class="hover:text-white transition-colors">Perpustakaan</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold text-white mb-4">Kontak</h4>
-                <p class="text-sm leading-relaxed">Panti Asuhan Amaliya<br>Jl. Pendidikan No. 123<br>Subang, Jawa Barat</p>
-            </div>
-        </div>
-        <div class="border-t border-gray-700 pt-8 text-center text-sm">
-            <p>&copy; {{ date('Y') }} Panti Asuhan Amaliya. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
 
 @push('scripts')
 <script>

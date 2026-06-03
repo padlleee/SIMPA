@@ -112,6 +112,8 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/stok/create', [StokController::class, 'create'])->name('stok.create');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
     Route::get('/stok/{stok}/edit', [StokController::class, 'edit'])->name('stok.edit');
+    Route::get('/stok/{stok}/transaksi', [StokController::class, 'transaksi'])->name('stok.transaksi');
+    Route::post('/stok/{stok}/transaksi', [StokController::class, 'storeTransaksi'])->name('stok.storeTransaksi');
     Route::put('/stok/{stok}', [StokController::class, 'update'])->name('stok.update');
     Route::delete('/stok/{stok}', [StokController::class, 'destroy'])->name('stok.destroy');
 
@@ -119,6 +121,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/inventaris', [InventarisController::class, 'index'])->name('inventaris.index');
     Route::get('/inventaris/create', [InventarisController::class, 'create'])->name('inventaris.create');
     Route::post('/inventaris', [InventarisController::class, 'store'])->name('inventaris.store');
+    Route::get('/inventaris/detail/{nama_kategori}', [InventarisController::class, 'show'])->name('inventaris.show');
     Route::get('/inventaris/{inventari}/edit', [InventarisController::class, 'edit'])->name('inventaris.edit');
     Route::put('/inventaris/{inventari}', [InventarisController::class, 'update'])->name('inventaris.update');
     Route::delete('/inventaris/{inventari}', [InventarisController::class, 'destroy'])->name('inventaris.destroy');
@@ -135,6 +138,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/perpustakaan/{perpustakaan}/pinjam', [PerpustakaanController::class, 'pinjamCreate'])->name('perpustakaan.pinjam');
     Route::post('/perpustakaan/{perpustakaan}/pinjam', [PerpustakaanController::class, 'pinjamStore'])->name('perpustakaan.pinjam.store');
     Route::patch('/peminjaman/{peminjaman}/kembalikan', [PerpustakaanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
+    // Peminjaman Multi-Buku
+    Route::get('/peminjaman/multi', [PerpustakaanController::class, 'multiPinjamCreate'])->name('peminjaman.multi.create');
+    Route::post('/peminjaman/multi', [PerpustakaanController::class, 'multiPinjamStore'])->name('peminjaman.multi.store');
 
     // Pengeluaran
     Route::get('/pengeluaran', [PengeluaranController::class, 'index'])->name('pengeluaran.index');
@@ -145,6 +151,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/print', [LaporanController::class, 'print'])->name('laporan.print');
 
     // User Management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -164,6 +171,8 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/admin/blog', [ArticleController::class, 'adminIndex'])->name('admin.blog.index');
     Route::get('/admin/blog/create', [ArticleController::class, 'create'])->name('admin.blog.create');
     Route::post('/admin/blog', [ArticleController::class, 'store'])->name('admin.blog.store');
+    Route::get('/admin/blog/{article}/edit', [ArticleController::class, 'edit'])->name('admin.blog.edit');
+    Route::put('/admin/blog/{article}', [ArticleController::class, 'update'])->name('admin.blog.update');
     Route::delete('/admin/blog/{article}', [ArticleController::class, 'destroy'])->name('admin.blog.destroy');
 
     // FAQ (Admin CRUD)

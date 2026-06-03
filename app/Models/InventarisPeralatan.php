@@ -14,10 +14,13 @@ class InventarisPeralatan extends Model
 
     protected $fillable = [
         'nama_barang',
+        'nama_kategori',
         'jumlah',
         'satuan',
         'kode_barang',
         'lokasi',
         'kondisi',
+        'gambar',
+        'keterangan',
     ];
 }

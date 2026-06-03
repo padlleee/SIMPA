@@ -49,7 +49,7 @@
                     </label>
                     <input type="text" id="nama_anak" name="nama_anak" value="{{ old('nama_anak') }}" required
                            class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 @error('nama_anak') border-red-400 @enderror"
-                           placeholder="Nama sesuai dokumen resmi">
+                           placeholder="Nama lengkap anak asuh">
                     @error('nama_anak')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -91,7 +91,7 @@
                     </label>
                     <input type="text" id="nama_wali" name="nama_wali" value="{{ old('nama_wali') }}" required
                            class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 @error('nama_wali') border-red-400 @enderror"
-                           placeholder="Nama lengkap wali">
+                           placeholder="Nama lengkap orang tua/wali">
                     @error('nama_wali')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -102,7 +102,7 @@
                     </label>
                     <input type="tel" id="kontak_wali" name="kontak_wali" value="{{ old('kontak_wali') }}" required
                            class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 @error('kontak_wali') border-red-400 @enderror"
-                           placeholder="08xxxxxxxxxx">
+                           placeholder="0812xxxx (WhatsApp aktif)">
                     @error('kontak_wali')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -119,7 +119,7 @@
                     </label>
                     <textarea id="alasan_masuk" name="alasan_masuk" rows="5" required
                               class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-slate-400 resize-y @error('alasan_masuk') border-red-400 @enderror"
-                              placeholder="Jelaskan kondisi keluarga, alasan membutuhkan bantuan yayasan, dsb. (min. 30 karakter)">{{ old('alasan_masuk') }}</textarea>
+                              placeholder="Jelaskan alasan pengajuan...">{{ old('alasan_masuk') }}</textarea>
                     @error('alasan_masuk')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 

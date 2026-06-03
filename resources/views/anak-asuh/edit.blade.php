@@ -56,7 +56,7 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Kelas / Tingkat</label>
-                    <input type="text" name="kelas" value="{{ old('kelas', $anakAsuh->kelas) }}" placeholder="cth: Kelas 1 / Semester 3"
+                    <input type="text" name="kelas" value="{{ old('kelas', $anakAsuh->kelas) }}" placeholder="Contoh: Kelas 1 / Semester 3"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
                 </div>
 

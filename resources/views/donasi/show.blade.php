@@ -77,11 +77,11 @@
                                     </span>
                                 @elseif($donasi->status_verifikasi === 'Valid')
                                     <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                                        ✓ Sudah Terverifikasi
+                                         Sudah Terverifikasi
                                     </span>
                                 @else
                                     <span class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                                        ✗ Ditolak
+                                         Ditolak
                                     </span>
                                 @endif
                             </div>
@@ -103,7 +103,7 @@
                             <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Pembayaran" class="w-full rounded-lg border border-gray-200">
                         @else
                             <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
-                                <div class="text-6xl mb-4">📄</div>
+                                <div class="text-6xl mb-4"></div>
                                 <p class="text-gray-600 mb-4">Format File: <strong>.{{ $fileExt }}</strong></p>
                                 <a href="{{ asset('storage/' . $filePath) }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
                                     Buka File PDF
@@ -112,7 +112,7 @@
                         @endif
                     @else
                         <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
-                            <div class="text-6xl mb-4">❌</div>
+                            <div class="text-6xl mb-4"></div>
                             <p class="text-gray-600">Tidak ada bukti pembayaran</p>
                         </div>
                     @endif
@@ -162,10 +162,10 @@
                             <p class="text-sm font-semibold text-yellow-800">⏳ Menunggu Verifikasi</p>
                             <p class="text-xs text-yellow-600 mt-2">Donasi ini belum diverifikasi oleh bendahara.</p>
                         @elseif($donasi->status_verifikasi === 'Valid')
-                            <p class="text-sm font-semibold text-green-800">✓ Sudah Terverifikasi</p>
+                            <p class="text-sm font-semibold text-green-800"> Sudah Terverifikasi</p>
                             <p class="text-xs text-green-600 mt-2">Donasi ini telah diverifikasi dan diterima.</p>
                         @else
-                            <p class="text-sm font-semibold text-red-800">✗ Ditolak</p>
+                            <p class="text-sm font-semibold text-red-800"> Ditolak</p>
                             <p class="text-xs text-red-600 mt-2">Donasi ini telah ditolak oleh bendahara.</p>
                         @endif
                     </div>
@@ -179,7 +179,7 @@
                             onclick="showModal('verifyModal')"
                             class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition"
                         >
-                            ✓ Verifikasi Donasi
+                             Verifikasi Donasi
                         </button>
 
                         <!-- Reject Button -->
@@ -187,7 +187,7 @@
                             onclick="showModal('rejectModal')"
                             class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition"
                         >
-                            ✗ Tolak Donasi
+                             Tolak Donasi
                         </button>
                     </div>
                 @else
@@ -204,7 +204,7 @@
                             target="_blank"
                             class="w-full block text-center bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition text-sm"
                         >
-                            🖨️ Lihat Kwitansi
+                             Lihat Kwitansi
                         </a>
                     </div>
                 @endif
@@ -216,7 +216,7 @@
                         <button type="button"
                                 onclick="simpaConfirm({ title:'Hapus Donasi', message:'Yakin ingin menghapus donasi {{ $donasi->nominal_formatted }} ini secara permanen?', confirmText:'Ya, Hapus', type:'danger', onConfirm:()=>document.getElementById('donasiDel').submit() })"
                                 class="w-full bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition text-sm">
-                            🗑️ Hapus
+                             Hapus
                         </button>
                     </form>
                 </div>
@@ -287,7 +287,7 @@
                     name="catatan"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                    placeholder="Jelaskan alasan penolakan..."
+                    placeholder="Alasan penolakan..."
                     required
                 ></textarea>
             </div>

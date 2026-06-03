@@ -55,7 +55,7 @@
     </form>
     <a href="{{ route('donasi.adminCreate') }}" class="px-5 py-2.5 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition flex items-center gap-2 whitespace-nowrap">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Rekap Donasi Tunai
+        Tambah Donasi Tunai
     </a>
 </div>
 
@@ -142,9 +142,9 @@
                         @if($item->status_verifikasi === 'Pending')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">⏳ Menunggu</span>
                         @elseif($item->status_verifikasi === 'Valid')
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">✓ Terverifikasi</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold"> Terverifikasi</span>
                         @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">✗ Ditolak</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold"> Ditolak</span>
                         @endif
                     </td>
                     {{-- Aksi --}}

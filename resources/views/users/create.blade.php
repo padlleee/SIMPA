@@ -19,14 +19,18 @@
             <label class="block text-sm font-semibold text-slate-700 mb-2">Email <span class="text-red-500">*</span></label>
             <input type="email" name="email" value="{{ old('email') }}"
                    class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('email') border-red-400 @enderror"
-                   placeholder="contoh@email.com">
+                   placeholder="Email resmi pengurus">
             @error('email')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">Role <span class="text-red-500">*</span></label>
             <select name="role" id="role-select" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                <option value="Admin"      {{ old('role') == 'Admin'      ? 'selected' : '' }}>Admin</option>
-                <option value="Ketua"      {{ old('role') == 'Ketua'      ? 'selected' : '' }}>Ketua Yayasan</option>
+                @if(auth()->user()->role === 'Ketua')
+                    @if(\App\Models\User::where('role', 'Admin')->count() == 0)
+                        <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                    @endif
+                    <option value="Ketua" {{ old('role') == 'Ketua' ? 'selected' : '' }}>Ketua Yayasan</option>
+                @endif
                 <option value="Bendahara"  {{ old('role') == 'Bendahara'  ? 'selected' : '' }}>Bendahara</option>
                 <option value="Donatur"    {{ old('role') == 'Donatur'    ? 'selected' : '' }}>Donatur</option>
             </select>

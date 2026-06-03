@@ -105,7 +105,7 @@
                             <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
                         <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required
-                               placeholder="Contoh: Budi Santoso"
+                               placeholder="Nama sesuai identitas"
                                class="pl-11 w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition bg-slate-50 focus:bg-white @error('nama_lengkap') border-red-400 @enderror">
                     </div>
                     @error('nama_lengkap')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
@@ -120,7 +120,7 @@
                                 <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             </div>
                             <input type="email" name="email" value="{{ old('email') }}" required
-                                   placeholder="anda@email.com"
+                                   placeholder="Email yang aktif"
                                    class="pl-11 w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition bg-slate-50 focus:bg-white @error('email') border-red-400 @enderror">
                         </div>
                         @if($errors->has('email') && (old('nama_lengkap') !== null || $errors->has('nama_lengkap')))
@@ -137,7 +137,7 @@
                             </div>
                             <input type="text" name="no_hp" value="{{ old('no_hp') }}"
                                    maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                   placeholder="0812xxxxxxxx"
+                                   placeholder="0812xxxx (WhatsApp aktif)"
                                    class="pl-11 w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition bg-slate-50 focus:bg-white">
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Pesan / Motivasi Bergabung <span class="text-slate-400 font-normal">(Opsional)</span></label>
                     <textarea name="pesan" rows="3" maxlength="500"
-                              placeholder="Ceritakan motivasi singkat Anda bergabung dengan kami..."
+                              placeholder="Pesan/motivasi bergabung..."
                               class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600 transition bg-slate-50 focus:bg-white resize-none">{{ old('pesan') }}</textarea>
                 </div>
 

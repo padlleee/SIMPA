@@ -77,7 +77,7 @@
             </div>
 
             <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded text-sm text-gray-700">
-                <p><strong>⚠️ Catatan Penting:</strong> Pastikan nama pendonasi sesuai untuk verifikasi yang lebih cepat.</p>
+                <p><strong>Catatan Penting:</strong> Mohon pastikan nama donatur yang dicantumkan sesuai dengan nama pada rekening pengirim untuk mempercepat proses verifikasi.</p>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
                         id="nama_donatur"
                         name="nama_donatur"
                         value="{{ old('nama_donatur') }}"
-                        placeholder="Nama sesuai rekening bank"
+                        placeholder="Masukkan nama lengkap Anda / Nama instansi"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('nama_donatur') border-red-500 @enderror"
                         required
                         oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.setCustomValidity('')"
@@ -116,7 +116,7 @@
                         id="email"
                         name="email"
                         value="{{ old('email') }}"
-                        placeholder="email@example.com"
+                        placeholder="Masukkan alamat email terdaftar (contoh: nama@email.com)"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('email') border-red-500 @enderror"
                         required
                         oninvalid="this.setCustomValidity('Wajib diisi dengan email yang valid')" oninput="this.setCustomValidity('')"
@@ -136,7 +136,7 @@
                         id="no_hp"
                         name="no_hp"
                         value="{{ old('no_hp') }}"
-                        placeholder="08xxxxxxxxxx"
+                        placeholder="0812xxxx (WhatsApp aktif)"
                         maxlength="15"
                         oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
@@ -155,7 +155,7 @@
                             id="nominal"
                             name="nominal"
                             value="{{ old('nominal') }}"
-                            placeholder="10000"
+                            placeholder="Masukkan nominal donasi (Min. Rp 10.000)"
                             maxlength="12"
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('nominal') border-red-500 @enderror"
                             required
@@ -250,8 +250,8 @@
 
                 <!-- Disclaimer -->
                 <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 border border-gray-200">
-                    <p>✓ Semua data pribadi Anda dilindungi dan hanya digunakan untuk verifikasi donasi.</p>
-                    <p>✓ Kwitansi digital akan dikirim ke email setelah donasi diverifikasi.</p>
+                    <p> Semua data pribadi Anda dilindungi dan hanya digunakan untuk verifikasi donasi.</p>
+                    <p> Kwitansi digital dapat diakses dari dashboard jika Anda mendaftar sebagai Donatur Tetap.</p>
                 </div>
             </form>
         </div>
@@ -271,7 +271,7 @@
         if (file) {
             const fileInfo = document.getElementById('file-info');
             const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-            fileInfo.innerHTML = `✓ File terpilih: <strong>${file.name}</strong> (${sizeMB} MB)`;
+            fileInfo.innerHTML = ` File terpilih: <strong>${file.name}</strong> (${sizeMB} MB)`;
             fileInfo.className = 'mt-2 text-sm text-green-600';
         }
     });

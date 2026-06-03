@@ -132,7 +132,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @foreach([
                 ['icon' => '📜', 'title' => 'Akta Notaris',         'issuer' => 'Notaris H. Dede Kurniawan, SH', 'no' => 'No. 12 / 2013'],
-                ['icon' => '🏛️', 'title' => 'SK Kemenkumham',       'issuer' => 'Kementerian Hukum & HAM RI',    'no' => 'AHU-XXXX.AH.01.04'],
+                ['icon' => '🏛', 'title' => 'SK Kemenkumham',       'issuer' => 'Kementerian Hukum & HAM RI',    'no' => 'AHU-XXXX.AH.01.04'],
                 ['icon' => '🤝', 'title' => 'Dinas Sosial',         'issuer' => 'Dinas Sosial Kab. Subang',      'no' => 'No. 460/XXX/Dinsos'],
                 ['icon' => '🧾', 'title' => 'NPWP Yayasan',         'issuer' => 'Direktorat Jenderal Pajak',     'no' => '12.345.678.9-XXX.000'],
             ] as $doc)
@@ -167,7 +167,7 @@
             {{-- Map embed --}}
             <div class="md:col-span-3 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                 <iframe
-                    src="https://maps.google.com/maps?q=-6.570183,107.757358&z=16&output=embed"
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d990.9324989839868!2d107.7652137!3d-6.5557305!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e693b7e4a9f503b%3A0x999bec720bfe54c4!2sAsrama%20Panti%20Asuhan%20Amaliya%20Subang!5e0!3m2!1sid!2sid!4v1780023357594!5m2!1sid!2sid"
                     width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
                     title="Lokasi Yayasan Amaliya Subang">

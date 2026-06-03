@@ -47,7 +47,7 @@
             <label class="block text-sm font-semibold text-slate-700 mb-2">Keterangan</label>
             <textarea name="keterangan" rows="2"
                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800"
-                      placeholder="Opsional">{{ old('keterangan') }}</textarea>
+                      placeholder="Tujuan & nomor nota...">{{ old('keterangan') }}</textarea>
                         @error('keterangan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="flex gap-3 pt-2">

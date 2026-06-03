@@ -67,6 +67,38 @@ class ArticleController extends Controller
                          ->with('success', 'Artikel berhasil dipublikasikan.');
     }
 
+    public function edit(Article $article)
+    {
+        return view('admin.blog.edit', compact('article'));
+    }
+
+    public function update(Request $request, Article $article)
+    {
+        $request->validate([
+            'title'   => 'required|string|max:255',
+            'content' => 'required|string',
+            'image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+        ]);
+
+        $data = [
+            'title'   => $request->title,
+            'slug'    => Str::slug($request->title) . '-' . Str::random(5),
+            'content' => $request->content,
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($article->image) {
+                Storage::disk('public')->delete($article->image);
+            }
+            $data['image'] = $request->file('image')->store('blog', 'public');
+        }
+
+        $article->update($data);
+
+        return redirect()->route('admin.blog.index')
+                         ->with('success', 'Artikel berhasil diperbarui.');
+    }
+
     public function destroy(Article $article)
     {
         if ($article->image) {

@@ -141,11 +141,11 @@
                     <td class="px-5 py-4">
                         @if($item->status_verifikasi === 'Valid')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                                ✓ Terverifikasi
+                                 Terverifikasi
                             </span>
                         @elseif($item->status_verifikasi === 'Tolak')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                                ✗ Ditolak
+                                 Ditolak
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">

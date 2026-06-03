@@ -53,17 +53,17 @@
             <!-- Information -->
             <div class="space-y-4 mb-8">
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded text-left">
-                    <p class="text-sm font-semibold text-gray-900 mb-2">📧 Notifikasi Email</p>
-                    <p class="text-sm text-gray-700">Tim verifikasi kami akan menghubungi Anda melalui email setelah donasi diverifikasi. Pastikan email Anda dapat diterima notifikasi.</p>
+                    <p class="text-sm font-semibold text-gray-900 mb-2"> Informasi Verifikasi</p>
+                    <p class="text-sm text-gray-700">Mohon simpan bukti transfer Anda. Tim admin kami akan memverifikasi donasi Anda dalam waktu operasional. Jika diperlukan, kami akan menghubungi kontak Anda.</p>
                 </div>
 
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded text-left">
-                    <p class="text-sm font-semibold text-gray-900 mb-2">✓ Kwitansi Digital</p>
-                    <p class="text-sm text-gray-700">Kwitansi donasi resmi akan dikirim ke email Anda setelah verifikasi selesai. Anda juga dapat mengunduhnya dari dashboard.</p>
+                    <p class="text-sm font-semibold text-gray-900 mb-2"> Kwitansi Transparan</p>
+                    <p class="text-sm text-gray-700">Donasi yang terverifikasi akan tercatat secara transparan di sistem. Untuk dapat mengunduh kwitansi resmi, Anda disarankan mendaftar sebagai Donatur Tetap.</p>
                 </div>
 
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded text-left">
-                    <p class="text-sm font-semibold text-gray-900 mb-2">🙏 Doa Terbaik</p>
+                    <p class="text-sm font-semibold text-gray-900 mb-2"> Doa Terbaik</p>
                     <p class="text-sm text-gray-700">Donasi Anda akan membantu anak-anak asuh kami mendapatkan pendidikan dan kehidupan yang lebih baik. Terima kasih atas kebaikan hati Anda.</p>
                 </div>
             </div>
@@ -74,17 +74,17 @@
                 <div class="space-y-3 text-left">
                     <details class="bg-gray-50 p-4 rounded cursor-pointer">
                         <summary class="font-semibold text-gray-900">Berapa lama proses verifikasi?</summary>
-                        <p class="mt-2 text-sm text-gray-600">Proses verifikasi donasi biasanya membutuhkan waktu 1 × 24 jam. Tim kami akan menghubungi Anda melalui email untuk konfirmasi.</p>
+                        <p class="mt-2 text-sm text-gray-600">Proses verifikasi donasi biasanya membutuhkan waktu 1 × 24 jam pada hari kerja.</p>
                     </details>
 
                     <details class="bg-gray-50 p-4 rounded cursor-pointer">
                         <summary class="font-semibold text-gray-900">Bagaimana jika donasi ditolak?</summary>
-                        <p class="mt-2 text-sm text-gray-600">Jika ada masalah dengan donasi Anda, tim kami akan mengirimkan email penjelasan dan memberikan kesempatan untuk memperbaiki.</p>
+                        <p class="mt-2 text-sm text-gray-600">Jika ada ketidaksesuaian (contoh: bukti transfer buram/kurang), admin kami akan mencoba menghubungi Anda melalui kontak yang Anda berikan.</p>
                     </details>
 
                     <details class="bg-gray-50 p-4 rounded cursor-pointer">
                         <summary class="font-semibold text-gray-900">Bagaimana cara mendapatkan kwitansi?</summary>
-                        <p class="mt-2 text-sm text-gray-600">Kwitansi akan dikirim otomatis ke email Anda setelah verifikasi selesai. Anda juga dapat mengunduhnya dari halaman riwayat donasi kami.</p>
+                        <p class="mt-2 text-sm text-gray-600">Kwitansi digital dapat diakses dan diunduh langsung dari sistem jika Anda memiliki akun dan mendaftar sebagai Donatur Tetap.</p>
                     </details>
                 </div>
             </div>

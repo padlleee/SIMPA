@@ -19,9 +19,10 @@
                            class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah Eksemplar <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah Buku <span class="text-red-500">*</span></label>
                     <input type="number" name="jumlah_buku" value="{{ old('jumlah_buku', $perpustakaan->jumlah_buku) }}" min="1"
-                           class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                           class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('jumlah_buku') border-red-400 @enderror">
+                    @error('jumlah_buku')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Judul Buku <span class="text-red-500">*</span></label>
@@ -60,11 +61,27 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Kondisi Buku</label>
-                    <select name="kondisi_buku" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                        @foreach(['Baik','Cukup Baik','Rusak Ringan','Rusak Berat'] as $k)
-                        <option value="{{ $k }}" {{ old('kondisi_buku', $perpustakaan->kondisi_buku) === $k ? 'selected' : '' }}>{{ $k }}</option>
-                        @endforeach
+                    @php
+                        $stdKondisi   = ['Baru', 'Bekas'];
+                        $kondisiVal   = old('kondisi_buku', $perpustakaan->kondisi_buku);
+                        $isKondisiLain = $kondisiVal && !in_array($kondisiVal, $stdKondisi);
+                        $selKondisiVal = $isKondisiLain ? 'Lainnya' : $kondisiVal;
+                    @endphp
+                    <select name="kondisi_buku" id="kondisi_buku" onchange="toggleKondisiLainnya(this.value)"
+                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                        <option value="" disabled {{ !$selKondisiVal ? 'selected' : '' }}>Pilih Kondisi</option>
+                        <option value="Baru" {{ $selKondisiVal === 'Baru' ? 'selected' : '' }}>Baru</option>
+                        <option value="Bekas" {{ $selKondisiVal === 'Bekas' ? 'selected' : '' }}>Bekas</option>
+                        <option value="Lainnya" {{ $selKondisiVal === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
+
+                    <div id="kondisi_lainnya_container" class="mt-3 {{ $selKondisiVal === 'Lainnya' ? '' : 'hidden' }}">
+                        <input type="text" id="kondisi_buku_lainnya" name="kondisi_buku_lainnya"
+                               value="{{ old('kondisi_buku_lainnya', $isKondisiLain ? $kondisiVal : '') }}"
+                               placeholder="Contoh: Rusak Ringan, Seperti Baru..."
+                               class="w-full border border-indigo-300 bg-indigo-50 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 @error('kondisi_buku_lainnya') border-red-400 @enderror">
+                        @error('kondisi_buku_lainnya')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Sinopsis / Deskripsi</label>
@@ -110,7 +127,7 @@
 
         {{-- SECTION: Kurasi Halaman Publik --}}
         <div>
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Kurasi Halaman Publik</h3>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Galeri Halaman Publik</h3>
             <p class="text-xs text-slate-400 mb-4">Tampilkan buku ini di bagian perpustakaan pada halaman utama (landing page) publik.</p>
 
             @php
@@ -137,19 +154,19 @@
             {{-- Dropdown kategori_landing --}}
             <div id="kategori-landing-wrap" class="{{ $isFeaturedOld ? '' : 'hidden' }}">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">
-                    Bagian Kurasi <span class="text-red-500">*</span>
+                    Bagian Galeri <span class="text-red-500">*</span>
                 </label>
                 <select name="kategori_landing" id="kategori_landing"
                         class="w-full md:w-72 border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kategori_landing') border-red-400 @enderror">
-                    <option value="">— Pilih Bagian —</option>
+                    <option value=""> Pilih Bagian </option>
                     <option value="sering_dipinjam" {{ $kategoriOld === 'sering_dipinjam' ? 'selected' : '' }}>
-                        📚 Buku Sering Dipinjam
+                        Buku Sering Dipinjam
                     </option>
                     <option value="buku_baru" {{ $kategoriOld === 'buku_baru' ? 'selected' : '' }}>
-                        ✨ Buku Baru
+                        Buku Baru
                     </option>
                     <option value="buku_unik" {{ $kategoriOld === 'buku_unik' ? 'selected' : '' }}>
-                        🌟 Buku Unik
+                        Buku Unik
                     </option>
                 </select>
                 @error('kategori_landing')
@@ -224,6 +241,21 @@ function toggleKategoriLanding(checkbox) {
     } else {
         wrap.classList.add('hidden');
         document.getElementById('kategori_landing').value = '';
+    }
+}
+
+// Toggle input kondisi lainnya
+function toggleKondisiLainnya(value) {
+    const container = document.getElementById('kondisi_lainnya_container');
+    const input     = document.getElementById('kondisi_buku_lainnya');
+    if (value === 'Lainnya') {
+        container.classList.remove('hidden');
+        input.required = true;
+        input.focus();
+    } else {
+        container.classList.add('hidden');
+        input.required = false;
+        input.value = '';
     }
 }
 </script>

@@ -65,4 +65,47 @@ class LaporanController extends Controller
 
         return view('laporan.index', compact('paginated', 'totalDonasi', 'totalPengeluaran', 'saldoBersih'));
     }
+
+    public function print(Request $request)
+    {
+        $donasiQuery      = Donasi::valid();
+        $pengeluaranQuery = Pengeluaran::query();
+
+        if ($request->filled('dari_tanggal')) {
+            $donasiQuery->whereDate('tanggal_donasi', '>=', $request->dari_tanggal);
+            $pengeluaranQuery->whereDate('tanggal_pengeluaran', '>=', $request->dari_tanggal);
+        }
+
+        if ($request->filled('sampai_tanggal')) {
+            $donasiQuery->whereDate('tanggal_donasi', '<=', $request->sampai_tanggal);
+            $pengeluaranQuery->whereDate('tanggal_pengeluaran', '<=', $request->sampai_tanggal);
+        }
+
+        $totalDonasi      = (clone $donasiQuery)->sum('nominal');
+        $totalPengeluaran = (clone $pengeluaranQuery)->sum('nominal');
+        $saldoBersih      = $totalDonasi - $totalPengeluaran;
+
+        $donasiEntries = $donasiQuery->get()->map(function ($item) {
+            return [
+                'tanggal'     => $item->tanggal_donasi,
+                'keterangan'  => 'Pemasukan donasi dari ' . $item->nama_donatur_display,
+                'pemasukan'   => $item->nominal,
+                'pengeluaran' => 0,
+            ];
+        });
+
+        $pengeluaranEntries = $pengeluaranQuery->get()->map(function ($item) {
+            $ket = $item->keterangan ? $item->keterangan : $item->kategori_biaya;
+            return [
+                'tanggal'     => $item->tanggal_pengeluaran,
+                'keterangan'  => 'Pengeluaran untuk ' . $ket,
+                'pemasukan'   => 0,
+                'pengeluaran' => $item->nominal,
+            ];
+        });
+
+        $transaksi = $donasiEntries->merge($pengeluaranEntries)->sortBy('tanggal')->values();
+
+        return view('laporan.print', compact('transaksi', 'totalDonasi', 'totalPengeluaran', 'saldoBersih'));
+    }
 }

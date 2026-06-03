@@ -20,7 +20,7 @@
     </div>
     <div class="flex-1 min-w-0">
         <p class="font-bold text-sm mb-1 {{ isset($ri['via_email']) && $ri['via_email'] ? 'text-blue-800' : 'text-amber-800' }}">
-            {{ isset($ri['via_email']) && $ri['via_email'] ? '📧 Password Direset & Siap Dikirim via Email' : 'Password Berhasil Direset' }}
+            {{ isset($ri['via_email']) && $ri['via_email'] ? ' Password Direset & Siap Dikirim via Email' : 'Password Berhasil Direset' }}
         </p>
         <p class="text-sm mb-3 {{ isset($ri['via_email']) && $ri['via_email'] ? 'text-blue-700' : 'text-amber-700' }}">
             @if(isset($ri['via_email']) && $ri['via_email'])
@@ -48,7 +48,7 @@
                 Salin
             </button>
         </div>
-        <p class="text-xs mt-2 {{ isset($ri['via_email']) && $ri['via_email'] ? 'text-blue-500' : 'text-amber-500' }}">⚠️ Tutup notifikasi ini setelah menyalin password.</p>
+        <p class="text-xs mt-2 {{ isset($ri['via_email']) && $ri['via_email'] ? 'text-blue-500' : 'text-amber-500' }}">⚠ Tutup notifikasi ini setelah menyalin password.</p>
     </div>
     <button onclick="document.getElementById('resetInfoCard').remove()"
             class="transition-colors flex-shrink-0 mt-0.5 {{ isset($ri['via_email']) && $ri['via_email'] ? 'text-blue-400 hover:text-blue-600' : 'text-amber-400 hover:text-amber-600' }}">
@@ -139,6 +139,18 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
+                        @php
+                            $isKetua = auth()->user()->role === 'Ketua';
+                            $isAdmin = auth()->user()->role === 'Admin';
+                            $targetIsKetua = $user->role === 'Ketua';
+                            $targetIsAdmin = $user->role === 'Admin';
+                            $isSelf = $user->id_user === auth()->id();
+                            
+                            $canEdit = $isKetua || ($isAdmin && !$targetIsKetua && (!$targetIsAdmin || $isSelf));
+                            $canManage = $isKetua || ($isAdmin && !$targetIsKetua && !$targetIsAdmin);
+                        @endphp
+
+                        @if($canEdit)
                         {{-- Edit --}}
                         <a href="{{ route('users.edit', $user) }}"
                            class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
@@ -148,8 +160,9 @@
                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </a>
+                        @endif
 
-                        @if($user->id_user !== auth()->id())
+                        @if($canManage && !$isSelf)
                         <form id="resetForm-{{ $user->id_user }}"
                               action="{{ route('users.reset-password', $user) }}" method="POST">
                             @csrf

@@ -13,18 +13,26 @@
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Barang <span class="text-red-500">*</span></label>
                 <input type="text" name="nama_barang" value="{{ old('nama_barang') }}" required
+                       placeholder="Contoh: Beras, Minyak Goreng..."
                        class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('nama_barang') border-red-400 @enderror">
                 @error('nama_barang')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Kategori Barang</label>
-                <select name="kategori_barang" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                    <option value="Sembako" {{ old('kategori_barang') === 'Sembako' ? 'selected' : '' }}>Sembako</option>
-                    <option value="Logistik" {{ old('kategori_barang') === 'Logistik' ? 'selected' : '' }}>Logistik</option>
-                    <option value="Aset Tetap" {{ old('kategori_barang') === 'Aset Tetap' ? 'selected' : '' }}>Aset Tetap</option>
-                    <option value="Lainnya" {{ old('kategori_barang') === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                <select id="kategori_barang" name="kategori_barang" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800" onchange="toggleKategoriLainnya(this.value)">
+                    @foreach($kategoriList as $kat)
+                        <option value="{{ $kat }}" {{ old('kategori_barang') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                    @endforeach
+                    <option value="Lainnya" {{ old('kategori_barang') === 'Lainnya' ? 'selected' : '' }}>Kategori Lainnya...</option>
                 </select>
+                
+                <div id="kategori_lainnya_container" class="mt-3 {{ old('kategori_barang') === 'Lainnya' ? '' : 'hidden' }}">
+                    <input type="text" id="kategori_barang_lainnya" name="kategori_barang_lainnya" value="{{ old('kategori_barang_lainnya') }}" 
+                           placeholder="Masukkan nama kategori baru" 
+                           class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kategori_barang_lainnya') border-red-400 @enderror">
+                    @error('kategori_barang_lainnya')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
             </div>
 
             <div>
@@ -72,7 +80,7 @@
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Keterangan</label>
                 <textarea name="keterangan" rows="2"
                        class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800"
-                       placeholder="Opsional">{{ old('keterangan') }}</textarea>
+                       placeholder="Keterangan spesifikasi...">{{ old('keterangan') }}</textarea>
             </div>
         </div>
         
@@ -96,5 +104,18 @@
     }
     
     inputs.forEach(input => input.addEventListener('input', hitung));
+
+    function toggleKategoriLainnya(value) {
+        const container = document.getElementById('kategori_lainnya_container');
+        const input = document.getElementById('kategori_barang_lainnya');
+        if (value === 'Lainnya') {
+            container.classList.remove('hidden');
+            input.required = true;
+        } else {
+            container.classList.add('hidden');
+            input.required = false;
+            input.value = ''; // Reset the value if they select something else
+        }
+    }
 </script>
 @endsection

@@ -31,8 +31,12 @@ class DatabaseSeeder extends Seeder
         $this->call(PengeluaranSeeder::class);
 
         // 5. Stok & Inventaris
-        $this->command->comment('  → Mengisi stok gudang & inventaris peralatan...');
+        $this->command->comment('  ➤ Mengisi stok gudang...');
         $this->call(StokInventarisSeeder::class);
+
+        // 6. Inventaris Peralatan (dengan gambar per-unit)
+        $this->command->comment('  ➤ Mengisi manajemen peralatan...');
+        $this->call(InventarisPeralatanSeeder::class);
 
         // 6. Perpustakaan
         $this->command->comment('  → Mengisi koleksi buku perpustakaan...');
@@ -45,6 +49,10 @@ class DatabaseSeeder extends Seeder
         // 8. Calon Anak Asuh (Pendaftaran Digital)
         $this->command->comment('  → Mengisi data pendaftaran calon anak asuh...');
         $this->call(CalonAnakAsuhSeeder::class);
+
+        // 9. FAQ
+        $this->command->comment('  ➤ Mengisi data FAQ...');
+        $this->call(FaqSeeder::class);
 
         $this->command->info('');
         $this->command->info('✅ Seeding selesai! Berikut akun yang tersedia:');

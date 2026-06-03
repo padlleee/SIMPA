@@ -242,7 +242,7 @@
         <div class="header">
             <div class="header-content">
                 <div class="organization-info">
-                    <h1>🏛️ YAYASAN PANTI ASUHAN</h1>
+                    <h1>🏛 YAYASAN PANTI ASUHAN</h1>
                     <p>Jl. Contoh No. 123, Kota Bandung, Jawa Barat 40000</p>
                     <p>Telepon: (0274) 123-456 | Email: info@pantasuhan.org</p>
                     <p>No. NPWP: 12.345.678.9-000.000</p>
@@ -305,7 +305,7 @@
             <div class="amount-section">
                 <div class="amount-label">JUMLAH DONASI</div>
                 <div class="amount-value">{{ $donasi->nominal_formatted }}</div>
-                <div class="verified-badge">✓ SUDAH TERVERIFIKASI</div>
+                <div class="verified-badge"> SUDAH TERVERIFIKASI</div>
             </div>
 
             <!-- Bank Information -->
@@ -346,9 +346,9 @@
         <!-- Notes -->
         <div class="notes">
             <p><strong>Catatan Penting:</strong></p>
-            <p>✓ Kwitansi ini merupakan bukti sah bahwa donasi Anda telah diterima dan diverifikasi oleh Yayasan Panti Asuhan.</p>
-            <p>✓ Untuk keperluan administrasi atau perpajakan, silakan simpan kwitansi ini dengan baik.</p>
-            <p>✓ Hubungi kami jika ada pertanyaan atau klarifikasi mengenai donasi Anda.</p>
+            <p> Kwitansi ini merupakan bukti sah bahwa donasi Anda telah diterima dan diverifikasi oleh Yayasan Panti Asuhan.</p>
+            <p> Untuk keperluan administrasi atau perpajakan, silakan simpan kwitansi ini dengan baik.</p>
+            <p> Hubungi kami jika ada pertanyaan atau klarifikasi mengenai donasi Anda.</p>
         </div>
 
         <!-- Footer -->
@@ -360,7 +360,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons no-print">
             <button class="btn btn-print" onclick="window.print()">
-                🖨️ Cetak / Simpan sebagai PDF
+                 Cetak / Simpan sebagai PDF
             </button>
             <a href="{{ route('donasi.index') }}" class="btn btn-back">
                 ← Kembali
