@@ -12,16 +12,32 @@ class StokController extends Controller
     public function index(Request $request)
     {
         $query = StokPanti::query();
+
         if ($request->filled('search')) {
             $query->where('nama_barang', 'like', '%' . $request->search . '%');
         }
         if ($request->filled('kategori')) {
             $query->where('kategori_barang', $request->kategori);
         }
-        if ($request->filled('filter') && $request->filter == 'menipis') {
-            $query->where('stok_akhir', '<=', 5);
+        if ($request->filled('filter')) {
+            match ($request->filter) {
+                'menipis'    => $query->where('stok_akhir', '<=', 5),
+                'kadaluarsa' => $query->whereNotNull('tanggal_kadaluarsa')
+                                       ->whereDate('tanggal_kadaluarsa', '<=', now()->addDays(30)),
+                'habis'      => $query->where('stok_akhir', 0),
+                default      => null,
+            };
         }
-        $stok = $query->orderBy('nama_barang')->paginate(15)->withQueryString();
+
+        // Default FIFO sort: items nearest to expiry come first.
+        // Rows without an expiry date (non-perishable) are pushed to the end.
+        $stok = $query
+            ->orderByRaw('CASE WHEN tanggal_kadaluarsa IS NULL THEN 1 ELSE 0 END ASC')
+            ->orderBy('tanggal_kadaluarsa', 'ASC')
+            ->orderBy('nama_barang', 'ASC')
+            ->paginate(15)
+            ->withQueryString();
+
         return view('stok.index', compact('stok'));
     }
 
@@ -43,7 +59,7 @@ class StokController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang'    => 'required|string|max:100|unique:stok_panti,nama_barang',
+            'nama_barang'    => 'required|string|max:100', // removed unique constraint for batching
             'kategori_barang'=> 'nullable|string|max:100',
             'kategori_barang_lainnya' => 'nullable|string|max:100',
             'stok_awal'      => 'required|integer|min:0',
@@ -51,6 +67,8 @@ class StokController extends Controller
             'barang_keluar'  => 'required|integer|min:0',
             'stok_akhir'     => 'required|integer|min:0',
             'satuan'         => 'nullable|string|max:20',
+            'merk'           => 'nullable|string|max:100',
+            'tanggal_kadaluarsa' => 'nullable|date',
             'keterangan'     => 'nullable|string',
         ]);
 
@@ -65,30 +83,59 @@ class StokController extends Controller
             $kategori = $request->kategori_barang_lainnya;
         }
 
-        $stokBaru = StokPanti::create([
-            'nama_barang'    => $request->nama_barang,
-            'kategori_barang'=> $kategori,
-            'satuan'         => $request->satuan,
-            'stok_awal'      => $request->stok_awal,
-            'barang_masuk'   => $request->barang_masuk,
-            'barang_keluar'  => $request->barang_keluar,
-            'stok_akhir'     => $request->stok_akhir,
-            'keterangan'     => $request->keterangan,
-            'id_admin'       => Auth::user()->id_user,
-        ]);
+        $namaBarang = trim($request->nama_barang);
+        $merk       = $request->merk ?: null;
+        $kadaluarsa = $request->tanggal_kadaluarsa ?: null;
+
+        // Sistem Batch FIFO: cari stok dengan nama, merk, dan tanggal kadaluarsa yang sama
+        $existingStok = StokPanti::where('nama_barang', $namaBarang)
+            ->when($merk, fn($q) => $q->where('merk', $merk))
+            ->when(
+                $kadaluarsa,
+                fn($q) => $q->whereDate('tanggal_kadaluarsa', $kadaluarsa),
+                fn($q) => $q->whereNull('tanggal_kadaluarsa')
+            )
+            ->first();
+
+        if ($existingStok) {
+            // Update existing batch
+            $existingStok->update([
+                'barang_masuk'  => $existingStok->barang_masuk + $request->barang_masuk,
+                'barang_keluar' => $existingStok->barang_keluar + $request->barang_keluar,
+                // Stok awal dari form diabaikan karena ini update batch lama
+                'stok_akhir'    => $existingStok->stok_akhir + $request->barang_masuk - $request->barang_keluar,
+            ]);
+            $stokBaru = $existingStok->fresh();
+        } else {
+            // Create new batch
+            $stokBaru = StokPanti::create([
+                'nama_barang'    => $namaBarang,
+                'kode_barang'    => StokPanti::generateKodeBarang(),
+                'kategori_barang'=> $kategori,
+                'satuan'         => $request->satuan,
+                'merk'           => $merk,
+                'tanggal_kadaluarsa' => $kadaluarsa,
+                'stok_awal'      => $request->stok_awal,
+                'barang_masuk'   => $request->barang_masuk,
+                'barang_keluar'  => $request->barang_keluar,
+                'stok_akhir'     => $request->stok_akhir,
+                'keterangan'     => $request->keterangan,
+                'id_admin'       => Auth::user()->id_user,
+            ]);
+        }
 
         // Log riwayat stok masuk
         if ($request->barang_masuk > 0) {
             RiwayatStok::create([
                 'id_stok'       => $stokBaru->id_stok,
-                'nama_barang'   => $request->nama_barang,
+                'nama_barang'   => $namaBarang,
                 'kategori_barang'=> $kategori,
                 'satuan'        => $request->satuan,
                 'jenis'         => 'Masuk',
                 'jumlah'        => $request->barang_masuk,
-                'stok_sebelum'  => $request->stok_awal,
-                'stok_sesudah'  => $request->stok_awal + $request->barang_masuk,
-                'keterangan'    => $request->keterangan,
+                'stok_sebelum'  => $existingStok ? $existingStok->stok_akhir - ($request->barang_masuk - $request->barang_keluar) : $request->stok_awal, // Perkiraan stok sebelum transaksi ini
+                'stok_sesudah'  => $existingStok ? $existingStok->stok_akhir - $request->barang_keluar : $request->stok_awal + $request->barang_masuk,
+                'keterangan'    => '[Manual] ' . $request->keterangan,
                 'id_admin'      => Auth::user()->id_user,
             ]);
         }
@@ -97,19 +144,19 @@ class StokController extends Controller
         if ($request->barang_keluar > 0) {
             RiwayatStok::create([
                 'id_stok'       => $stokBaru->id_stok,
-                'nama_barang'   => $request->nama_barang,
+                'nama_barang'   => $namaBarang,
                 'kategori_barang'=> $kategori,
                 'satuan'        => $request->satuan,
                 'jenis'         => 'Keluar',
                 'jumlah'        => $request->barang_keluar,
-                'stok_sebelum'  => $request->stok_awal + $request->barang_masuk,
-                'stok_sesudah'  => $request->stok_akhir,
-                'keterangan'    => $request->keterangan,
+                'stok_sebelum'  => $existingStok ? $existingStok->stok_akhir - $request->barang_keluar + $request->barang_masuk : $request->stok_awal + $request->barang_masuk,
+                'stok_sesudah'  => $stokBaru->stok_akhir,
+                'keterangan'    => '[Manual] ' . $request->keterangan,
                 'id_admin'      => Auth::user()->id_user,
             ]);
         }
 
-        return redirect()->route('stok.index')->with('success', 'Barang berhasil ditambahkan.');
+        return redirect()->route('stok.index')->with('success', 'Barang/Batch berhasil ditambahkan.');
     }
 
     public function edit(StokPanti $stok)
@@ -135,10 +182,12 @@ class StokController extends Controller
     public function update(Request $request, StokPanti $stok)
     {
         $request->validate([
-            'nama_barang'    => 'required|string|max:100|unique:stok_panti,nama_barang,' . $stok->id_stok . ',id_stok',
+            'nama_barang'    => 'required|string|max:100', // removed unique constraint for batch support
             'kategori_barang'=> 'nullable|string|max:100',
             'kategori_barang_lainnya' => 'nullable|string|max:100',
             'satuan'         => 'nullable|string|max:20',
+            'merk'           => 'nullable|string|max:100',
+            'tanggal_kadaluarsa' => 'nullable|date',
             'keterangan'     => 'nullable|string',
         ]);
 
@@ -148,10 +197,12 @@ class StokController extends Controller
         }
 
         $stok->update([
-            'nama_barang' => $request->nama_barang,
-            'kategori_barang' => $kategori,
-            'satuan' => $request->satuan,
-            'keterangan' => $request->keterangan
+            'nama_barang'        => $request->nama_barang,
+            'kategori_barang'    => $kategori,
+            'satuan'             => $request->satuan,
+            'merk'               => $request->merk,
+            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa ?: null,
+            'keterangan'         => $request->keterangan
         ]);
 
         return redirect()->route('stok.index')->with('success', 'Data barang berhasil diperbarui.');

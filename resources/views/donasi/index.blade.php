@@ -6,8 +6,7 @@
 
 @section('content')
 
-{{-- Statistics Cards --}}
-@php $stats = (new \App\Http\Controllers\DonasiController)->getAdminStats(); @endphp
+{{-- Statistics Cards (stats passed from DonasiController@index) --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
         <p class="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">Menunggu</p>
@@ -85,6 +84,19 @@
             {{ $publicCount }}
         </span>
     </a>
+    <a href="{{ route('donasi.index', array_merge(request()->except('type', 'page'), ['type' => 'sembako'])) }}"
+       class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition
+              {{ $type === 'sembako' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-100' }}">
+        Donasi Sembako
+        <span class="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs {{ $type === 'sembako' ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-700' }}">
+            {{ $sembakoCount }}
+        </span>
+    </a>
+    <a href="{{ route('donasi.byDonor') }}"
+       class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition text-slate-500 hover:bg-slate-100 ml-auto border-l border-slate-200 pl-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+        Per Donatur
+    </a>
 </div>
 
 {{-- Table --}}
@@ -92,6 +104,85 @@
     @if($donasi->count() > 0)
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
+
+            @if($type === 'sembako')
+            {{-- ===== TABEL KHUSUS DONASI SEMBAKO ===== --}}
+            <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Donatur</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Nama Barang</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Merk</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Jumlah</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
+                    <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach($donasi as $item)
+                @php
+                    // Parse detail dari catatan_verifikasi: "Donasi Sembako: Beras (10 Liter) — MerkX"
+                    $catatan = $item->catatan_verifikasi ?? '';
+                    $detail  = str_replace('Donasi Sembako: ', '', $catatan);
+                    // Regex: "Beras (10 Liter) — MerkX"
+                    preg_match('/^(.+?)\s*\((.+?)\)(?:\s*—\s*(.+))?$/', $detail, $m);
+                    $namaBarang = trim($m[1] ?? $detail);
+                    $jumlah     = trim($m[2] ?? '—');
+                    $merk       = trim($m[3] ?? '');
+
+                    // Highlight fix: cari berdasarkan nama_barang + merk (FIFO batch-aware)
+                    // Jika ada merk, match nama+merk; jika tidak ada, match nama saja
+                    $stokQuery = \App\Models\StokPanti::where('nama_barang', $namaBarang);
+                    if ($merk && $merk !== '—') {
+                        $stokQuery->where('merk', $merk);
+                    }
+                    $stokMatch = $stokQuery->orderBy('id_stok', 'desc')->first();
+                @endphp
+                <tr class="hover:bg-slate-50 transition-colors">
+                    {{-- Donatur --}}
+                    <td class="px-5 py-4">
+                        <div class="font-semibold text-slate-800">{{ $item->nama_donatur_display }}</div>
+                        @if($item->user)
+                            <span class="inline-block mt-1 px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-100 rounded text-[10px] font-bold uppercase">Terdaftar</span>
+                        @else
+                            <span class="inline-block mt-1 px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-[10px] font-bold uppercase">Publik</span>
+                        @endif
+                    </td>
+                    {{-- Nama Barang --}}
+                    <td class="px-5 py-4 font-semibold text-slate-800">{{ $namaBarang }}</td>
+                    {{-- Merk --}}
+                    <td class="px-5 py-4 text-slate-500 text-xs">{{ $merk ?: '—' }}</td>
+                    {{-- Jumlah --}}
+                    <td class="px-5 py-4">
+                        <span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-semibold">{{ $jumlah }}</span>
+                    </td>
+                    {{-- Tanggal --}}
+                    <td class="px-5 py-4 text-slate-500 text-xs whitespace-nowrap">
+                        {{ $item->tanggal_donasi?->locale('id_ID')?->translatedFormat('j M Y') ?? '-' }}
+                    </td>
+                    {{-- Aksi: redirect ke stok & sorot batch yang tepat --}}
+                    <td class="px-5 py-4 whitespace-nowrap flex gap-2 items-center">
+                        @if($stokMatch)
+                            <a href="{{ route('stok.index', ['highlight' => $stokMatch->id_stok]) }}"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-semibold hover:bg-slate-700 transition">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                Lihat di Gudang
+                            </a>
+                        @else
+                            <span class="text-slate-300 text-xs italic">—</span>
+                        @endif
+                        
+                        <a href="{{ route('donasi.receipt', $item) }}" target="_blank"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            Kwitansi
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+
+            @else
+            {{-- ===== TABEL STANDAR DONASI UANG ===== --}}
             <thead class="bg-slate-50 border-b border-slate-200">
                 <tr>
                     <th class="px-5 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">Donatur</th>
@@ -109,7 +200,6 @@
                     <td class="px-5 py-4">
                         <div class="font-semibold text-slate-800">{{ $item->nama_donatur_display }}</div>
                         @if($item->user)
-                            {{-- Registered Donor --}}
                             <div class="text-xs text-slate-400 mt-0.5">{{ $item->user->email ?? '-' }}</div>
                             @if($item->user->donatur?->no_hp)
                             <div class="text-xs text-slate-400">{{ $item->user->donatur->no_hp }}</div>
@@ -118,7 +208,6 @@
                                 Terdaftar
                             </span>
                         @else
-                            {{-- Public Donor --}}
                             <div class="text-xs text-slate-400 mt-0.5">{{ $item->email_donatur_manual ?? '-' }}</div>
                             <span class="inline-block mt-1 px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-[10px] font-bold uppercase">
                                 Publik
@@ -157,6 +246,8 @@
                 </tr>
                 @endforeach
             </tbody>
+            @endif
+
         </table>
     </div>
     <div class="px-5 py-4 border-t border-slate-100">

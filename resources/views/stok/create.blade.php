@@ -49,8 +49,26 @@
                 </select>
             </div>
 
+            {{-- Merk & Tanggal Kadaluarsa --}}
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Merk / Merek
+                    <span class="font-normal text-slate-400">(opsional)</span>
+                </label>
+                <input type="text" name="merk" value="{{ old('merk') }}"
+                       placeholder="Contoh: Rose Brand, Bimoli..."
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('merk') border-red-400 @enderror">
+                @error('merk')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
 
-            
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Kadaluarsa
+                    <span class="font-normal text-slate-400">(opsional)</span>
+                </label>
+                <input type="date" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}"
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('tanggal_kadaluarsa') border-red-400 @enderror">
+                <p class="text-xs text-slate-400 mt-1">Kosongkan jika barang tidak memiliki tanggal kadaluarsa.</p>
+                @error('tanggal_kadaluarsa')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
             <div class="md:col-span-2 pt-4 border-t border-slate-100 grid grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Stok Awal <span class="text-red-500">*</span></label>

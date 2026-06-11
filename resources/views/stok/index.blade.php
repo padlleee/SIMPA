@@ -19,6 +19,10 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         Riwayat Stok
     </a>
+    <a href="{{ route('stok.index', ['filter' => 'kadaluarsa']) }}" class="bg-amber-50 border border-amber-300 text-amber-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-amber-100 transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Segera Kadaluarsa
+    </a>
     <a href="{{ route('stok.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Barang
@@ -89,19 +93,56 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-slate-100 bg-slate-50">
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Kode Barang</th>
                     <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama Barang</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Merk</th>
                     <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Stok Awal</th>
                     <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Masuk</th>
                     <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Keluar</th>
                     <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Stok Akhir</th>
+                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Kadaluarsa</th>
                     <th class="text-left px-4 py-4 font-semibold text-slate-600">Keterangan</th>
                     <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
             @forelse($stok as $item)
-            <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-semibold text-slate-800 whitespace-nowrap">{{ $item->nama_barang }}</td>
+            @php
+                $kadaluarsa = $item->tanggal_kadaluarsa;
+                $kadaluarsaClass = '';
+                $kadaluarsaBadge = '';
+                if ($kadaluarsa) {
+                    $now = now()->startOfDay();
+                    if ($kadaluarsa->lt($now)) {
+                        $kadaluarsaClass  = 'text-red-600 font-bold';
+                        $kadaluarsaBadge  = '<span class="block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 uppercase tracking-wider">Kadaluarsa</span>';
+                    } elseif ($kadaluarsa->lte($now->copy()->addDays(30))) {
+                        $kadaluarsaClass  = 'text-amber-600 font-semibold';
+                        $kadaluarsaBadge  = '<span class="block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 uppercase tracking-wider">Segera Habis</span>';
+                    } else {
+                        $kadaluarsaClass  = 'text-slate-600';
+                        $kadaluarsaBadge  = '';
+                    }
+                }
+                $isHighlighted = request('highlight') == $item->id_stok;
+            @endphp
+            <tr id="stok-row-{{ $item->id_stok }}"
+                class="transition-colors"
+                @if($isHighlighted) data-highlighted="1" style="background-color:#ecfdf5;outline:2px solid #34d399;outline-offset:-2px;" @endif>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    @if($item->kode_barang)
+                        <span class="font-mono text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded">{{ $item->kode_barang }}</span>
+                    @else
+                        <span class="text-slate-300 text-xs">—</span>
+                    @endif
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="font-semibold text-slate-800">{{ $item->nama_barang }}</div>
+                    @if($item->kategori_barang)
+                        <div class="text-xs text-slate-400 mt-0.5">{{ $item->kategori_barang }}</div>
+                    @endif
+                </td>
+                <td class="px-4 py-4 text-sm text-slate-600 whitespace-nowrap">{{ $item->merk ?? '—' }}</td>
                 <td class="px-4 py-4 text-center text-slate-600 whitespace-nowrap">{{ $item->stok_awal }}</td>
                 <td class="px-4 py-4 text-center text-green-600 font-medium whitespace-nowrap">+{{ $item->barang_masuk }}</td>
                 <td class="px-4 py-4 text-center text-red-500 font-medium whitespace-nowrap">-{{ $item->barang_keluar }}</td>
@@ -117,7 +158,15 @@
                         </div>
                     @endif
                 </td>
-                <td class="px-4 py-4 text-slate-500 text-xs min-w-[200px]">{{ $item->keterangan ?? '-' }}</td>
+                <td class="px-4 py-4 text-center whitespace-nowrap">
+                    @if($kadaluarsa)
+                        <span class="{{ $kadaluarsaClass }}">{{ $kadaluarsa->format('d M Y') }}</span>
+                        {!! $kadaluarsaBadge !!}
+                    @else
+                        <span class="text-slate-300 text-xs">—</span>
+                    @endif
+                </td>
+                <td class="px-4 py-4 text-slate-500 text-xs min-w-[160px]">{{ $item->keterangan ?? '—' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
                         <a href="{{ route('stok.transaksi', $item) }}" class="p-2 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg transition-colors border border-green-200" title="Update Masuk / Keluar Stok">
@@ -140,7 +189,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="px-6 py-16 text-center text-slate-400">Belum ada data stok gudang.</td>
+                <td colspan="9" class="px-6 py-16 text-center text-slate-400">Belum ada data stok gudang.</td>
             </tr>
             @endforelse
         </tbody>
@@ -153,9 +202,8 @@
 
 @push('scripts')
 <script>
-    // Handler hapus stok — menggunakan data-attribute untuk menghindari
-    // konflik karakter '>' dari arrow function di dalam HTML attribute
     document.addEventListener('DOMContentLoaded', function () {
+        // Handler hapus stok
         document.querySelectorAll('.stok-del-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 const id   = this.dataset.id;
@@ -171,6 +219,20 @@
                 });
             });
         });
+
+        // Auto-scroll & flash highlight untuk baris yang di-highlight dari Donasi Sembako
+        const highlightedRow = document.querySelector('tr[data-highlighted="1"]');
+        if (highlightedRow) {
+            setTimeout(function () {
+                highlightedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+            // Fade out highlight setelah 3.5 detik
+            setTimeout(function () {
+                highlightedRow.style.transition = 'background-color 1.2s ease, outline 1.2s ease';
+                highlightedRow.style.backgroundColor = '';
+                highlightedRow.style.outline = '';
+            }, 3500);
+        }
     });
 </script>
 @endpush

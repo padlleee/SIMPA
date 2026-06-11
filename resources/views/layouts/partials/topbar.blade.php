@@ -18,77 +18,85 @@
         {{-- Notifications (non-Donatur only) --}}
         @if(auth()->user()->role !== 'Donatur')
         @php
-            $notifs = [];
+            $userId = auth()->id();
+            $userRole = auth()->user()->role;
+            
+            // Cache notifikasi selama 60 detik untuk mencegah DB query berat di setiap perpindahan halaman
+            $notifs = \Illuminate\Support\Facades\Cache::remember('topbar_notifs_' . $userId, 60, function() use ($userRole) {
+                $items = [];
 
-            // 1. Donasi Pending
-            if(in_array(auth()->user()->role, ['Admin','Bendahara'])) {
-                $pendingDonations = \App\Models\Donasi::with(['user.donatur'])
-                    ->where('status_verifikasi','Pending')
-                    ->latest('tanggal_donasi')->get();
-                foreach($pendingDonations as $don) {
-                    $namaDonatur = $don->user?->donatur?->nama_donatur
-                        ?? $don->user?->username
-                        ?? $don->nama_donatur_manual
-                        ?? 'Anonim';
-                    $jenisLabel = $don->id_donatur ? 'Donatur Tetap' : 'Publik';
-                    $notifs[] = [
-                        'type'  => 'donasi',
-                        'icon'  => 'heart',
-                        'color' => 'yellow',
-                        'title' => 'Donasi masuk dari ' . $namaDonatur,
-                        'sub'   => $jenisLabel,
-                        'url'   => route('donasi.show', $don->id_donasi),
-                    ];
+                // 1. Donasi Pending
+                if(in_array($userRole, ['Admin','Bendahara'])) {
+                    $pendingDonations = \App\Models\Donasi::with(['user.donatur'])
+                        ->where('status_verifikasi','Pending')
+                        ->latest('tanggal_donasi')->take(10)->get();
+                    foreach($pendingDonations as $don) {
+                        $namaDonatur = $don->user?->donatur?->nama_donatur
+                            ?? $don->user?->username
+                            ?? $don->nama_donatur_manual
+                            ?? 'Anonim';
+                        $jenisLabel = $don->id_donatur ? 'Donatur Tetap' : 'Publik';
+                        $items[] = [
+                            'type'  => 'donasi',
+                            'icon'  => 'heart',
+                            'color' => 'yellow',
+                            'title' => 'Donasi masuk dari ' . $namaDonatur,
+                            'sub'   => $jenisLabel,
+                            'url'   => route('donasi.show', $don->id_donasi),
+                        ];
+                    }
                 }
-            }
 
-            // 2. Stok Menipis
-            if(in_array(auth()->user()->role, ['Admin','Ketua'])) {
-                $lowStocks = \App\Models\StokPanti::where('stok_akhir', '<=', 5)->get();
-                foreach($lowStocks as $stok) {
-                    $notifs[] = [
-                        'type'  => 'stok',
-                        'icon'  => 'box',
-                        'color' => 'orange',
-                        'title' => 'Stok "' . $stok->nama_barang . '" menipis',
-                        'sub'   => 'Sisa ' . $stok->stok_akhir . ' ' . ($stok->satuan ?? 'unit'),
-                        'url'   => route('stok.index', ['filter' => 'menipis']),
-                    ];
+                // 2. Stok Menipis
+                if(in_array($userRole, ['Admin','Ketua'])) {
+                    $lowStocks = \App\Models\StokPanti::where('stok_akhir', '<=', 5)->take(10)->get();
+                    foreach($lowStocks as $stok) {
+                        $items[] = [
+                            'type'  => 'stok',
+                            'icon'  => 'box',
+                            'color' => 'orange',
+                            'title' => 'Stok "' . $stok->nama_barang . '" menipis',
+                            'sub'   => 'Sisa ' . $stok->stok_akhir . ' ' . ($stok->satuan ?? 'unit'),
+                            'url'   => route('stok.index', ['filter' => 'menipis']),
+                        ];
+                    }
                 }
-            }
 
-            // 3. Buku Terlambat Dikembalikan
-            if(in_array(auth()->user()->role, ['Admin','Ketua'])) {
-                $terlambat = \App\Models\PeminjamanBuku::with('buku')
-                    ->where('status', 'Dipinjam')
-                    ->where('tanggal_kembali', '<', now()->toDateString())
-                    ->get();
-                foreach($terlambat as $pinjam) {
-                    $notifs[] = [
-                        'type'  => 'buku',
-                        'icon'  => 'book',
-                        'color' => 'red',
-                        'title' => 'Buku "' . ($pinjam->buku?->judul_buku ?? '-') . '" terlambat',
-                        'sub'   => 'Peminjam: ' . $pinjam->nama_peminjam . ' | Tenggat: ' . \Carbon\Carbon::parse($pinjam->tanggal_kembali)->format('d M Y'),
-                        'url'   => route('perpustakaan.index'),
-                    ];
+                // 3. Buku Terlambat Dikembalikan
+                if(in_array($userRole, ['Admin','Ketua'])) {
+                    $terlambat = \App\Models\PeminjamanBuku::with('buku')
+                        ->where('status', 'Dipinjam')
+                        ->where('tanggal_kembali', '<', now()->toDateString())
+                        ->take(10)->get();
+                    foreach($terlambat as $pinjam) {
+                        $items[] = [
+                            'type'  => 'buku',
+                            'icon'  => 'book',
+                            'color' => 'red',
+                            'title' => 'Buku "' . ($pinjam->buku?->judul_buku ?? '-') . '" terlambat',
+                            'sub'   => 'Peminjam: ' . $pinjam->nama_peminjam . ' | Tenggat: ' . \Carbon\Carbon::parse($pinjam->tanggal_kembali)->format('d M Y'),
+                            'url'   => route('perpustakaan.index'),
+                        ];
+                    }
                 }
-            }
 
-            // 4. Permintaan Akun Pending
-            if(auth()->user()->role === 'Admin') {
-                $pendingReqs = \App\Models\AccountRequest::where('status','pending')->get();
-                foreach($pendingReqs as $req) {
-                    $notifs[] = [
-                        'type'  => 'akun',
-                        'icon'  => 'user',
-                        'color' => 'blue',
-                        'title' => 'Permintaan akun dari ' . $req->nama_lengkap,
-                        'sub'   => 'Menunggu persetujuan',
-                        'url'   => route('account-request.index', ['status' => 'pending']),
-                    ];
+                // 4. Permintaan Akun Pending
+                if($userRole === 'Admin') {
+                    $pendingReqs = \App\Models\AccountRequest::where('status','pending')->take(10)->get();
+                    foreach($pendingReqs as $req) {
+                        $items[] = [
+                            'type'  => 'akun',
+                            'icon'  => 'user',
+                            'color' => 'blue',
+                            'title' => 'Permintaan akun dari ' . $req->nama_lengkap,
+                            'sub'   => 'Menunggu persetujuan',
+                            'url'   => route('account-request.index', ['status' => 'pending']),
+                        ];
+                    }
                 }
-            }
+                
+                return $items;
+            });
 
             $totalNotifs = count($notifs);
         @endphp

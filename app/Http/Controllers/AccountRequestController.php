@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountRequest;
+use App\Models\Donasi;
 use App\Models\Donatur;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -106,19 +107,44 @@ class AccountRequestController extends Controller
             'force_password_change'=> true,
         ]);
 
-        Donatur::create([
-            'id_user'      => $user->id_user,
-            'nama_donatur' => $accountRequest->nama_lengkap,
-            'email'        => $accountRequest->email,
-            'no_hp'        => $accountRequest->no_hp ?? '-',
-            'alamat'       => '-',
-        ]);
+        $donatur = Donatur::where('email', $accountRequest->email)->first();
+        if ($donatur) {
+            $donatur->update([
+                'id_user'      => $user->id_user,
+                'nama_donatur' => $accountRequest->nama_lengkap,
+                'no_hp'        => $accountRequest->no_hp ?? $donatur->no_hp,
+            ]);
+        } else {
+            Donatur::create([
+                'id_user'      => $user->id_user,
+                'nama_donatur' => $accountRequest->nama_lengkap,
+                'email'        => $accountRequest->email,
+                'no_hp'        => $accountRequest->no_hp ?? '-',
+                'alamat'       => '-',
+            ]);
+        }
 
         $accountRequest->update([
             'status'      => 'approved',
             'reviewed_by' => Auth::id(),
             'reviewed_at' => now(),
         ]);
+
+        // Celah 2 FIX: Auto-claim donasi publik dengan email yang sama
+        $claimedCount = Donasi::whereNull('id_donatur')
+            ->where('email_donatur_manual', $accountRequest->email)
+            ->count();
+
+        if ($claimedCount > 0) {
+            Donasi::whereNull('id_donatur')
+                ->where('email_donatur_manual', $accountRequest->email)
+                ->update([
+                    'id_donatur'           => $user->id_user,
+                    'nama_donatur_manual'  => null,
+                    'email_donatur_manual' => null,
+                    'no_hp_donatur_manual' => null,
+                ]);
+        }
 
         try {
             Mail::to($accountRequest->email)->send(new AccountApprovedMail([
@@ -127,8 +153,14 @@ class AccountRequestController extends Controller
                 'password' => $tempPassword,
             ]));
             $msg = "Akun berhasil disetujui. Email berisi kredensial telah dikirim ke {$accountRequest->email}.";
+            if ($claimedCount > 0) {
+                $msg .= " {$claimedCount} riwayat donasi publik sebelumnya berhasil dikaitkan ke akun ini.";
+            }
         } catch (\Exception $e) {
             $msg = "Akun berhasil disetujui, namun gagal mengirim email. Username: {$username} | Password: {$tempPassword}";
+            if ($claimedCount > 0) {
+                $msg .= " {$claimedCount} riwayat donasi publik telah dikaitkan.";
+            }
         }
 
         return back()->with('success', $msg);
@@ -150,5 +182,15 @@ class AccountRequestController extends Controller
         ]);
 
         return back()->with('success', 'Permintaan akun telah ditolak.');
+    }
+
+    /**
+     * Admin: delete a request.
+     */
+    public function destroy(AccountRequest $accountRequest)
+    {
+        $accountRequest->delete();
+
+        return back()->with('success', 'Permintaan akun berhasil dihapus.');
     }
 }

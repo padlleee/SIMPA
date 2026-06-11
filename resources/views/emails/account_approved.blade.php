@@ -3,80 +3,70 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akun SIMPA Anda Telah Disetujui</title>
+    <title>Akun SIMPA Disetujui</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; color: #334155; }
-        .wrapper { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .header { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%); padding: 30px 40px; text-align: center; }
-        .header img { height: 60px; margin-bottom: 12px; }
-        .header h1 { color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-        .header p { color: #bfdbfe; font-size: 13px; margin-top: 4px; }
-        .content { padding: 36px 40px; }
-        .greeting { font-size: 16px; margin-bottom: 14px; color: #1e293b; }
-        .info-text { font-size: 14px; line-height: 1.7; color: #475569; margin-bottom: 20px; }
-        .credential-box { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #1d4ed8; border-radius: 8px; padding: 20px 24px; margin: 20px 0; }
-        .credential-box .label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
-        .credential-box .value { font-size: 17px; font-weight: 700; color: #1e293b; font-family: 'Courier New', monospace; letter-spacing: 1px; }
-        .copy-row { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin: 10px 0; }
-        .copy-field { font-family: 'Courier New', monospace; font-size: 16px; font-weight: 700; color: #1e293b; letter-spacing: 1px; }
-        .copy-btn { background: #dbeafe; color: #1d4ed8; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .divider { border: none; border-top: 1px solid #f1f5f9; margin: 24px 0; }
-        .warning-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 18px; margin: 20px 0; }
-        .warning-box p { font-size: 13px; color: #92400e; line-height: 1.6; }
-        .btn-container { text-align: center; margin: 28px 0 16px; }
-        .btn { display: inline-block; background: #1d4ed8; color: #ffffff !important; padding: 13px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 14px; letter-spacing: 0.3px; }
-        .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px 40px; text-align: center; }
-        .footer p { font-size: 12px; color: #94a3b8; line-height: 1.6; }
+        .wrapper { max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .header { background-color: #64748b; padding: 25px 30px; border-bottom: 3px solid #475569; }
+        .header-table { width: 100%; border-collapse: collapse; }
+        .header-table td { vertical-align: middle; }
+        .header-table img { height: 50px; display: block; }
+        .header h1 { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; }
+        .header p { color: #f8fafc; font-size: 13px; margin-top: 5px; margin-bottom: 0; font-weight: 400; }
+        .content { padding: 35px 30px; }
+        .greeting { font-size: 16px; margin-bottom: 15px; color: #1e293b; }
+        .info-text { font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 20px; }
+        .data-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
+        .data-box .label { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .data-box .value { font-size: 22px; font-weight: 700; color: #0f172a; font-family: 'Courier New', monospace; letter-spacing: 2px; padding: 10px 20px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; display: inline-block; user-select: all; }
+        .warning-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .warning-box p { font-size: 13px; color: #92400e; margin: 0; }
+        .btn-container { text-align: center; margin: 30px 0 10px; }
+        .btn { display: inline-block; background: #2563eb; color: #ffffff !important; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px; }
+        .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px 30px; text-align: center; }
+        .footer p { font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 0; }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <div class="header">
-            <img src="{{ asset('images/logo-panti.png') }}" alt="Logo Yayasan Amaliya">
-            <h1>Selamat Datang di SIMPA!</h1>
-            <p>Sistem Informasi Manajemen Panti Asuhan Amaliya</p>
+            <table class="header-table">
+                <tr>
+                    <td width="70">
+                        <img src="{{ $message->embed(public_path('images/logo-panti-single.png')) }}" alt="Logo SIMPA">
+                    </td>
+                    <td>
+                        <h1>Akun SIMPA Disetujui</h1>
+                        <p>Pemberitahuan Otomatis SIMPA</p>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="content">
             <p class="greeting">Halo, <strong>{{ $data['name'] }}</strong>!</p>
             <p class="info-text">
                 Kabar baik! Permintaan pendaftaran akun Anda di SIMPA Yayasan Amaliya telah 
-                <strong>disetujui</strong> oleh Admin. Berikut adalah detail login sementara Anda:
+                <strong>disetujui</strong> oleh Admin. Berikut adalah detail login Anda:
             </p>
-
-            <div class="credential-box">
-                <div class="label">Username</div>
-                <div class="value">{{ $data['username'] }}</div>
+            <div class="data-box">
+                <div class="label">Username Anda</div>
+                <div class="value" style="margin-bottom: 15px; background: transparent; border: none; font-size: 18px; padding: 0;">{{ $data['username'] }}</div>
+                
+                <div class="label">Password Sementara</div>
+                <div class="value">{{ $data['password'] }}</div>
+                <p style="font-size: 11px; color: #64748b; margin-top: 8px;">(Sorot teks di atas untuk menyalin)</p>
             </div>
-
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">Password Sementara (klik untuk menyalin):</p>
-            <div class="copy-row">
-                <span class="copy-field" id="temp-password">{{ $data['password'] }}</span>
-                <a href="javascript:void(0)" class="copy-btn" 
-                   onclick="
-                     var t = document.getElementById('temp-password').innerText;
-                     navigator.clipboard.writeText(t).then(function(){ this.innerText='Tersalin!'; }.bind(this));
-                   ">
-                    Salin
-                </a>
-            </div>
-
             <div class="warning-box">
-                <p>Demi keamanan akun Anda, sistem akan <strong>mewajibkan penggantian password</strong> ini saat pertama kali Anda login. Harap simpan password sementara di atas sebelum login.</p>
+                <p>Demi keamanan, sistem mewajibkan penggantian password ini saat pertama kali Anda login.</p>
             </div>
-
             <div class="btn-container">
-                <a href="{{ url('/') }}" class="btn">Login ke SIMPA Sekarang</a>
+                <a href="{{ url('/') }}" class="btn">Login Sekarang</a>
             </div>
-
-            <hr class="divider">
-            <p class="info-text" style="font-size: 13px; text-align: center;">
-                Terima kasih atas kepercayaan Anda bergabung bersama Yayasan Panti Asuhan Amaliya.
-            </p>
         </div>
         <div class="footer">
+            <p>Pesan ini merupakan pemberitahuan otomatis dari sistem SIMPA (Sistem Informasi Manajemen Panti Asuhan).</p>
             <p>&copy; {{ date('Y') }} Yayasan Panti Asuhan Amaliya. Hak Cipta Dilindungi.</p>
-            <p>Email ini dikirim secara otomatis oleh sistem, mohon tidak membalas email ini.</p>
         </div>
     </div>
 </body>

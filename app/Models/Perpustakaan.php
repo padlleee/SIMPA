@@ -45,11 +45,52 @@ class Perpustakaan extends Model
                     ->where('status', 'Dipinjam');
     }
 
+    /**
+     * Book loans by Donatur (with security deposit).
+     */
+    public function peminjamanDonatur()
+    {
+        return $this->hasMany(PeminjamanBukuDonatur::class, 'buku_id', 'id_buku');
+    }
+
+    public function peminjamanDonaturAktif()
+    {
+        return $this->hasMany(PeminjamanBukuDonatur::class, 'buku_id', 'id_buku')
+                    ->whereIn('status', ['Pending', 'Dipinjam']);
+    }
+
     public function getFotoBukuUrlAttribute(): string
     {
         if ($this->foto_buku && file_exists(public_path('storage/' . $this->foto_buku))) {
             return asset('storage/' . $this->foto_buku);
         }
         return ''; // empty = show placeholder
+    }
+
+    /**
+     * Alias accessor: $buku->kategori → maps to kategori_buku column.
+     */
+    public function getKategoriAttribute(): ?string
+    {
+        return $this->kategori_buku;
+    }
+
+    /**
+     * Alias accessor: $buku->deskripsi → maps to sinopsis column.
+     */
+    public function getDeskripsiAttribute(): ?string
+    {
+        return $this->sinopsis;
+    }
+
+    /**
+     * Total active loans combining both anak-asuh and donatur loans.
+     * Used for availability check in donatur views.
+     */
+    public function peminjamanAktifTotal(): int
+    {
+        $internal = $this->peminjamanAktif()->count();
+        $donatur  = $this->peminjamanDonaturAktif()->count();
+        return $internal + $donatur;
     }
 }

@@ -42,9 +42,9 @@ class DatabaseSeeder extends Seeder
         $this->command->comment('  → Mengisi koleksi buku perpustakaan...');
         $this->call(PerpustakaanSeeder::class);
 
-        // 7. Blog / Artikel Kegiatan
-        $this->command->comment('  → Mengisi artikel blog & kegiatan...');
-        $this->call(ArticleSeeder::class);
+        // 7. Blog / Artikel Kegiatan (Dihapus agar user bisa pakai seeder baru)
+        // $this->command->comment('  → Mengisi artikel blog & kegiatan...');
+        // $this->call(ArticleSeeder::class);
 
         // 8. Calon Anak Asuh (Pendaftaran Digital)
         $this->command->comment('  → Mengisi data pendaftaran calon anak asuh...');

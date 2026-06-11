@@ -18,6 +18,8 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PendaftaranAnakController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\InfoController;
+use App\Http\Controllers\Admin\PengurusNonAktifController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,7 @@ use App\Http\Controllers\FaqController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/info', [InfoController::class, 'index'])->name('info');
 
 // FAQ Public Page (dynamic — data from DB)
 Route::get('/faq', [FaqController::class, 'publicIndex'])->name('faq');
@@ -61,10 +64,12 @@ Route::post('/pendaftaran-anak', [PendaftaranAnakController::class, 'store'])->n
 */
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post')->middleware('guest');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Self-service reset password untuk Donatur (public, tidak perlu login)
 Route::post('/lupa-password', [AuthController::class, 'requestPasswordReset'])->name('password.request-reset');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update-reset');
 
 // Password Management (First-Login & User-Initiated)
 Route::middleware(['auth'])->group(function () {
@@ -97,8 +102,13 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::delete('/anak-asuh/{anakAsuh}', [AnakAsuhController::class, 'destroy'])->name('anak-asuh.destroy');
     Route::patch('/anak-asuh/{anakAsuh}/toggle-status', [AnakAsuhController::class, 'toggleStatus'])->name('anak-asuh.toggle-status');
 
+    // Prestasi Anak — AJAX endpoints (add/delete achievement badges)
+    Route::post('/anak-asuh/{anakAsuh}/prestasi', [AnakAsuhController::class, 'addPrestasi'])->name('anak-asuh.prestasi.add');
+    Route::delete('/anak-asuh/{anakAsuh}/prestasi/{prestasi}', [AnakAsuhController::class, 'deletePrestasi'])->name('anak-asuh.prestasi.delete');
+
     // Donasi
     Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
+    Route::get('/donasi/by-donor', [DonasiController::class, 'byDonor'])->name('donasi.byDonor');
     Route::get('/donasi/create-tunai', [DonasiController::class, 'adminCreate'])->name('donasi.adminCreate');
     Route::post('/donasi/store-tunai', [DonasiController::class, 'adminStore'])->name('donasi.adminStore');
     Route::get('/donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
@@ -152,6 +162,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/print', [LaporanController::class, 'print'])->name('laporan.print');
+    Route::get('/laporan/kas-masuk/create', [LaporanController::class, 'createKasMasuk'])->name('laporan.kas-masuk.create');
+    Route::post('/laporan/kas-masuk', [LaporanController::class, 'storeKasMasuk'])->name('laporan.kas-masuk.store');
+    Route::delete('/laporan/kas-masuk/{kasMasuk}', [LaporanController::class, 'destroyKasMasuk'])->name('laporan.kas-masuk.destroy');
 
     // User Management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -166,8 +179,10 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/account-requests', [AccountRequestController::class, 'index'])->name('account-request.index');
     Route::patch('/account-requests/{accountRequest}/approve', [AccountRequestController::class, 'approve'])->name('account-request.approve');
     Route::patch('/account-requests/{accountRequest}/reject', [AccountRequestController::class, 'reject'])->name('account-request.reject');
+    Route::delete('/account-requests/{accountRequest}', [AccountRequestController::class, 'destroy'])->name('account-request.destroy');
 
     // Blog / Kegiatan (Admin CRUD)
+    Route::post('/admin/blog/upload-inline-image', [ArticleController::class, 'uploadInlineImage'])->name('admin.blog.upload-inline-image');
     Route::get('/admin/blog', [ArticleController::class, 'adminIndex'])->name('admin.blog.index');
     Route::get('/admin/blog/create', [ArticleController::class, 'create'])->name('admin.blog.create');
     Route::post('/admin/blog', [ArticleController::class, 'store'])->name('admin.blog.store');
@@ -182,6 +197,12 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/admin/faq/{faq}/edit', [FaqController::class, 'edit'])->name('admin.faq.edit');
     Route::put('/admin/faq/{faq}', [FaqController::class, 'update'])->name('admin.faq.update');
     Route::delete('/admin/faq/{faq}', [FaqController::class, 'destroy'])->name('admin.faq.destroy');
+
+    // Pengurus Non Aktif (Admin CRUD)
+    Route::get('/admin/pengurus-nonaktif', [PengurusNonAktifController::class, 'index'])->name('admin.pengurus-nonaktif.index');
+    Route::get('/admin/pengurus-nonaktif/create', [PengurusNonAktifController::class, 'create'])->name('admin.pengurus-nonaktif.create');
+    Route::post('/admin/pengurus-nonaktif', [PengurusNonAktifController::class, 'store'])->name('admin.pengurus-nonaktif.store');
+    Route::delete('/admin/pengurus-nonaktif/{id}', [PengurusNonAktifController::class, 'destroy'])->name('admin.pengurus-nonaktif.destroy');
 
     // Pendaftaran Anak Asuh (Admin Review)
     Route::get('/admin/pendaftaran-requests', [PendaftaranAnakController::class, 'adminIndex'])->name('admin.pendaftaran.index');
@@ -202,7 +223,13 @@ Route::middleware(['auth', 'role:Donatur'])->group(function () {
 
     // Donasi from registered Donatur
     Route::get('/donatur/laporan', [DonaturController::class, 'laporan'])->name('donatur.laporan');
+    Route::get('/donatur/laporan/print', [DonaturController::class, 'printLaporan'])->name('donatur.laporan.print');
     Route::get('/donatur/donasi/create', [DonasiController::class, 'userCreate'])->name('donatur.donasi.create');
 
     Route::post('/donatur/donasi', [DonasiController::class, 'userStore'])->name('donatur.donasi.store');
+
+    // Perpustakaan Donatur (browse + loan request)
+    Route::get('/donatur/perpustakaan', [DonaturController::class, 'perpustakaanIndex'])->name('donatur.perpustakaan.index');
+    Route::get('/donatur/perpustakaan/{buku}', [DonaturController::class, 'perpustakaanShow'])->name('donatur.perpustakaan.show');
+    Route::post('/donatur/perpustakaan/{buku}/checkout', [DonaturController::class, 'perpustakaanCheckout'])->name('donatur.perpustakaan.checkout');
 });

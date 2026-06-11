@@ -3,379 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kwitansi Donasi #{{ $donasi->id_donasi }}</title>
+    <title>Kwitansi Donasi #{{ str_pad($donasi->id_donasi, 6, '0', STR_PAD_LEFT) }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-        }
-
-        /* Print Styles */
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
             body {
-                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: white !important;
             }
             .no-print {
-                display: none;
+                display: none !important;
             }
-            .container {
-                max-width: 100%;
-                margin: 0;
-                padding: 40px;
+            .print-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 10mm !important;
             }
         }
-
-        /* Header */
-        .header {
-            border-bottom: 3px solid #000;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .organization-info h1 {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .organization-info p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .receipt-title {
-            text-align: right;
-        }
-
-        .receipt-title h2 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .receipt-number {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* Content */
-        .content {
-            margin-bottom: 30px;
-        }
-
-        .section {
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
+        body {
+            font-family: 'Times New Roman', Times, serif; /* Mengikuti gaya kwitansi klasik */
+            background-color: #f8fafc;
             color: #000;
         }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-size: 14px;
+        .dotted-cut {
+            border-top: 2px dashed #000;
+            position: relative;
+            margin: 40px 0;
         }
-
-        .info-label {
-            font-weight: 500;
-            color: #333;
-            min-width: 200px;
-        }
-
-        .info-value {
-            text-align: right;
-            color: #333;
-        }
-
-        /* Donation Amount */
-        .amount-section {
-            background: #f9f9f9;
-            padding: 20px;
-            border: 2px solid #000;
-            margin: 25px 0;
-            text-align: center;
-        }
-
-        .amount-label {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .amount-value {
-            font-size: 32px;
-            font-weight: bold;
+        .dotted-cut::before {
+            content: "✂";
+            position: absolute;
+            top: -12px;
+            left: -20px;
+            font-size: 20px;
             color: #000;
         }
-
-        /* Signature Area */
-        .signature-section {
-            margin-top: 50px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .signature-box {
-            width: 45%;
-            text-align: center;
-        }
-
-        .signature-line {
-            border-top: 1px solid #000;
-            margin-top: 50px;
-            padding-top: 10px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ccc;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* Buttons */
-        .action-buttons {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        button, .btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-print {
-            background: #000;
-            color: white;
-        }
-
-        .btn-print:hover {
-            background: #333;
-        }
-
-        .btn-back {
-            background: #e0e0e0;
+        .dotted-cut::after {
+            content: "✂";
+            position: absolute;
+            top: -12px;
+            right: -20px;
+            font-size: 20px;
             color: #000;
         }
-
-        .btn-back:hover {
-            background: #ccc;
-        }
-
-        /* Badge */
-        .verified-badge {
-            display: inline-block;
-            background: #4CAF50;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        /* Notes */
-        .notes {
-            background: #f0f0f0;
-            padding: 15px;
-            border-left: 4px solid #000;
-            margin-top: 25px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .notes p {
-            margin-bottom: 8px;
-        }
-
-        .notes p:last-child {
-            margin-bottom: 0;
-        }
+        
+        /* Helper variables for checkboxes */
+        @php
+            $isSembako = str_contains(strtolower($donasi->metode_pembayaran), 'sembako') || str_contains(strtolower($donasi->metode_pembayaran), 'barang');
+            $isTransfer = in_array(strtolower($donasi->metode_pembayaran), ['transfer', 'qris', 'bjb', 'bri']);
+            
+            $nominalDisplay = '';
+            if ($isSembako) {
+                // If sembako, try to extract the item description from catatan
+                $nominalDisplay = str_replace('Donasi Sembako: ', '', $donasi->catatan_verifikasi);
+            } else {
+                $nominalDisplay = 'Rp ' . number_format($donasi->nominal, 0, ',', '.');
+            }
+            
+            $hp = $donasi->user->donatur->no_hp ?? $donasi->no_hp_donatur_manual ?? '';
+            $alamat = $donasi->user->donatur->alamat ?? '';
+        @endphp
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-content">
-                <div class="organization-info">
-                    <h1>🏛 YAYASAN PANTI ASUHAN</h1>
-                    <p>Jl. Contoh No. 123, Kota Bandung, Jawa Barat 40000</p>
-                    <p>Telepon: (0274) 123-456 | Email: info@pantasuhan.org</p>
-                    <p>No. NPWP: 12.345.678.9-000.000</p>
-                </div>
-                <div class="receipt-title">
-                    <h2>KWITANSI</h2>
-                    <div class="receipt-number">
-                        <p>No. <strong>#{{ str_pad($donasi->id_donasi, 6, '0', STR_PAD_LEFT) }}</strong></p>
-                        <p>Tanggal: {{ now()->locale('id_ID')->translatedFormat('j F Y') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="content">
-            <!-- Donor Information -->
-            <div class="section">
-                <div class="section-title">Data Donatur</div>
-                <div class="info-row">
-                    <span class="info-label">Nama Donatur</span>
-                    <span class="info-value">{{ $donasi->nama_donatur_display }}</span>
-                </div>
-                @if($donasi->donatur && $donasi->donatur->email)
-                <div class="info-row">
-                    <span class="info-label">Email</span>
-                    <span class="info-value">{{ $donasi->donatur->email }}</span>
-                </div>
-                @endif
-                @if($donasi->donatur && $donasi->donatur->no_hp)
-                <div class="info-row">
-                    <span class="info-label">Nomor Telepon</span>
-                    <span class="info-value">{{ $donasi->donatur->no_hp }}</span>
-                </div>
-                @endif
-            </div>
-
-            <!-- Donation Information -->
-            <div class="section">
-                <div class="section-title">Informasi Donasi</div>
-                <div class="info-row">
-                    <span class="info-label">Nominal Donasi</span>
-                    <span class="info-value">{{ $donasi->nominal_formatted }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Metode Pembayaran</span>
-                    <span class="info-value">{{ $donasi->metode_pembayaran }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Tanggal Donasi</span>
-                    <span class="info-value">{{ $donasi->tanggal_donasi->locale('id_ID')->translatedFormat('j F Y H:i') }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Tanggal Verifikasi</span>
-                    <span class="info-value">{{ $donasi->tanggal_verifikasi->locale('id_ID')->translatedFormat('j F Y H:i') }}</span>
-                </div>
-            </div>
-
-            <!-- Donation Amount (Highlighted) -->
-            <div class="amount-section">
-                <div class="amount-label">JUMLAH DONASI</div>
-                <div class="amount-value">{{ $donasi->nominal_formatted }}</div>
-                <div class="verified-badge"> SUDAH TERVERIFIKASI</div>
-            </div>
-
-            <!-- Bank Information -->
-            <div class="section">
-                <div class="section-title">Bank Penerima</div>
-                <div class="info-row">
-                    <span class="info-label">Bank BRI</span>
-                    <span class="info-value">1234567890 a.n. YAYASAN PANTI ASUHAN</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Bank BJB</span>
-                    <span class="info-value">0987654321 a.n. YAYASAN PANTI ASUHAN</span>
-                </div>
-            </div>
-
-            <!-- Verification Info -->
-            <div class="section">
-                <div class="section-title">Diverifikasi Oleh</div>
-                <div class="info-row">
-                    <span class="info-label">Nama Bendahara</span>
-                    <span class="info-value">{{ $donasi->bendahara->nama_lengkap ?? $donasi->bendahara->username ?? 'Admin' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Signature Section -->
-        <div class="signature-section">
-            <div class="signature-box">
-                <p style="font-size: 13px; margin-bottom: 50px;">Donatur</p>
-                <div class="signature-line">{{ $donasi->nama_donatur_display }}</div>
-            </div>
-            <div class="signature-box">
-                <p style="font-size: 13px; margin-bottom: 50px;">Bendahara Yayasan</p>
-                <div class="signature-line">{{ $donasi->bendahara->nama_lengkap ?? $donasi->bendahara->username ?? 'Admin' }}</div>
-            </div>
-        </div>
-
-        <!-- Notes -->
-        <div class="notes">
-            <p><strong>Catatan Penting:</strong></p>
-            <p> Kwitansi ini merupakan bukti sah bahwa donasi Anda telah diterima dan diverifikasi oleh Yayasan Panti Asuhan.</p>
-            <p> Untuk keperluan administrasi atau perpajakan, silakan simpan kwitansi ini dengan baik.</p>
-            <p> Hubungi kami jika ada pertanyaan atau klarifikasi mengenai donasi Anda.</p>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>Dokumen ini dicetak secara otomatis oleh sistem SIMPA (Sistem Informasi Manajemen Panti Asuhan)</p>
-            <p>Dicetak pada: {{ now()->locale('id_ID')->translatedFormat('j F Y H:i:s') }}</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons no-print">
-            <button class="btn btn-print" onclick="window.print()">
-                 Cetak / Simpan sebagai PDF
-            </button>
-            <a href="{{ route('donasi.index') }}" class="btn btn-back">
-                ← Kembali
-            </a>
-        </div>
+<body class="flex flex-col items-center justify-center min-h-screen py-8 bg-slate-100">
+    
+    <!-- Action Buttons -->
+    <div class="w-full max-w-[210mm] flex justify-end gap-3 mb-4 no-print font-sans">
+        <a href="{{ route('donasi.index') }}" class="px-5 py-2.5 bg-white border-2 border-slate-300 text-slate-700 rounded text-sm font-bold hover:bg-slate-100 transition-colors uppercase tracking-wider">
+            &larr; Kembali
+        </a>
+        <button onclick="window.print()" class="px-5 py-2.5 bg-slate-800 border-2 border-slate-800 text-white rounded text-sm font-bold hover:bg-slate-900 transition-colors flex items-center gap-2 uppercase tracking-wider shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Cetak PDF
+        </button>
     </div>
 
-    <script>
-        // Auto-format currency for display (already done in PHP, but for reference)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Print styling for better PDF generation
-            if (window.location.hash === '#print') {
-                window.print();
-            }
-        });
-    </script>
+    <!-- A4 Container -->
+    <div class="print-container bg-white shadow-xl max-w-[210mm] w-full mx-auto p-[10mm] overflow-hidden">
+        
+        <!-- ================= RECEIPT 1 (TOP) ================= -->
+        <div class="receipt-block">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-24 shrink-0 flex justify-center">
+                    <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo" class="h-20 w-auto object-contain grayscale">
+                </div>
+                <div class="text-center flex-grow px-4">
+                    <h2 class="font-bold text-lg tracking-wide">YAYASAN PANTI ASUHAN</h2>
+                    <h1 class="font-bold text-2xl tracking-wider mt-1">AMALIYA SUBANG</h1>
+                    <p class="text-sm mt-1">Alamat : Blok Suka Asih, RT 23/RW 07, Kel. Karanganyar, Kec/Kab. Subang 41211</p>
+                    <p class="text-sm">Telp: (0260) xxxxxx | email : info@amaliyasubang.org</p>
+                </div>
+                <div class="w-24 shrink-0"></div> <!-- Balancer -->
+            </div>
+            
+            <!-- Double Line Separator -->
+            <div class="border-b-[3px] border-black mb-[2px]"></div>
+            <div class="border-b border-black mb-4"></div>
+            
+            <!-- Title -->
+            <div class="text-center mb-4">
+                <p class="italic text-md mb-2">Bismillahirrahmanirrahim,</p>
+                <h3 class="font-bold text-lg underline inline-block">TANDA PENERIMAAN INFAQ DAN DONASI</h3>
+            </div>
+            
+            <div class="text-justify leading-relaxed mb-4 text-base">
+                Telah diterima infaq atau donasi untuk keperluan kegiatan <span class="inline-block border-b border-black w-48 text-center">{{ $donasi->catatan ?? 'Operasional Panti' }}</span> di Yayasan Amaliya Subang dari :
+            </div>
+            
+            <!-- Form Grid -->
+            <div class="pl-8 mb-6">
+                <table class="w-full text-base border-separate border-spacing-y-2">
+                    <tr>
+                        <td class="w-32 align-bottom">Nama</td>
+                        <td class="w-4 text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2 font-medium">{{ $donasi->nama_donatur_display }}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Alamat</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2">{!! $alamat ?: str_repeat('&nbsp;', 50) !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">No Telp/HP</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2">{!! $hp ?: str_repeat('&nbsp;', 30) !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Jenis Donasi</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="align-bottom pt-1">
+                            <div class="flex gap-12">
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! $isSembako ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Barang/Sembako</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! !$isSembako ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Uang Tunai</span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Nominal/Barang</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2 font-bold">{{ $nominalDisplay }}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Pembayaran</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="align-bottom pt-1">
+                            <div class="flex gap-12">
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! !$isTransfer ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Tunai/Langsung</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! $isTransfer ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Transfer ke Rekening Yayasan</span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Signatures -->
+            <div class="flex justify-between mt-8 text-base">
+                <div class="text-center w-56">
+                    <p class="mb-20 opacity-0">Spacer</p>
+                    <p class="font-bold border-b border-black pb-1 inline-block min-w-[150px]">{{ $donasi->nama_donatur_display }}</p>
+                    <p class="mt-1">Donatur</p>
+                </div>
+                <div class="text-center w-56">
+                    <p class="mb-4">Subang, {{ $donasi->tanggal_verifikasi ? $donasi->tanggal_verifikasi->locale('id_ID')->translatedFormat('d F Y') : now()->locale('id_ID')->translatedFormat('d F Y') }}</p>
+                    <p class="mb-14">Bendahara Yayasan,</p>
+                    <p class="font-bold border-b border-black pb-1 inline-block min-w-[150px]">{{ $donasi->bendahara->nama_lengkap ?? $donasi->bendahara->username ?? 'Pengurus' }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ================= DOTTED CUT LINE ================= -->
+        <div class="dotted-cut"></div>
+
+        <!-- ================= RECEIPT 2 (BOTTOM - EXACT COPY) ================= -->
+        <div class="receipt-block">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-2">
+                <div class="w-24 shrink-0 flex justify-center">
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-20 w-auto object-contain grayscale">
+                </div>
+                <div class="text-center flex-grow px-4">
+                    <h2 class="font-bold text-lg tracking-wide">YAYASAN PANTI ASUHAN</h2>
+                    <h1 class="font-bold text-2xl tracking-wider mt-1">AMALIYA SUBANG</h1>
+                    <p class="text-sm mt-1">Alamat : Blok Suka Asih, RT 23/RW 07, Kel. Karanganyar, Kec/Kab. Subang 41211</p>
+                    <p class="text-sm">Telp: (0260) xxxxxx | email : info@amaliyasubang.org</p>
+                </div>
+                <div class="w-24 shrink-0"></div> <!-- Balancer -->
+            </div>
+            
+            <!-- Double Line Separator -->
+            <div class="border-b-[3px] border-black mb-[2px]"></div>
+            <div class="border-b border-black mb-4"></div>
+            
+            <!-- Title -->
+            <div class="text-center mb-4">
+                <p class="italic text-md mb-2">Bismillahirrahmanirrahim,</p>
+                <h3 class="font-bold text-lg underline inline-block">TANDA PENERIMAAN INFAQ DAN DONASI</h3>
+            </div>
+            
+            <div class="text-justify leading-relaxed mb-4 text-base">
+                Telah diterima infaq atau donasi untuk keperluan kegiatan <span class="inline-block border-b border-black w-48 text-center">{{ $donasi->catatan ?? 'Operasional Panti' }}</span> di Yayasan Amaliya Subang dari :
+            </div>
+            
+            <!-- Form Grid -->
+            <div class="pl-8 mb-6">
+                <table class="w-full text-base border-separate border-spacing-y-2">
+                    <tr>
+                        <td class="w-32 align-bottom">Nama</td>
+                        <td class="w-4 text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2 font-medium">{{ $donasi->nama_donatur_display }}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Alamat</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2">{!! $alamat ?: str_repeat('&nbsp;', 50) !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">No Telp/HP</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2">{!! $hp ?: str_repeat('&nbsp;', 30) !!}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Jenis Donasi</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="align-bottom pt-1">
+                            <div class="flex gap-12">
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! $isSembako ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Barang/Sembako</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! !$isSembako ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Uang Tunai</span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Nominal/Barang</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="border-b border-black align-bottom pb-1 px-2 font-bold">{{ $nominalDisplay }}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-bottom">Pembayaran</td>
+                        <td class="text-center align-bottom">:</td>
+                        <td class="align-bottom pt-1">
+                            <div class="flex gap-12">
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! !$isTransfer ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Tunai/Langsung</span>
+                                </label>
+                                <label class="flex items-center gap-2">
+                                    <span class="text-xl leading-none mt-[-4px]">{!! $isTransfer ? '&#9745;' : '&#9744;' !!}</span>
+                                    <span>Transfer ke Rekening Yayasan</span>
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Signatures -->
+            <div class="flex justify-between mt-8 text-base">
+                <div class="text-center w-56">
+                    <p class="mb-20 opacity-0">Spacer</p>
+                    <p class="font-bold border-b border-black pb-1 inline-block min-w-[150px]">{{ $donasi->nama_donatur_display }}</p>
+                    <p class="mt-1">Donatur</p>
+                </div>
+                <div class="text-center w-56">
+                    <p class="mb-4">Subang, {{ $donasi->tanggal_verifikasi ? $donasi->tanggal_verifikasi->locale('id_ID')->translatedFormat('d F Y') : now()->locale('id_ID')->translatedFormat('d F Y') }}</p>
+                    <p class="mb-14">Bendahara Yayasan,</p>
+                    <p class="font-bold border-b border-black pb-1 inline-block min-w-[150px]">{{ $donasi->bendahara->nama_lengkap ?? $donasi->bendahara->username ?? 'Pengurus' }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </body>
 </html>
