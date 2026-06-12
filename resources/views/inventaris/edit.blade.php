@@ -48,19 +48,17 @@
                 @error('nama_barang')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
-            {{-- KODE BARANG --}}
+            {{-- KODE BARANG & KODE UNIK ASET --}}
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang</label>
                 <input type="text" name="kode_barang" value="{{ old('kode_barang', $inventaris->kode_barang) }}" readonly
                        class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed">
             </div>
 
-            {{-- JUMLAH --}}
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Jumlah <span class="text-red-500">*</span></label>
-                <input type="number" name="jumlah" value="{{ old('jumlah', $inventaris->jumlah) }}" min="1" required
-                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('jumlah') border-red-400 @enderror">
-                @error('jumlah')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Unik Aset <span class="text-xs text-slate-400 font-normal ml-1">— Auto-generated</span></label>
+                <input type="text" value="{{ $inventaris->kode_unik_aset }}" readonly
+                       class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed font-mono">
             </div>
 
             {{-- SATUAN --}}
@@ -99,9 +97,21 @@
             {{-- LOKASI --}}
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Lokasi <span class="text-red-500">*</span></label>
-                <input type="text" name="lokasi" value="{{ old('lokasi', $inventaris->lokasi) }}" placeholder="Contoh: Kantor, Dapur..." required
+                <input type="text" name="lokasi" value="{{ old('lokasi', $inventaris->lokasi) }}" placeholder="Contoh: Gedung A, Lantai 1..." required
                        class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('lokasi') border-red-400 @enderror">
                 @error('lokasi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- RUANGAN --}}
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
+                <select name="ruangan" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                    <option value="">-- Tidak Spesifik --</option>
+                    @foreach(\App\Models\InventarisPeralatan::RUANGAN_LIST as $ruang)
+                        <option value="{{ $ruang }}" {{ old('ruangan', $inventaris->ruangan) === $ruang ? 'selected' : '' }}>{{ $ruang }}</option>
+                    @endforeach
+                </select>
+                @error('ruangan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             {{-- KONDISI --}}

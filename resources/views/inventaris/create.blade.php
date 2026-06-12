@@ -96,9 +96,21 @@
             {{-- LOKASI --}}
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Lokasi <span class="text-red-500">*</span></label>
-                <input type="text" name="lokasi" value="{{ old('lokasi') }}" placeholder="Contoh: Kantor, Dapur..." required
+                <input type="text" name="lokasi" value="{{ old('lokasi') }}" placeholder="Contoh: Gedung A, Lantai 1..." required
                        class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('lokasi') border-red-400 @enderror">
                 @error('lokasi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            {{-- RUANGAN --}}
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Ruangan</label>
+                <select name="ruangan" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
+                    <option value="">-- Tidak Spesifik --</option>
+                    @foreach(\App\Models\InventarisPeralatan::RUANGAN_LIST as $ruang)
+                        <option value="{{ $ruang }}" {{ old('ruangan') === $ruang ? 'selected' : '' }}>{{ $ruang }}</option>
+                    @endforeach
+                </select>
+                @error('ruangan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             {{-- KONDISI --}}

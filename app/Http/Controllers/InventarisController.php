@@ -18,10 +18,18 @@ class InventarisController extends Controller
                   ->orWhere('kode_barang',  'like', '%' . $request->search . '%');
         }
 
-        $inventaris = $query->groupBy('nama_kategori')
-                            ->orderBy('nama_kategori')
-                            ->paginate(15)
-                            ->withQueryString();
+        $items = $query->groupBy('nama_kategori')
+                       ->orderBy('nama_kategori')
+                       ->get();
+                       
+        // Manual pagination
+        $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage();
+        $perPage = 15;
+        $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $inventaris = new \Illuminate\Pagination\LengthAwarePaginator($currentItems, count($items), $perPage, $currentPage, [
+            'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+            'query' => $request->query()
+        ]);
 
         return view('inventaris.index', compact('inventaris'));
     }
@@ -71,6 +79,7 @@ class InventarisController extends Controller
             'satuan_lainnya'        => 'required_if:satuan,Lainnya|nullable|string|max:50',
             'kode_barang'           => 'nullable|string|max:100',
             'lokasi'                => 'required|string|max:255',
+            'ruangan'               => 'nullable|string',
             'kondisi'               => 'required|in:Baik,Rusak',
             'gambar'                => 'nullable|image|max:2048',
             'keterangan'            => 'nullable|string',
@@ -86,27 +95,33 @@ class InventarisController extends Controller
             ? $request->satuan_lainnya
             : $request->satuan;
 
-        // Cek duplikat: nama_barang + lokasi + kondisi
-        $exists = InventarisPeralatan::where('nama_barang', $request->nama_barang)
-            ->where('lokasi', $request->lokasi)
-            ->where('kondisi', $request->kondisi)
-            ->exists();
-
-        if ($exists) {
-            return back()->withInput()->withErrors([
-                'lokasi' => 'Peralatan dengan nama dan lokasi + kondisi yang sama sudah ada. Silakan update jumlah pada data yang sudah ada.'
-            ]);
-        }
-
-        $data = $request->except(['nama_kategori_lainnya', 'satuan_lainnya']);
+        $data = $request->except(['nama_kategori_lainnya', 'satuan_lainnya', 'jumlah']);
         $data['nama_kategori'] = $namaKategori;
         $data['satuan'] = $satuan;
+        $data['jumlah'] = 1; // Paksa jadi 1 baris = 1 aset
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('inventaris', 'public');
         }
 
-        InventarisPeralatan::create($data);
+        $jumlahInput = (int) $request->jumlah;
+        $kodeBarang = $data['kode_barang'] ?? 'MT-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        
+        $maxCode = InventarisPeralatan::where('kode_barang', $kodeBarang)
+                    ->whereNotNull('kode_unik_aset')
+                    ->orderBy('kode_unik_aset', 'desc')
+                    ->first();
+        
+        $nextIdx = 1;
+        if ($maxCode && preg_match('/-(\d+)$/', $maxCode->kode_unik_aset, $m)) {
+            $nextIdx = intval($m[1]) + 1;
+        }
+
+        for ($i = 0; $i < $jumlahInput; $i++) {
+            $itemData = $data;
+            $itemData['kode_unik_aset'] = $kodeBarang . '-' . str_pad($nextIdx + $i, 3, '0', STR_PAD_LEFT);
+            InventarisPeralatan::create($itemData);
+        }
         return redirect()->route('inventaris.show', ['nama_kategori' => $namaKategori])
                          ->with('success', 'Aset peralatan berhasil ditambahkan ke kategori ' . $namaKategori . '.');
     }
@@ -133,11 +148,11 @@ class InventarisController extends Controller
             'nama_barang'           => 'required|string|max:255',
             'nama_kategori'         => 'required|string|max:255',
             'nama_kategori_lainnya' => 'required_if:nama_kategori,Lainnya|nullable|string|max:255',
-            'jumlah'                => 'required|integer|min:1',
             'satuan'                => 'required|string|max:50',
             'satuan_lainnya'        => 'required_if:satuan,Lainnya|nullable|string|max:50',
             'kode_barang'           => 'nullable|string|max:100',
             'lokasi'                => 'required|string|max:255',
+            'ruangan'               => 'nullable|string',
             'kondisi'               => 'required|in:Baik,Rusak',
             'gambar'                => 'nullable|image|max:2048',
             'keterangan'            => 'nullable|string',
@@ -151,20 +166,7 @@ class InventarisController extends Controller
             ? $request->satuan_lainnya
             : $request->satuan;
 
-        // Cek duplikat (kecuali dirinya sendiri)
-        $exists = InventarisPeralatan::where('nama_barang', $request->nama_barang)
-            ->where('lokasi', $request->lokasi)
-            ->where('kondisi', $request->kondisi)
-            ->where('id_aset', '!=', $inventari->id_aset)
-            ->exists();
-
-        if ($exists) {
-            return back()->withInput()->withErrors([
-                'lokasi' => 'Peralatan dengan nama dan lokasi + kondisi yang sama sudah ada.'
-            ]);
-        }
-
-        $data = $request->except(['nama_kategori_lainnya', 'satuan_lainnya']);
+        $data = $request->except(['nama_kategori_lainnya', 'satuan_lainnya', 'jumlah']);
         $data['nama_kategori'] = $namaKategori;
         $data['satuan'] = $satuan;
 

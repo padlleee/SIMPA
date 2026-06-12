@@ -164,7 +164,21 @@
                             {{ \Carbon\Carbon::parse($donasi->tanggal_donasi)->format('d M Y') }}
                         </td>
                         <td class="p-4 font-bold text-slate-800 text-right">
-                            Rp {{ number_format($donasi->nominal, 0, ',', '.') }}
+                            @if(str_contains(strtolower($donasi->metode_pembayaran), 'sembako') || str_contains(strtolower($donasi->metode_pembayaran), 'barang') || $donasi->nominal == 0)
+                                @php
+                                    $catatan = $donasi->catatan_verifikasi ?? '';
+                                    $detail  = str_replace('Donasi Sembako: ', '', $catatan);
+                                    preg_match('/^(.+?)\s*\((.+?)\)(?:\s*—\s*(.+))?$/', $detail, $m);
+                                    $namaBarang = trim($m[1] ?? $detail);
+                                    $jumlah     = trim($m[2] ?? '');
+                                @endphp
+                                <span class="text-sm">{{ $namaBarang ?: 'Barang/Sembako' }}</span>
+                                @if($jumlah)
+                                <span class="text-xs text-slate-500 block font-normal">{{ $jumlah }}</span>
+                                @endif
+                            @else
+                                Rp {{ number_format($donasi->nominal, 0, ',', '.') }}
+                            @endif
                         </td>
                         <td class="p-4 text-center">
                             @if($donasi->status_verifikasi == 'Valid')

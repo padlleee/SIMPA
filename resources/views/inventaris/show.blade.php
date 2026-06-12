@@ -42,10 +42,9 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-slate-100 bg-slate-50">
-                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Kode</th>
+                    <th class="text-left px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Kode Unik</th>
                     <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Nama Barang (Spesifik)</th>
-                    <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Jml</th>
-                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Lokasi & Foto</th>
+                    <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Lokasi, Ruangan & Foto</th>
                     <th class="text-center px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Kondisi</th>
                     <th class="text-left px-4 py-4 font-semibold text-slate-600 whitespace-nowrap">Keterangan</th>
                     <th class="text-right px-6 py-4 font-semibold text-slate-600 whitespace-nowrap">Aksi</th>
@@ -54,14 +53,13 @@
             <tbody class="divide-y divide-slate-100">
             @forelse($items as $item)
             <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 font-mono text-slate-800 font-semibold text-xs whitespace-nowrap">{{ $item->kode_barang ?? '-' }}</td>
+                <td class="px-6 py-4 font-mono text-slate-800 font-semibold text-xs whitespace-nowrap">{{ $item->kode_unik_aset ?? $item->kode_barang }}</td>
                 <td class="px-4 py-4 whitespace-nowrap">
                     <span class="font-semibold text-slate-800">{{ $item->nama_barang }}</span>
                     @if($item->nama_barang !== $item->nama_kategori)
                         <span class="block text-xs text-slate-400">{{ $item->nama_kategori }}</span>
                     @endif
                 </td>
-                <td class="px-4 py-4 text-center text-slate-700 font-bold whitespace-nowrap">{{ $item->jumlah }}</td>
                 <td class="px-4 py-4">
                     <div class="flex items-center gap-3">
                         @if($item->gambar)
@@ -77,7 +75,10 @@
                         @endif
                         <div>
                             <span class="text-sm font-semibold text-slate-800 block">{{ $item->lokasi ?? '-' }}</span>
-                            <span class="text-xs text-slate-400">{{ $item->gambar ? 'Klik foto untuk zoom' : 'Belum ada foto' }}</span>
+                            @if($item->ruangan)
+                                <span class="text-xs text-slate-500 block mb-1">Ruangan: {{ $item->ruangan }}</span>
+                            @endif
+                            <span class="text-[10px] text-slate-400">{{ $item->gambar ? 'Klik foto untuk zoom' : 'Belum ada foto' }}</span>
                         </div>
                     </div>
                 </td>
@@ -114,7 +115,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="px-6 py-16 text-center text-slate-400">Belum ada data untuk kategori ini.</td>
+                <td colspan="6" class="px-6 py-16 text-center text-slate-400">Belum ada data untuk kategori ini.</td>
             </tr>
             @endforelse
         </tbody>
