@@ -13,9 +13,15 @@ class InventarisController extends Controller
         $query = InventarisPeralatan::selectRaw('nama_kategori, sum(jumlah) as total_jumlah, MAX(satuan) as satuan, COUNT(*) as total_entri');
 
         if ($request->filled('search')) {
-            $query->where('nama_kategori', 'like', '%' . $request->search . '%')
+            $query->where(function($q) use ($request) {
+                $q->where('nama_kategori', 'like', '%' . $request->search . '%')
                   ->orWhere('nama_barang', 'like', '%' . $request->search . '%')
                   ->orWhere('kode_barang',  'like', '%' . $request->search . '%');
+            });
+        }
+        
+        if ($request->filled('ruangan')) {
+            $query->where('ruangan', $request->ruangan);
         }
 
         $items = $query->groupBy('nama_kategori')
@@ -30,15 +36,21 @@ class InventarisController extends Controller
             'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
             'query' => $request->query()
         ]);
+        
+        $ruanganList = InventarisPeralatan::select('ruangan')->whereNotNull('ruangan')->distinct()->pluck('ruangan');
 
-        return view('inventaris.index', compact('inventaris'));
+        return view('inventaris.index', compact('inventaris', 'ruanganList'));
     }
 
-    public function show($nama_kategori)
+    public function show(Request $request, $nama_kategori)
     {
-        $items = InventarisPeralatan::where('nama_kategori', $nama_kategori)
-                    ->orderBy('nama_barang')
-                    ->get();
+        $query = InventarisPeralatan::where('nama_kategori', $nama_kategori);
+        
+        if ($request->filled('ruangan')) {
+            $query->where('ruangan', $request->ruangan);
+        }
+
+        $items = $query->orderBy('nama_barang')->get();
         return view('inventaris.show', compact('nama_kategori', 'items'));
     }
 
@@ -71,18 +83,26 @@ class InventarisController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang'           => 'required|string|max:255',
             'nama_kategori'         => 'required|string|max:255',
             'nama_kategori_lainnya' => 'required_if:nama_kategori,Lainnya|nullable|string|max:255',
             'jumlah'                => 'required|integer|min:1',
             'satuan'                => 'required|string|max:50',
             'satuan_lainnya'        => 'required_if:satuan,Lainnya|nullable|string|max:50',
             'kode_barang'           => 'nullable|string|max:100',
-            'lokasi'                => 'required|string|max:255',
-            'ruangan'               => 'nullable|string',
-            'kondisi'               => 'required|in:Baik,Rusak',
-            'gambar'                => 'nullable|image|max:2048',
-            'keterangan'            => 'nullable|string',
+            
+            // Array Validations
+            'nama_barang'           => 'required|array|min:1',
+            'nama_barang.*'         => 'required|string|max:255',
+            'lokasi'                => 'required|array|min:1',
+            'lokasi.*'              => 'required|string|max:255',
+            'ruangan'               => 'nullable|array',
+            'ruangan.*'             => 'nullable|string',
+            'kondisi'               => 'required|array|min:1',
+            'kondisi.*'             => 'required|in:Baik,Rusak',
+            'gambar'                => 'nullable|array',
+            'gambar.*'              => 'nullable|image|max:2048',
+            'keterangan'            => 'nullable|array',
+            'keterangan.*'          => 'nullable|string',
         ]);
 
         // Tentukan nama_kategori akhir
@@ -95,17 +115,8 @@ class InventarisController extends Controller
             ? $request->satuan_lainnya
             : $request->satuan;
 
-        $data = $request->except(['nama_kategori_lainnya', 'satuan_lainnya', 'jumlah']);
-        $data['nama_kategori'] = $namaKategori;
-        $data['satuan'] = $satuan;
-        $data['jumlah'] = 1; // Paksa jadi 1 baris = 1 aset
-
-        if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('inventaris', 'public');
-        }
-
         $jumlahInput = (int) $request->jumlah;
-        $kodeBarang = $data['kode_barang'] ?? 'MT-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        $kodeBarang = $request->kode_barang ?? 'MT-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         
         $maxCode = InventarisPeralatan::where('kode_barang', $kodeBarang)
                     ->whereNotNull('kode_unik_aset')
@@ -118,10 +129,26 @@ class InventarisController extends Controller
         }
 
         for ($i = 0; $i < $jumlahInput; $i++) {
-            $itemData = $data;
-            $itemData['kode_unik_aset'] = $kodeBarang . '-' . str_pad($nextIdx + $i, 3, '0', STR_PAD_LEFT);
-            InventarisPeralatan::create($itemData);
+            $gambarPath = null;
+            if ($request->hasFile("gambar.{$i}")) {
+                $gambarPath = $request->file("gambar.{$i}")->store('inventaris', 'public');
+            }
+
+            InventarisPeralatan::create([
+                'kode_barang'   => $kodeBarang,
+                'kode_unik_aset'=> $kodeBarang . '-' . str_pad($nextIdx + $i, 3, '0', STR_PAD_LEFT),
+                'nama_kategori' => $namaKategori,
+                'satuan'        => $satuan,
+                'jumlah'        => 1, // Paksa jadi 1 baris = 1 aset
+                'nama_barang'   => $request->nama_barang[$i] ?? '-',
+                'lokasi'        => $request->lokasi[$i] ?? '-',
+                'ruangan'       => $request->ruangan[$i] ?? null,
+                'kondisi'       => $request->kondisi[$i] ?? 'Baik',
+                'gambar'        => $gambarPath,
+                'keterangan'    => $request->keterangan[$i] ?? null,
+            ]);
         }
+        
         return redirect()->route('inventaris.show', ['nama_kategori' => $namaKategori])
                          ->with('success', 'Aset peralatan berhasil ditambahkan ke kategori ' . $namaKategori . '.');
     }

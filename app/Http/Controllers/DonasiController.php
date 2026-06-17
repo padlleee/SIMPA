@@ -141,6 +141,7 @@ class DonasiController extends Controller
                     'metode'    => $donasi->metode_pembayaran,
                     'tanggal'   => $donasi->tanggal_verifikasi->format('d M Y H:i'),
                     'is_member' => $donasi->id_donatur ? true : false,
+                    'receipt_url' => \Illuminate\Support\Facades\URL::signedRoute('donasi.receipt.public', ['donasi' => $donasi->id_donasi]),
                 ]));
                 $msg .= " Email konfirmasi telah dikirim.";
             } catch (\Exception $e) {
@@ -542,6 +543,56 @@ class DonasiController extends Controller
 
         // TODO: Implement PDF generation using tcpdf or barryvdh/laravel-dompdf
         return $this->showReceipt($donasi);
+    }
+
+    /**
+     * Public route to view receipt securely via signed URL
+     */
+    public function publicReceipt(Donasi $donasi)
+    {
+        if (!$donasi->isVerified()) {
+            abort(404, 'Kwitansi belum tersedia.');
+        }
+
+        $donasi->load('user.donatur', 'bendahara');
+        return view('donasi.receipt', compact('donasi'));
+    }
+
+    /**
+     * Admin: Resend receipt email to donor
+     */
+    public function resendReceipt(Request $request, Donasi $donasi)
+    {
+        if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Update email if it's different and not a member (or even if it's a member, we just send to that email)
+        if (is_null($donasi->id_donatur)) {
+            $donasi->update(['email_donatur_manual' => $request->email]);
+        }
+        
+        $email = $request->email;
+        $nama  = $donasi->nama_donatur_display;
+
+        try {
+            Mail::to($email)->send(new DonationVerifiedMail([
+                'name'      => $nama,
+                'id_donasi' => $donasi->id_donasi,
+                'nominal'   => $donasi->nominal,
+                'metode'    => $donasi->metode_pembayaran,
+                'tanggal'   => $donasi->tanggal_verifikasi->format('d M Y H:i'),
+                'is_member' => $donasi->id_donatur ? true : false,
+                'receipt_url' => \Illuminate\Support\Facades\URL::signedRoute('donasi.receipt.public', ['donasi' => $donasi->id_donasi]),
+            ]));
+            return redirect()->back()->with('success', 'Kwitansi berhasil dikirim ulang ke ' . $email);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengirim email konfirmasi.');
+        }
     }
 
     // ==================== PUBLIC STATS ====================

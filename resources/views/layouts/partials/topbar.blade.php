@@ -4,12 +4,17 @@
      @include('layouts.partials.topbar')
      ============================================================ --}}
 
-<header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between flex-shrink-0 dashboard-topbar">
+<header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between flex-shrink-0 dashboard-topbar gap-4">
 
-    {{-- Page Title & Subtitle --}}
-    <div>
-        <h1 class="text-xl font-bold text-slate-800">@yield('page-title', 'Dashboard')</h1>
-        <p class="text-slate-400 text-sm mt-0.5">@yield('page-subtitle', '')</p>
+    {{-- Left side: Hamburger + Title --}}
+    <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg md:hidden">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div>
+            <h1 class="text-lg md:text-xl font-bold text-slate-800 leading-tight">@yield('page-title', 'Dashboard')</h1>
+            <p class="text-slate-400 text-xs md:text-sm mt-0.5 hidden sm:block">@yield('page-subtitle', '')</p>
+        </div>
     </div>
 
     {{-- Right side: Notification + Date --}}
@@ -118,7 +123,7 @@
 
             {{-- Notification Panel --}}
             <div id="notif-panel"
-                 class="hidden absolute right-0 top-12 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
+                 class="hidden absolute right-0 md:right-0 -right-16 top-12 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
 
                 {{-- Panel Header --}}
                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
@@ -179,7 +184,7 @@
         @endif
 
         {{-- Current Date --}}
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-slate-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
@@ -192,6 +197,19 @@
 
 @push('scripts')
 <script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        if (sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    }
+
     function toggleNotif() {
         const panel = document.getElementById('notif-panel');
         if (!panel) return;

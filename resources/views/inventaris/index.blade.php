@@ -7,13 +7,26 @@
 @section('content')
 
 <div class="flex flex-col sm:flex-row gap-4 mb-6">
-    <form action="{{ route('inventaris.index') }}" method="GET" class="flex gap-3 flex-1">
-        <div class="relative flex-1 max-w-sm">
+    <form action="{{ route('inventaris.index') }}" method="GET" class="flex flex-wrap gap-3 flex-1">
+        <div class="relative flex-1 min-w-[200px] max-w-sm">
             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori atau nama peralatan..."
                    class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
         </div>
-        <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium">Cari</button>
+        
+        <div class="relative min-w-[180px]">
+            <select name="ruangan" class="w-full pl-4 pr-10 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 appearance-none bg-white">
+                <option value="">Semua Ruangan</option>
+                @foreach($ruanganList as $r)
+                    <option value="{{ $r }}" {{ request('ruangan') == $r ? 'selected' : '' }}>{{ $r }}</option>
+                @endforeach
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+        </div>
+
+        <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium">Filter</button>
     </form>
     <a href="{{ route('inventaris.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -50,7 +63,7 @@
                 </td>
                 <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $item->satuan }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                    <a href="{{ route('inventaris.show', ['nama_kategori' => $item->nama_kategori]) }}"
+                    <a href="{{ route('inventaris.show', ['nama_kategori' => $item->nama_kategori, 'ruangan' => request('ruangan')]) }}"
                        class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors text-xs font-semibold">
                         Lihat Detail
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

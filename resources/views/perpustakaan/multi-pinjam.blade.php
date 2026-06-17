@@ -23,12 +23,55 @@
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-7">
             <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-5">Data Peminjam</h3>
             <div class="grid md:grid-cols-3 gap-5">
-                <div class="md:col-span-1">
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Peminjam <span class="text-red-500">*</span></label>
-                    <input type="text" name="nama_peminjam" value="{{ old('nama_peminjam') }}"
-                           placeholder="Nama lengkap peminjam"
-                           class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('nama_peminjam') border-red-400 @enderror">
-                    @error('nama_peminjam')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                <div class="md:col-span-1 space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Tipe Peminjam <span class="text-red-500">*</span></label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="tipe_peminjam" value="Anak Asuh" class="w-4 h-4 text-slate-800" onchange="togglePeminjamInputs()" {{ old('tipe_peminjam') == 'Anak Asuh' ? 'checked' : '' }}>
+                                <span class="text-sm text-slate-700">Anak Asuh</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="tipe_peminjam" value="Donatur" class="w-4 h-4 text-slate-800" onchange="togglePeminjamInputs()" {{ old('tipe_peminjam') == 'Donatur' ? 'checked' : '' }}>
+                                <span class="text-sm text-slate-700">Donatur</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="tipe_peminjam" value="Umum" class="w-4 h-4 text-slate-800" onchange="togglePeminjamInputs()" {{ old('tipe_peminjam', 'Umum') == 'Umum' ? 'checked' : '' }}>
+                                <span class="text-sm text-slate-700">Umum</span>
+                            </label>
+                        </div>
+                        @error('tipe_peminjam')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div id="input_anak_asuh" class="hidden">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Anak Asuh <span class="text-red-500">*</span></label>
+                        <select name="id_anak_asuh" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('id_anak_asuh') border-red-400 @enderror">
+                            <option value="">Pilih Anak Asuh</option>
+                            @foreach($anakAsuh ?? [] as $anak)
+                                <option value="{{ $anak->id_anak }}" {{ old('id_anak_asuh') == $anak->id_anak ? 'selected' : '' }}>{{ $anak->nama_anak }}</option>
+                            @endforeach
+                        </select>
+                        @error('id_anak_asuh')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div id="input_donatur" class="hidden">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih Donatur <span class="text-red-500">*</span></label>
+                        <select name="id_donatur" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('id_donatur') border-red-400 @enderror">
+                            <option value="">Pilih Donatur</option>
+                            @foreach($donatur ?? [] as $don)
+                                <option value="{{ $don->id_donatur }}" {{ old('id_donatur') == $don->id_donatur ? 'selected' : '' }}>{{ $don->nama_donatur }}</option>
+                            @endforeach
+                        </select>
+                        @error('id_donatur')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div id="input_umum">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Peminjam Umum <span class="text-red-500">*</span></label>
+                        <input type="text" name="nama_peminjam" value="{{ old('nama_peminjam') }}"
+                               placeholder="Nama lengkap peminjam umum"
+                               class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('nama_peminjam') border-red-400 @enderror">
+                        @error('nama_peminjam')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Tanggal Pinjam <span class="text-red-500">*</span></label>
@@ -159,6 +202,14 @@ function validateDates() {
 tglPinjam.addEventListener('change', validateDates);
 tglKembali.addEventListener('change', validateDates);
 validateDates();
+
+function togglePeminjamInputs() {
+    const tipe = document.querySelector('input[name="tipe_peminjam"]:checked').value;
+    document.getElementById('input_anak_asuh').classList.toggle('hidden', tipe !== 'Anak Asuh');
+    document.getElementById('input_donatur').classList.toggle('hidden', tipe !== 'Donatur');
+    document.getElementById('input_umum').classList.toggle('hidden', tipe !== 'Umum');
+}
+togglePeminjamInputs();
 
 // ===================== BADGE & SUMMARY =====================
 function updateBadge() {

@@ -14,6 +14,9 @@ class PeminjamanBuku extends Model
 
     protected $fillable = [
         'id_buku',
+        'tipe_peminjam',
+        'id_anak_asuh',
+        'id_donatur',
         'nama_peminjam',
         'tanggal_pinjam',
         'tanggal_kembali',
@@ -30,6 +33,30 @@ class PeminjamanBuku extends Model
     public function buku()
     {
         return $this->belongsTo(Perpustakaan::class, 'id_buku', 'id_buku');
+    }
+
+    public function anakAsuh()
+    {
+        return $this->belongsTo(AnakAsuh::class, 'id_anak_asuh', 'id_anak');
+    }
+
+    public function donatur()
+    {
+        return $this->belongsTo(Donatur::class, 'id_donatur', 'id_donatur');
+    }
+
+    /**
+     * Get the borrower name dynamically.
+     */
+    public function getNamaPeminjamAttribute($value)
+    {
+        if ($this->tipe_peminjam === 'Anak Asuh' && $this->anakAsuh) {
+            return $this->anakAsuh->nama_anak;
+        }
+        if ($this->tipe_peminjam === 'Donatur' && $this->donatur) {
+            return $this->donatur->nama_donatur;
+        }
+        return $value;
     }
 
     public function scopeDipinjam($query)

@@ -37,6 +37,9 @@ Route::get('/form-donasi', [DonasiController::class, 'publicCreate'])->name('don
 Route::post('/form-donasi', [DonasiController::class, 'publicStore'])->name('donasi.publicStore');
 Route::get('/donasi-sukses', [DonasiController::class, 'publicSuccess'])->name('donasi.public.success');
 
+// Public Donation Receipt (Signed URL)
+Route::get('/p/kwitansi/{donasi}', [DonasiController::class, 'publicReceipt'])->name('donasi.receipt.public')->middleware('signed');
+
 // Public Library View
 Route::get('/perpustakaan-publik', [PerpustakaanController::class, 'publicIndex'])->name('perpustakaan.public.index');
 
@@ -115,6 +118,7 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::patch('/donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
     Route::patch('/donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
     Route::delete('/donasi/{donasi}', [DonasiController::class, 'destroy'])->name('donasi.destroy');
+    Route::post('/donasi/{donasi}/resend-receipt', [DonasiController::class, 'resendReceipt'])->name('donasi.resend-receipt');
 
     // Stok Panti (Gudang)
     Route::get('/stok', [StokController::class, 'index'])->name('stok.index');

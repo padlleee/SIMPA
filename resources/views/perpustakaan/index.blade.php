@@ -134,7 +134,14 @@
             @php $sisaHari = $pinjam->sisa_hari; $terlambat = $pinjam->terlambat; @endphp
             <tr class="hover:bg-slate-50 transition-colors {{ $terlambat ? 'bg-red-50/50' : '' }}">
                 <td class="px-6 py-4 font-semibold text-slate-800 min-w-[200px]">{{ $pinjam->buku?->judul_buku ?? '-' }}</td>
-                <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $pinjam->nama_peminjam }}</td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                    <p class="text-slate-600">{{ $pinjam->nama_peminjam }}</p>
+                    <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                        {{ $pinjam->tipe_peminjam === 'Anak Asuh' ? 'bg-indigo-50 text-indigo-600' : 
+                           ($pinjam->tipe_peminjam === 'Donatur' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500') }}">
+                        {{ $pinjam->tipe_peminjam }}
+                    </span>
+                </td>
                 <td class="px-4 py-4 text-slate-600 text-xs whitespace-nowrap">{{ $pinjam->tanggal_pinjam?->format('d/m/Y') }}</td>
                 <td class="px-4 py-4 whitespace-nowrap">
                     <span class="{{ $terlambat ? 'text-red-600 font-semibold' : 'text-slate-600' }} text-xs">

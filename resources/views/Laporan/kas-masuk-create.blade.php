@@ -90,7 +90,7 @@
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm pointer-events-none">Rp</span>
                         <input type="number" id="jumlah" name="jumlah"
                                value="{{ old('jumlah') }}"
-                               min="1" step="1000"
+                               min="1"
                                placeholder="0"
                                class="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('jumlah') border-red-400 @enderror">
                     </div>

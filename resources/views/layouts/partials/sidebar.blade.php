@@ -4,7 +4,7 @@
      @include('layouts.partials.sidebar')
      ============================================================ --}}
 
-<aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col fixed top-0 left-0 h-full z-40">
+<aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex flex-col fixed top-0 left-0 h-full z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
 
     {{-- Logo --}}
     <div class="px-6 py-5 border-b border-slate-100">

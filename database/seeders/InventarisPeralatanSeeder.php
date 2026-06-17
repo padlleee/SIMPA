@@ -22,260 +22,140 @@ class InventarisPeralatanSeeder extends Seeder
             File::makeDirectory($storagePath, 0755, true);
         }
 
+        // Wipe old data first to avoid duplicate unique constraints during reseeding
+        DB::table('inventaris_peralatan')->truncate();
+
         $items = [
-            // Meja Tamu — 2 unit, lokasi berbeda, kondisi berbeda
+            // DAPUR
             [
                 'kode_barang'  => 'MT-0001',
-                'nama_kategori'=> 'Meja Tamu',
-                'nama_barang'  => 'Meja Tamu Kayu Jati',
+                'nama_kategori'=> 'Kulkas',
+                'nama_barang'  => 'Kulkas 2 Pintu LG',
                 'jumlah'       => 1,
-                'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Makan',
+                'satuan'       => 'Unit',
+                'ruangan'      => 'Dapur',
+                'lokasi'       => 'Dapur Utama',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Meja tamu kayu jati ukuran 120x60 cm. Kondisi baik, tidak ada goresan berarti.',
-                'img_seed'     => 'desk,office,furniture',
+                'keterangan'   => 'Kulkas 2 pintu untuk menyimpan bahan makanan segar.',
+                'img_seed'     => 'refrigerator,kitchen',
             ],
             [
                 'kode_barang'  => 'MT-0002',
-                'nama_kategori'=> 'Meja Tamu',
-                'nama_barang'  => 'Meja Tamu Kayu Biasa',
-                'jumlah'       => 1,
+                'nama_kategori'=> 'Rak Piring',
+                'nama_barang'  => 'Rak Piring Aluminium 3 Susun',
+                'jumlah'       => 2,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Selasar',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => 'Kaki meja sebelah kanan patah, permukaan atas terdapat goresan panjang. Perlu perbaikan segera.',
-                'img_seed'     => 'broken,table,damage',
+                'ruangan'      => 'Dapur',
+                'lokasi'       => 'Dapur Utama',
+                'kondisi'      => 'Baik',
+                'keterangan'   => 'Rak piring untuk menyimpan peralatan makan santri.',
+                'img_seed'     => 'dish rack,kitchen',
             ],
-
-            // Meja Belajar
             [
                 'kode_barang'  => 'MT-0003',
-                'nama_kategori'=> 'Meja Belajar',
-                'nama_barang'  => 'Meja Belajar Siswa (Lantai 1)',
-                'jumlah'       => 15,
+                'nama_kategori'=> 'Peralatan Masak',
+                'nama_barang'  => 'Set Pisau Dapur Stainless',
+                'jumlah'       => 5,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Belajar Lantai 1',
+                'ruangan'      => 'Dapur',
+                'lokasi'       => 'Dapur Utama',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Meja belajar siswa ukuran 60x40 cm. Semua dalam kondisi baik dan layak pakai.',
-                'img_seed'     => 'study,desk,school',
+                'keterangan'   => 'Pisau potong sayur dan daging.',
+                'img_seed'     => 'knife,kitchen',
             ],
             [
                 'kode_barang'  => 'MT-0004',
-                'nama_kategori'=> 'Meja Belajar',
-                'nama_barang'  => 'Meja Belajar Siswa (Lantai 2)',
-                'jumlah'       => 5,
+                'nama_kategori'=> 'Peralatan Masak',
+                'nama_barang'  => 'Panci Besar 50L',
+                'jumlah'       => 2,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Belajar Lantai 2',
+                'ruangan'      => 'Dapur',
+                'lokasi'       => 'Dapur Utama',
                 'kondisi'      => 'Rusak',
-                'keterangan'   => '5 meja mengalami kerusakan ringan pada permukaan dan engsel laci. Masih dapat digunakan dengan hati-hati.',
-                'img_seed'     => 'classroom,furniture',
+                'keterangan'   => 'Pegangan panci lepas, butuh perbaikan las.',
+                'img_seed'     => 'cooking pot,kitchen',
             ],
 
-            // Kursi Plastik
+            // KANTOR
             [
                 'kode_barang'  => 'MT-0005',
-                'nama_kategori'=> 'Kursi Plastik',
-                'nama_barang'  => 'Kursi Plastik Merah (Ruang Makan)',
-                'jumlah'       => 20,
+                'nama_kategori'=> 'Meja Kerja',
+                'nama_barang'  => 'Meja Staff Administrasi',
+                'jumlah'       => 3,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Makan',
+                'ruangan'      => 'Kantor',
+                'lokasi'       => 'Ruang Tata Usaha',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Kursi plastik warna merah untuk ruang makan. Semua dalam kondisi prima.',
-                'img_seed'     => 'plastic,chair,dining',
+                'keterangan'   => 'Meja kayu ukuran standar.',
+                'img_seed'     => 'office desk,table',
             ],
             [
                 'kode_barang'  => 'MT-0006',
-                'nama_kategori'=> 'Kursi Plastik',
-                'nama_barang'  => 'Kursi Plastik Cadangan (Aula)',
-                'jumlah'       => 8,
-                'satuan'       => 'Buah',
-                'lokasi'       => 'Aula',
+                'nama_kategori'=> 'Laptop',
+                'nama_barang'  => 'Laptop ASUS Office',
+                'jumlah'       => 2,
+                'satuan'       => 'Unit',
+                'ruangan'      => 'Kantor',
+                'lokasi'       => 'Ruang Tata Usaha',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Kursi plastik cadangan di aula untuk kegiatan acara/rapat.',
-                'img_seed'     => 'chair,hall,event',
+                'keterangan'   => 'Laptop operasional pengurus panti.',
+                'img_seed'     => 'laptop,computer',
             ],
+
+            // RUANG BELAJAR
             [
                 'kode_barang'  => 'MT-0007',
-                'nama_kategori'=> 'Kursi Plastik',
-                'nama_barang'  => 'Kursi Plastik Teras',
-                'jumlah'       => 5,
+                'nama_kategori'=> 'Papan Tulis',
+                'nama_barang'  => 'Whiteboard 2x1 Meter',
+                'jumlah'       => 1,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Teras',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => '5 kursi mengalami retak pada sandaran dan kaki akibat paparan cuaca. Tidak aman digunakan.',
-                'img_seed'     => 'outdoor,chair,broken',
+                'ruangan'      => 'Ruang Belajar',
+                'lokasi'       => 'Kelas Utama',
+                'kondisi'      => 'Baik',
+                'keterangan'   => 'Papan tulis lengkap dengan penghapus.',
+                'img_seed'     => 'whiteboard,classroom',
             ],
-
-            // Lemari Pakaian
             [
                 'kode_barang'  => 'MT-0008',
-                'nama_kategori'=> 'Lemari Pakaian',
-                'nama_barang'  => 'Lemari Pakaian 3 Pintu (Putra)',
-                'jumlah'       => 4,
+                'nama_kategori'=> 'Meja Belajar',
+                'nama_barang'  => 'Meja Lipat Santri',
+                'jumlah'       => 20,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Kamar Tidur Putra',
+                'ruangan'      => 'Ruang Belajar',
+                'lokasi'       => 'Kelas Utama',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Lemari 3 pintu kayu. Dikondisikan untuk penyimpanan pakaian anak asuh putra.',
-                'img_seed'     => 'wardrobe,bedroom,wooden',
+                'keterangan'   => 'Meja lipat kayu untuk belajar santri.',
+                'img_seed'     => 'study desk,table',
             ],
+
+            // ASRAMA
             [
                 'kode_barang'  => 'MT-0009',
-                'nama_kategori'=> 'Lemari Pakaian',
-                'nama_barang'  => 'Lemari Pakaian 2 Pintu (Putri)',
-                'jumlah'       => 2,
-                'satuan'       => 'Buah',
-                'lokasi'       => 'Kamar Tidur Putri',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Lemari 2 pintu kayu untuk anak asuh putri. Kondisi baik, engsel pintu berfungsi normal.',
-                'img_seed'     => 'wardrobe,closet',
-            ],
-
-            // Laptop
-            [
-                'kode_barang'  => 'MT-0010',
-                'nama_kategori'=> 'Laptop',
-                'nama_barang'  => 'Laptop ASUS Vivobook (Kantor)',
-                'jumlah'       => 2,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Kantor Administrasi',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Laptop untuk operasional administrasi yayasan. Merk ASUS, RAM 8GB, SSD 256GB.',
-                'img_seed'     => 'laptop,computer,office',
-            ],
-            [
-                'kode_barang'  => 'MT-0011',
-                'nama_kategori'=> 'Laptop',
-                'nama_barang'  => 'Laptop Belajar (Rusak)',
-                'jumlah'       => 1,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Ruang Belajar Lantai 1',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => 'Layar laptop retak, keyboard beberapa tombol tidak berfungsi. Perlu perbaikan ke service center.',
-                'img_seed'     => 'laptop,broken,damage',
-            ],
-
-            // Kipas Angin
-            [
-                'kode_barang'  => 'MT-0012',
-                'nama_kategori'=> 'Kipas Angin',
-                'nama_barang'  => 'Kipas Angin Berdiri Asrama Putra',
-                'jumlah'       => 5,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Asrama Putra',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Kipas angin berdiri 16", semua berfungsi dengan baik. Dibersihkan rutin setiap bulan.',
-                'img_seed'     => 'fan,electric,room',
-            ],
-            [
-                'kode_barang'  => 'MT-0013',
-                'nama_kategori'=> 'Kipas Angin',
-                'nama_barang'  => 'Kipas Angin Dinding Asrama Putri',
-                'jumlah'       => 3,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Asrama Putri',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Kipas angin dinding di asrama putri. Semua berfungsi normal.',
-                'img_seed'     => 'fan,wall,ventilation',
-            ],
-
-            // TV LED
-            [
-                'kode_barang'  => 'MT-0014',
-                'nama_kategori'=> 'TV LED',
-                'nama_barang'  => 'TV LED 32" Ruang Keluarga',
-                'jumlah'       => 1,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Ruang Keluarga',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'TV LED 32 inci, terhubung antena dan Netflix. Digunakan untuk kegiatan bersama.',
-                'img_seed'     => 'television,led,living room',
-            ],
-            [
-                'kode_barang'  => 'MT-0015',
-                'nama_kategori'=> 'TV LED',
-                'nama_barang'  => 'TV LED 32" Ruang Belajar',
-                'jumlah'       => 1,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Ruang Belajar Lantai 2',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => 'Layar menampilkan garis vertikal, remote tidak berfungsi. Sudah dilaporkan untuk perbaikan.',
-                'img_seed'     => 'tv,screen,broken',
-            ],
-
-            // Kulkas
-            [
-                'kode_barang'  => 'MT-0016',
-                'nama_kategori'=> 'Kulkas',
-                'nama_barang'  => 'Kulkas 2 Pintu Dapur',
-                'jumlah'       => 1,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Dapur',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Kulkas 2 pintu 200L. Berfungsi normal untuk penyimpanan bahan makanan harian.',
-                'img_seed'     => 'refrigerator,kitchen,appliance',
-            ],
-
-            // Kasur
-            [
-                'kode_barang'  => 'MT-0017',
                 'nama_kategori'=> 'Kasur Spring Bed',
-                'nama_barang'  => 'Kasur Spring Bed Single (Putra)',
+                'nama_barang'  => 'Kasur Busa Single',
                 'jumlah'       => 10,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Kamar Tidur Putra',
+                'ruangan'      => 'Asrama',
+                'lokasi'       => 'Kamar Santri Putra',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Kasur spring bed ukuran single 90x200 cm. Semua dalam kondisi baik.',
-                'img_seed'     => 'mattress,bed,bedroom',
+                'keterangan'   => 'Kasur busa tebal standar asrama.',
+                'img_seed'     => 'mattress,bed',
             ],
             [
-                'kode_barang'  => 'MT-0018',
-                'nama_kategori'=> 'Kasur Spring Bed',
-                'nama_barang'  => 'Kasur Spring Bed Single (Putri)',
+                'kode_barang'  => 'MT-0010',
+                'nama_kategori'=> 'Lemari Pakaian',
+                'nama_barang'  => 'Lemari Plastik 4 Susun',
                 'jumlah'       => 5,
                 'satuan'       => 'Buah',
-                'lokasi'       => 'Kamar Tidur Putri',
+                'ruangan'      => 'Asrama',
+                'lokasi'       => 'Kamar Santri Putra',
                 'kondisi'      => 'Baik',
-                'keterangan'   => 'Kasur spring bed ukuran single di kamar putri. Dilengkapi bed cover.',
-                'img_seed'     => 'bed,pillow,sleep',
-            ],
-
-            // Papan Tulis
-            [
-                'kode_barang'  => 'MT-0019',
-                'nama_kategori'=> 'Papan Tulis',
-                'nama_barang'  => 'Whiteboard 120x80 cm (Lantai 1)',
-                'jumlah'       => 2,
-                'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Belajar Lantai 1',
-                'kondisi'      => 'Baik',
-                'keterangan'   => 'Whiteboard 120x80 cm dengan tripod. Dilengkapi spidol dan penghapus.',
-                'img_seed'     => 'whiteboard,classroom,teaching',
-            ],
-            [
-                'kode_barang'  => 'MT-0020',
-                'nama_kategori'=> 'Papan Tulis',
-                'nama_barang'  => 'Whiteboard (Lantai 2 - Ghosting)',
-                'jumlah'       => 1,
-                'satuan'       => 'Buah',
-                'lokasi'       => 'Ruang Belajar Lantai 2',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => 'Whiteboard mengalami permukaan yang sulit dihapus (ghosting). Perlu diganti baru.',
-                'img_seed'     => 'board,chalk,school',
-            ],
-
-            // Printer
-            [
-                'kode_barang'  => 'MT-0021',
-                'nama_kategori'=> 'Printer',
-                'nama_barang'  => 'Printer Canon Inkjet (Kantor)',
-                'jumlah'       => 1,
-                'satuan'       => 'Unit',
-                'lokasi'       => 'Kantor Administrasi',
-                'kondisi'      => 'Rusak',
-                'keterangan'   => 'Printer Canon inkjet mengalami paper jam dan cartridge error. Sedang dalam antrean servis.',
-                'img_seed'     => 'printer,office,machine',
+                'keterangan'   => 'Lemari plastik untuk baju santri.',
+                'img_seed'     => 'plastic wardrobe,cabinet',
             ],
         ];
+
+        $totalInserted = 0;
 
         foreach ($items as $item) {
             // Buat placeholder gambar menggunakan via.placeholder.com
@@ -297,22 +177,31 @@ class InventarisPeralatanSeeder extends Seeder
                 // Gambar gagal diunduh, lanjutkan tanpa gambar
             }
 
-            DB::table('inventaris_peralatan')->insert([
-                'kode_barang'   => $item['kode_barang'],
-                'nama_kategori' => $item['nama_kategori'],
-                'nama_barang'   => $item['nama_barang'],
-                'jumlah'        => $item['jumlah'],
-                'satuan'        => $item['satuan'],
-                'lokasi'        => $item['lokasi'],
-                'kondisi'       => $item['kondisi'],
-                'gambar'        => $gambarPath,
-                'keterangan'    => $item['keterangan'],
-                'created_at'    => now(),
-                'updated_at'    => now(),
-            ]);
+            // Expand each quantity into individual records to match new architecture
+            $jumlahBarang = $item['jumlah'];
+            for ($i = 0; $i < $jumlahBarang; $i++) {
+                $kodeUnik = $item['kode_barang'] . '-' . str_pad($i + 1, 3, '0', STR_PAD_LEFT);
+                
+                DB::table('inventaris_peralatan')->insert([
+                    'kode_barang'   => $item['kode_barang'],
+                    'kode_unik_aset'=> $kodeUnik,
+                    'nama_kategori' => $item['nama_kategori'],
+                    'nama_barang'   => $item['nama_barang'],
+                    'jumlah'        => 1, // Must be 1 for new architecture
+                    'satuan'        => $item['satuan'],
+                    'ruangan'       => $item['ruangan'],
+                    'lokasi'        => $item['lokasi'],
+                    'kondisi'       => $item['kondisi'],
+                    'gambar'        => $gambarPath,
+                    'keterangan'    => $item['keterangan'] . ($jumlahBarang > 1 ? " (Unit #" . ($i + 1) . ")" : ""),
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]);
+                $totalInserted++;
+            }
         }
 
         $kategoriUnik = count(array_unique(array_column($items, 'nama_kategori')));
-        $this->command->info('  ✓ Inventaris Peralatan: ' . count($items) . ' unit berhasil di-seed dalam ' . $kategoriUnik . ' kategori berbeda.');
+        $this->command->info("  ✓ Inventaris Peralatan: $totalInserted unit fisik berhasil di-seed dalam $kategoriUnik kategori berbeda.");
     }
 }

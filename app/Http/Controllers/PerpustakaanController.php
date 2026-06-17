@@ -182,7 +182,9 @@ class PerpustakaanController extends Controller
 
     public function pinjamCreate(Perpustakaan $perpustakaan)
     {
-        return view('perpustakaan.pinjam', compact('perpustakaan'));
+        $anakAsuh = \App\Models\AnakAsuh::aktif()->orderBy('nama_anak')->get();
+        $donatur = \App\Models\Donatur::orderBy('nama_donatur')->get();
+        return view('perpustakaan.pinjam', compact('perpustakaan', 'anakAsuh', 'donatur'));
     }
 
     public function pinjamStore(Request $request, Perpustakaan $perpustakaan)
@@ -193,14 +195,20 @@ class PerpustakaanController extends Controller
         }
 
         $request->validate([
-            'nama_peminjam'   => 'required|string|max:255',
+            'tipe_peminjam'   => 'required|in:Anak Asuh,Donatur,Umum',
+            'id_anak_asuh'    => 'required_if:tipe_peminjam,Anak Asuh|nullable|exists:anak_asuh,id_anak',
+            'id_donatur'      => 'required_if:tipe_peminjam,Donatur|nullable|exists:donatur,id_donatur',
+            'nama_peminjam'   => 'required_if:tipe_peminjam,Umum|nullable|string|max:255',
             'tanggal_pinjam'  => 'required|date',
             'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
         ]);
 
         PeminjamanBuku::create([
             'id_buku'         => $perpustakaan->id_buku,
-            'nama_peminjam'   => $request->nama_peminjam,
+            'tipe_peminjam'   => $request->tipe_peminjam,
+            'id_anak_asuh'    => $request->tipe_peminjam === 'Anak Asuh' ? $request->id_anak_asuh : null,
+            'id_donatur'      => $request->tipe_peminjam === 'Donatur' ? $request->id_donatur : null,
+            'nama_peminjam'   => $request->tipe_peminjam === 'Umum' ? $request->nama_peminjam : null,
             'tanggal_pinjam'  => $request->tanggal_pinjam,
             'tanggal_kembali' => $request->tanggal_kembali,
             'status'          => 'Dipinjam',
@@ -231,13 +239,19 @@ class PerpustakaanController extends Controller
         // Pre-select jika ada query ?buku_id=...
         $preselected = $request->input('buku_id');
 
-        return view('perpustakaan.multi-pinjam', compact('bukuTersedia', 'preselected'));
+        $anakAsuh = \App\Models\AnakAsuh::aktif()->orderBy('nama_anak')->get();
+        $donatur = \App\Models\Donatur::orderBy('nama_donatur')->get();
+
+        return view('perpustakaan.multi-pinjam', compact('bukuTersedia', 'preselected', 'anakAsuh', 'donatur'));
     }
 
     public function multiPinjamStore(Request $request)
     {
         $request->validate([
-            'nama_peminjam'   => 'required|string|max:255',
+            'tipe_peminjam'   => 'required|in:Anak Asuh,Donatur,Umum',
+            'id_anak_asuh'    => 'required_if:tipe_peminjam,Anak Asuh|nullable|exists:anak_asuh,id_anak',
+            'id_donatur'      => 'required_if:tipe_peminjam,Donatur|nullable|exists:donatur,id_donatur',
+            'nama_peminjam'   => 'required_if:tipe_peminjam,Umum|nullable|string|max:255',
             'tanggal_pinjam'  => 'required|date',
             'tanggal_kembali' => 'required|date|after:tanggal_pinjam',
             'buku_ids'        => 'required|array|min:1',
@@ -250,6 +264,9 @@ class PerpustakaanController extends Controller
         $berhasil = 0;
         $gagal    = [];
 
+        // Pre-determine nama for success message if applicable
+        $namaUntukPesan = $request->tipe_peminjam === 'Umum' ? $request->nama_peminjam : ($request->tipe_peminjam === 'Anak Asuh' ? \App\Models\AnakAsuh::find($request->id_anak_asuh)?->nama_anak : \App\Models\Donatur::find($request->id_donatur)?->nama_donatur);
+
         foreach ($request->buku_ids as $idBuku) {
             $buku     = Perpustakaan::find($idBuku);
             $dipinjam = $buku->peminjamanAktif()->count();
@@ -261,7 +278,10 @@ class PerpustakaanController extends Controller
 
             PeminjamanBuku::create([
                 'id_buku'         => $idBuku,
-                'nama_peminjam'   => $request->nama_peminjam,
+                'tipe_peminjam'   => $request->tipe_peminjam,
+                'id_anak_asuh'    => $request->tipe_peminjam === 'Anak Asuh' ? $request->id_anak_asuh : null,
+                'id_donatur'      => $request->tipe_peminjam === 'Donatur' ? $request->id_donatur : null,
+                'nama_peminjam'   => $request->tipe_peminjam === 'Umum' ? $request->nama_peminjam : null,
                 'tanggal_pinjam'  => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
                 'status'          => 'Dipinjam',
@@ -269,7 +289,7 @@ class PerpustakaanController extends Controller
             $berhasil++;
         }
 
-        $msg = "{$berhasil} buku berhasil dipinjamkan kepada {$request->nama_peminjam}.";
+        $msg = "{$berhasil} buku berhasil dipinjamkan kepada {$namaUntukPesan}.";
         if (!empty($gagal)) {
             $msg .= ' Buku berikut gagal (stok habis): ' . implode(', ', $gagal) . '.';
         }

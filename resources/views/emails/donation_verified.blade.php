@@ -63,9 +63,9 @@
                 Donasi yang Anda berikan sangat berarti bagi anak-anak asuh kami.<br>
                 Semoga kebaikan Anda dibalas dengan keberkahan berlimpah.
             </p>
-            @if($data['is_member'])
+            @if(isset($data['receipt_url']))
             <div class="btn-container">
-                <a href="{{ url('/') }}" class="btn">Lihat Kwitansi Resmi</a>
+                <a href="{{ $data['receipt_url'] }}" class="btn">Lihat Kwitansi Resmi</a>
             </div>
             @endif
         </div>

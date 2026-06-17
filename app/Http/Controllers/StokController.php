@@ -38,7 +38,17 @@ class StokController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('stok.index', compact('stok'));
+        $kategoriList = StokPanti::select('kategori_barang')
+            ->whereNotNull('kategori_barang')
+            ->where('kategori_barang', '!=', 'Lainnya')
+            ->distinct()
+            ->pluck('kategori_barang')
+            ->toArray();
+            
+        $defaultKategori = ['Sembako', 'Logistik', 'Aset Tetap'];
+        $kategoriList = array_unique(array_merge($defaultKategori, $kategoriList));
+
+        return view('stok.index', compact('stok', 'kategoriList'));
     }
 
     public function create()

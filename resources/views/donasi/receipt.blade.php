@@ -74,9 +74,15 @@
     
     <!-- Action Buttons -->
     <div class="w-full max-w-[210mm] flex justify-end gap-3 mb-4 no-print font-sans">
+        @if(!request()->routeIs('donasi.receipt.public'))
         <a href="{{ route('donasi.index') }}" class="px-5 py-2.5 bg-white border-2 border-slate-300 text-slate-700 rounded text-sm font-bold hover:bg-slate-100 transition-colors uppercase tracking-wider">
             &larr; Kembali
         </a>
+        @else
+        <a href="{{ url('/') }}" class="px-5 py-2.5 bg-white border-2 border-slate-300 text-slate-700 rounded text-sm font-bold hover:bg-slate-100 transition-colors uppercase tracking-wider">
+            &larr; Beranda
+        </a>
+        @endif
         <button onclick="window.print()" class="px-5 py-2.5 bg-slate-800 border-2 border-slate-800 text-white rounded text-sm font-bold hover:bg-slate-900 transition-colors flex items-center gap-2 uppercase tracking-wider shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
             Cetak PDF
@@ -197,7 +203,7 @@
             <!-- Header -->
             <div class="flex items-center justify-between mb-2">
                 <div class="w-24 shrink-0 flex justify-center">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-20 w-auto object-contain grayscale">
+                    <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo" class="h-20 w-auto object-contain grayscale">
                 </div>
                 <div class="text-center flex-grow px-4">
                     <h2 class="font-bold text-lg tracking-wide">YAYASAN PANTI ASUHAN</h2>

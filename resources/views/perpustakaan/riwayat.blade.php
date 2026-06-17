@@ -87,7 +87,14 @@
                     <div class="font-semibold text-slate-800 text-sm">{{ $item->buku?->judul_buku ?? '—' }}</div>
                     <div class="text-xs text-slate-400 font-mono">{{ $item->buku?->kode_buku }}</div>
                 </td>
-                <td class="px-4 py-4 text-slate-700 font-medium">{{ $item->nama_peminjam }}</td>
+                <td class="px-4 py-4">
+                    <div class="text-slate-700 font-medium">{{ $item->nama_peminjam }}</div>
+                    <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                        {{ $item->tipe_peminjam === 'Anak Asuh' ? 'bg-indigo-50 text-indigo-600' : 
+                           ($item->tipe_peminjam === 'Donatur' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500') }}">
+                        {{ $item->tipe_peminjam }}
+                    </span>
+                </td>
                 <td class="px-4 py-4 text-center text-slate-500 text-xs">{{ $item->tanggal_pinjam?->format('d M Y') }}</td>
                 <td class="px-4 py-4 text-center text-xs {{ $terlambat ? 'text-red-600 font-semibold' : 'text-slate-500' }}">
                     {{ $item->tanggal_kembali?->format('d M Y') ?? '—' }}
