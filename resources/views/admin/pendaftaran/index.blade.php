@@ -15,8 +15,8 @@
                     class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none">
                 <option value="">Semua Status</option>
                 <option value="Pending"   {{ request('status') === 'Pending'   ? 'selected' : '' }}>⏳ Pending</option>
-                <option value="Disetujui" {{ request('status') === 'Disetujui' ? 'selected' : '' }}>✓ Disetujui</option>
-                <option value="Ditolak"   {{ request('status') === 'Ditolak'   ? 'selected' : '' }}>✗ Ditolak</option>
+                <option value="Disetujui" {{ request('status') === 'Disetujui' ? 'selected' : '' }}> Disetujui</option>
+                <option value="Ditolak"   {{ request('status') === 'Ditolak'   ? 'selected' : '' }}> Ditolak</option>
             </select>
         </div>
         @if(request('status'))
@@ -62,9 +62,9 @@
                     </td>
                     <td class="px-5 py-4">
                         @if($calon->status === 'Disetujui')
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✓ Disetujui</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"> Disetujui</span>
                         @elseif($calon->status === 'Ditolak')
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">✗ Ditolak</span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700"> Ditolak</span>
                             @if($calon->catatan_review)
                             <p class="text-xs text-slate-400 mt-1 max-w-[180px]">{{ $calon->catatan_review }}</p>
                             @endif
@@ -93,20 +93,20 @@
                                 @csrf @method('PATCH')
                                 <button type="submit"
                                         class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-xs font-semibold transition-colors">
-                                    ✓ Setujui
+                                     Setujui
                                 </button>
                             </form>
                             {{-- Reject toggle --}}
                             <button onclick="toggleRejectForm('reject-{{ $calon->id }}')"
                                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg text-xs font-semibold transition-colors">
-                                ✗ Tolak
+                                 Tolak
                             </button>
                         </div>
                         {{-- Reject form (hidden by default) --}}
                         <div id="reject-{{ $calon->id }}" class="hidden mt-2">
                             <form action="{{ route('admin.pendaftaran.reject', $calon->id) }}" method="POST" class="space-y-1.5">
                                 @csrf @method('PATCH')
-                                <textarea name="catatan_review" rows="2" placeholder="Catatan penolakan (opsional)"
+                                <textarea name="catatan_review" rows="2" placeholder="Alasan penolakan..."
                                           class="w-full px-2 py-1.5 border border-slate-300 rounded-lg text-xs resize-none focus:outline-none focus:ring-1 focus:ring-slate-400"></textarea>
                                 <button type="submit"
                                         class="w-full py-1.5 bg-red-600 text-white rounded-lg text-xs font-semibold hover:bg-red-700 transition-colors">

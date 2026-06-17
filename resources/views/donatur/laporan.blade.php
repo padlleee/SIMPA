@@ -4,51 +4,9 @@
 @section('page-title', 'Laporan Donasi Saya')
 @section('page-subtitle', 'Ringkasan dan riwayat seluruh donasi yang telah Anda lakukan')
 
-@push('styles')
-<style>
-@media print {
-    /* Sembunyikan elemen UI yang tidak perlu */
-    #sidebar,
-    nav,
-    .topbar-area,
-    .no-print,
-    .pagination,
-    nav[aria-label="Pagination Navigation"] { display: none !important; }
-
-    /* Reset layout agar konten memenuhi halaman */
-    body { background: white !important; }
-    .flex.h-screen { display: block !important; }
-    .ml-64 { margin-left: 0 !important; }
-    main { padding: 0 !important; overflow: visible !important; }
-
-    /* Header print */
-    .print-header { display: block !important; }
-
-    /* Pastikan warna tercetak */
-    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-
-    /* Cegah potong di tengah baris tabel */
-    tr { page-break-inside: avoid; }
-    thead { display: table-header-group; }
-}
-</style>
-@endpush
+{{-- Styles khusus print sudah dipindahkan ke halaman terpisah --}}
 
 @section('content')
-
-{{-- Print Header (hanya muncul saat print) --}}
-<div class="print-header hidden mb-6 pb-4 border-b-2 border-slate-800">
-    <h1 class="text-xl font-bold text-slate-800">Laporan Donasi – {{ auth()->user()->donatur?->nama_donatur ?? auth()->user()->username }}</h1>
-    <p class="text-sm text-slate-500 mt-1">
-        Dicetak pada: {{ now()->locale('id')->translatedFormat('j F Y, H:i') }}
-        @if(request('dari_tanggal') || request('sampai_tanggal'))
-            &nbsp;·&nbsp; Periode:
-            {{ request('dari_tanggal') ? \Carbon\Carbon::parse(request('dari_tanggal'))->locale('id')->translatedFormat('j F Y') : '—' }}
-            s.d.
-            {{ request('sampai_tanggal') ? \Carbon\Carbon::parse(request('sampai_tanggal'))->locale('id')->translatedFormat('j F Y') : 'sekarang' }}
-        @endif
-    </p>
-</div>
 
 {{-- Filter --}}
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-6 no-print">
@@ -102,14 +60,14 @@
     <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 flex items-center justify-between">
         <h2 class="text-sm font-semibold uppercase text-slate-500">Riwayat Donasi</h2>
         {{-- Tombol Print --}}
-        <button onclick="window.print()"
-                class="no-print inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 active:scale-95 transition-all">
+        <a href="{{ route('donatur.laporan.print', request()->all()) }}" target="_blank"
+           class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 active:scale-95 transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
             </svg>
             Cetak / Print
-        </button>
+        </a>
     </div>
 
     @if($paginated->count())
@@ -141,11 +99,11 @@
                     <td class="px-5 py-4">
                         @if($item->status_verifikasi === 'Valid')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                                ✓ Terverifikasi
+                                 Terverifikasi
                             </span>
                         @elseif($item->status_verifikasi === 'Tolak')
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                                ✗ Ditolak
+                                 Ditolak
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">

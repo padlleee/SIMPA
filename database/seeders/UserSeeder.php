@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
 
         // ── 3. Bendahara ──────────────────────────────────────
         User::updateOrCreate(
-            ['email' => 'bendahara@simp.com'],
+            ['email' => 'bendahara@simpa.com'],
             [
                 'username'              => 'Bendahara Panti',
                 'password'              => Hash::make('password'),

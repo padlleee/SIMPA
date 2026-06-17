@@ -4,12 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Donasi;
 use App\Models\Donatur;
+use App\Models\KasMasuk;
+use App\Models\RiwayatStok;
+use App\Models\StokPanti;
+use App\Models\User;
+use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DonationVerifiedMail;
+use App\Mail\DonationRejectedMail;
 
 class DonasiController extends Controller
 {
+    protected ImageOptimizationService $imageService;
+
+    public function __construct(ImageOptimizationService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     // ==================== ADMIN - MANAGEMENT ====================
 
     /**
@@ -32,21 +49,32 @@ class DonasiController extends Controller
             $query->whereDate('tanggal_donasi', '<=', $request->sampai_tanggal);
         }
 
-        // Filter by type (member/public)
+        // Filter by type (member/public/sembako)
         $type = $request->get('type', 'all');
-        if ($type === 'member') {
-            $query->whereNotNull('id_donatur');
-        } elseif ($type === 'public') {
-            $query->whereNull('id_donatur');
+        if ($type === 'sembako') {
+            $query->where('metode_pembayaran', 'Sembako / Barang');
+        } else {
+            // Untuk tab tunai (all, member, public), hide sembako
+            $query->where('metode_pembayaran', '!=', 'Sembako / Barang');
+            
+            if ($type === 'member') {
+                $query->whereNotNull('id_donatur');
+            } elseif ($type === 'public') {
+                $query->whereNull('id_donatur');
+            }
         }
 
         $donasi = $query->paginate(15)->withQueryString();
 
         // Separate counts for tab badges
-        $memberCount = Donasi::whereNotNull('id_donatur')->count();
-        $publicCount  = Donasi::whereNull('id_donatur')->count();
+        $memberCount = Donasi::whereNotNull('id_donatur')->where('metode_pembayaran', '!=', 'Sembako / Barang')->count();
+        $publicCount  = Donasi::whereNull('id_donatur')->where('metode_pembayaran', '!=', 'Sembako / Barang')->count();
+        $sembakoCount = Donasi::where('metode_pembayaran', 'Sembako / Barang')->count();
 
-        return view('donasi.index', compact('donasi', 'memberCount', 'publicCount', 'type'));
+        // Stats for summary cards in the view
+        $stats = $this->getAdminStats();
+
+        return view('donasi.index', compact('donasi', 'memberCount', 'publicCount', 'sembakoCount', 'type', 'stats'));
     }
 
     /**
@@ -75,10 +103,53 @@ class DonasiController extends Controller
 
         // Verify donation
         $donasi->verify(Auth::user()->id_user, $request->catatan);
+        $donasi->refresh();
 
-        $nama = $donasi->nama_donatur_display;
-        return redirect()->route('donasi.index')
-            ->with('success', "Donasi dari {$nama} (Rp " . number_format($donasi->nominal, 0, ',', '.') . ") berhasil diverifikasi.");
+        $autoLinked = false;
+
+        // Celah 1 FIX: Jika donasi publik dan email cocok dengan akun terdaftar, auto-link
+        if (is_null($donasi->id_donatur) && $donasi->email_donatur_manual) {
+            $matchedUser = User::where('email', $donasi->email_donatur_manual)
+                               ->where('role', 'Donatur')
+                               ->first();
+            if ($matchedUser) {
+                $donasi->update([
+                    'id_donatur'          => $matchedUser->id_user,
+                    'nama_donatur_manual' => null,
+                    'email_donatur_manual'=> null,
+                    'no_hp_donatur_manual'=> null,
+                ]);
+                $donasi->refresh();
+                $autoLinked = true;
+            }
+        }
+
+        $nama  = $donasi->nama_donatur_display;
+        $email = $donasi->user->email ?? $donasi->email_donatur_manual;
+
+        $msg = "Donasi dari {$nama} (Rp " . number_format($donasi->nominal, 0, ',', '.') . ") berhasil diverifikasi.";
+        if ($autoLinked) {
+            $msg .= " Donasi telah otomatis dikaitkan ke akun terdaftar.";
+        }
+
+        if ($email) {
+            try {
+                Mail::to($email)->send(new DonationVerifiedMail([
+                    'name'      => $nama,
+                    'id_donasi' => $donasi->id_donasi,
+                    'nominal'   => $donasi->nominal,
+                    'metode'    => $donasi->metode_pembayaran,
+                    'tanggal'   => $donasi->tanggal_verifikasi->format('d M Y H:i'),
+                    'is_member' => $donasi->id_donatur ? true : false,
+                    'receipt_url' => \Illuminate\Support\Facades\URL::signedRoute('donasi.receipt.public', ['donasi' => $donasi->id_donasi]),
+                ]));
+                $msg .= " Email konfirmasi telah dikirim.";
+            } catch (\Exception $e) {
+                $msg .= " (Gagal mengirim email konfirmasi).";
+            }
+        }
+
+        return redirect()->route('donasi.index')->with('success', $msg);
     }
 
     /**
@@ -101,16 +172,31 @@ class DonasiController extends Controller
         // Reject donation
         $donasi->reject(Auth::user()->id_user, $request->catatan);
 
-        return redirect()->route('donasi.index')
-            ->with('success', 'Donasi berhasil ditolak dengan catatan disimpan.');
+        $nama = $donasi->nama_donatur_display;
+        $email = $donasi->user->email ?? $donasi->email_donatur_manual;
+        
+        $msg = "Donasi berhasil ditolak dengan catatan disimpan.";
+
+        if ($email) {
+            try {
+                Mail::to($email)->send(new DonationRejectedMail([
+                    'name' => $nama,
+                    'nominal' => $donasi->nominal,
+                    'catatan' => $request->catatan,
+                ]));
+                $msg .= " Email penolakan telah dikirim.";
+            } catch (\Exception $e) {
+                $msg .= " (Gagal mengirim email penolakan).";
+            }
+        }
+
+        return redirect()->route('donasi.index')->with('success', $msg);
     }
 
     public function destroy(Donasi $donasi)
     {
-        // Delete uploaded file if exists
-        if ($donasi->bukti_pembayaran && Storage::disk('public')->exists($donasi->bukti_pembayaran)) {
-            Storage::disk('public')->delete($donasi->bukti_pembayaran);
-        }
+        // Hapus file bukti pembayaran dari storage jika ada
+        $this->imageService->deleteOldImage($donasi->bukti_pembayaran);
 
         $donasi->delete();
         return redirect()->route('donasi.index')->with('success', 'Data donasi berhasil dihapus.');
@@ -118,17 +204,32 @@ class DonasiController extends Controller
 
     /**
      * Admin: Show create cash donation form
+     * Supports two donation types:
+     *  - 'uang'    : Regular cash donation (default)
+     *  - 'sembako' : In-kind grocery donation that auto-inserts into stok_panti (Gudang)
      */
     public function adminCreate()
     {
         if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
             return redirect()->back()->with('error', 'Akses ditolak.');
         }
-        return view('donasi.admin-create');
+
+        // Pass existing stok items so the form can optionally link to an existing entry
+        $stokList = StokPanti::orderBy('nama_barang')->pluck('nama_barang', 'id_stok');
+
+        return view('donasi.admin-create', compact('stokList'));
     }
 
     /**
-     * Admin: Store cash donation manually
+     * Admin: Store cash or in-kind (sembako) donation manually.
+     *
+     * When jenis_donasi = 'sembako', the system will:
+     *  1. Record the Donasi row as usual (nominal = estimated value).
+     *  2. Upsert the corresponding StokPanti row using a FIFO/batch approach:
+     *     - If a row for the item already exists → add barang_masuk to the existing batch.
+     *     - If not → create a new stok row for this batch.
+     *  3. Write a RiwayatStok entry for full traceability.
+     *  All three writes are wrapped in a DB::transaction for atomicity.
      */
     public function adminStore(Request $request)
     {
@@ -136,24 +237,145 @@ class DonasiController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak.');
         }
 
-        $request->validate([
-            'nama_donatur' => 'required|string|max:150',
-            'nominal' => 'required|numeric|min:1000',
+        // Resolve the custom PK — Auth::id() returns null when primaryKey != 'id'
+        $adminId = Auth::user()->id_user;
+
+        $sembako = $request->input('jenis_donasi') === 'sembako';
+
+        // ── Validation ───────────────────────────────────────────────────
+        $baseRules = [
+            'jenis_donasi'   => 'required|in:uang,sembako',
+            'nama_donatur'   => 'required|string|max:150',
             'tanggal_donasi' => 'required|date',
+        ];
+
+        if ($sembako) {
+            $baseRules = array_merge($baseRules, [
+                'nama_barang'        => 'required|string|max:150',
+                'merk'               => 'nullable|string|max:100',
+                'jumlah'             => 'required|integer|min:1',
+                'satuan'             => 'required|string|max:20',
+                'tanggal_kadaluarsa' => 'nullable|date|after_or_equal:today',
+                'nominal'            => 'nullable|numeric|min:0',
+            ]);
+        } else {
+            $baseRules['nominal'] = 'required|numeric|min:1000';
+        }
+
+        $request->validate($baseRules, [
+            'nama_barang.required' => 'Nama barang wajib diisi untuk donasi sembako.',
+            'jumlah.required'      => 'Jumlah barang wajib diisi.',
+            'jumlah.min'           => 'Jumlah barang minimal 1.',
+            'satuan.required'      => 'Satuan barang wajib dipilih.',
+            'nominal.min'          => 'Minimal donasi tunai Rp 1.000.',
         ]);
 
-        Donasi::create([
-            'nama_donatur_manual' => $request->nama_donatur,
-            'nominal' => $request->nominal,
-            'metode_pembayaran' => 'Tunai',
-            'status_verifikasi' => 'Valid',
-            'id_bendahara' => Auth::id(),
-            'tanggal_donasi' => $request->tanggal_donasi,
-            'tanggal_verifikasi' => now(),
-            'catatan_verifikasi' => 'Rekap tunai oleh Admin',
-        ]);
+        DB::beginTransaction();
+        try {
+            // 1. Create the Donasi record ──────────────────────────────────
+            $catatan = $sembako
+                ? 'Donasi Sembako: ' . trim($request->nama_barang)
+                  . ' (' . $request->jumlah . ' ' . $request->satuan . ')'
+                  . ($request->merk ? ' — ' . $request->merk : '')
+                : 'Rekap tunai oleh Admin';
 
-        return redirect()->route('donasi.index')->with('success', 'Rekap donasi tunai berhasil ditambahkan.');
+            $donasi = Donasi::create([
+                'nama_donatur_manual' => $request->nama_donatur,
+                'nominal'             => $request->nominal ?? 0,
+                'metode_pembayaran'   => $sembako ? 'Sembako / Barang' : 'Tunai',
+                'status_verifikasi'   => 'Valid',
+                'id_bendahara'        => $adminId,
+                'tanggal_donasi'      => $request->tanggal_donasi,
+                'tanggal_verifikasi'  => now(),
+                'catatan_verifikasi'  => $catatan,
+            ]);
+
+            // 2. Gudang — one-item-one-code (satu barang satu kode) ────────
+            // Match by nama_barang only. If merk/expiry differ from a new
+            // donation, the existing row is updated rather than duplicated.
+            if ($sembako) {
+                $namaBarang = trim($request->nama_barang);
+                $merk       = $request->merk ?: null;
+                $jumlah     = (int) $request->jumlah;
+                $satuan     = $request->satuan;
+                $kadaluarsa = $request->tanggal_kadaluarsa ?: null;
+
+                // Sistem Batch FIFO: cari stok yang memiliki nama, merk & kadaluarsa persis sama
+                $existingStok = StokPanti::where('nama_barang', $namaBarang)
+                    ->when($merk, fn($q) => $q->where('merk', $merk))
+                    ->when(
+                        $kadaluarsa,
+                        fn($q) => $q->whereDate('tanggal_kadaluarsa', $kadaluarsa),
+                        fn($q) => $q->whereNull('tanggal_kadaluarsa')
+                    )
+                    ->first();
+
+                if ($existingStok) {
+                    $stokSebelum = $existingStok->stok_akhir;
+                    $stokSesudah = $stokSebelum + $jumlah;
+
+                    $existingStok->update([
+                        'barang_masuk' => $existingStok->barang_masuk + $jumlah,
+                        'stok_akhir'   => $stokSesudah,
+                    ]);
+                    $stokRef = $existingStok->fresh();
+
+                } else {
+                    $stokSebelum = 0;
+                    $stokSesudah = $jumlah;
+
+                    $stokRef = StokPanti::create([
+                        'nama_barang'        => $namaBarang,
+                        'kode_barang'        => \App\Models\StokPanti::generateKodeBarang(),
+                        'kategori_barang'    => 'Sembako',
+                        'merk'               => $merk,
+                        'satuan'             => $satuan,
+                        'stok_awal'          => $jumlah,
+                        'barang_masuk'       => $jumlah,
+                        'barang_keluar'      => 0,
+                        'stok_akhir'         => $jumlah,
+                        'tanggal_kadaluarsa' => $kadaluarsa,
+                        'keterangan'         => 'Donasi sembako dari ' . $request->nama_donatur,
+                        'id_admin'           => $adminId,
+                    ]);
+                }
+
+                // 3. Riwayat Gudang ────────────────────────────────────────
+                RiwayatStok::create([
+                    'id_stok'         => $stokRef->id_stok,
+                    'nama_barang'     => $namaBarang,
+                    'kategori_barang' => 'Sembako',
+                    'satuan'          => $satuan,
+                    'jenis'           => 'Masuk',
+                    'jumlah'          => $jumlah,
+                    'stok_sebelum'    => $stokSebelum,
+                    'stok_sesudah'    => $stokSesudah,
+                    'keterangan'      => '[Donasi Sembako #' . $donasi->id_donasi . '] '
+                                       . $jumlah . ' ' . $satuan . ' ' . $namaBarang
+                                       . ($merk ? ' (' . $merk . ')' : '')
+                                       . ' dari ' . $request->nama_donatur,
+                    'id_admin'        => $adminId,
+                    'created_at'      => now(),
+                ]);
+            }
+
+            DB::commit();
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('adminStore Donasi failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->except(['_token']),
+            ]);
+            return redirect()->back()->withInput()
+                             ->with('error', 'Gagal menyimpan: ' . $e->getMessage());
+        }
+
+        $msg = $sembako
+            ? 'Donasi Sembako dari ' . $request->nama_donatur . ' berhasil dicatat dan stok gudang diperbarui.'
+            : 'Rekap donasi tunai dari ' . $request->nama_donatur . ' berhasil ditambahkan.';
+
+        return redirect()->route('donasi.index')->with('success', $msg);
     }
 
     // ==================== PUBLIC - DONATION FORM ====================
@@ -191,8 +413,13 @@ class DonasiController extends Controller
             'bukti_pembayaran.max' => 'Ukuran file maksimal 2MB.',
         ]);
 
-        // Store file
-        $filePath = $request->file('bukti_pembayaran')->store('donasi/bukti_pembayaran', 'public');
+        // Optimasi & simpan bukti transfer: konversi webp 65% quality, maks 1200px
+        try {
+            $filePath = $this->imageService->optimizeReceiptImage($request->file('bukti_pembayaran'));
+        } catch (\Exception $e) {
+            return back()->withInput()
+                         ->with('error', 'Gagal memproses file bukti pembayaran. Pastikan file adalah gambar (JPG/PNG) yang valid.');
+        }
 
         // Create donation record
         Donasi::create([
@@ -249,8 +476,13 @@ class DonasiController extends Controller
             'bukti_pembayaran.max' => 'Ukuran file maksimal 2MB.',
         ]);
 
-        // Store file
-        $filePath = $request->file('bukti_pembayaran')->store('donasi/bukti_pembayaran', 'public');
+        // Optimasi & simpan bukti transfer: konversi webp 65% quality, maks 1200px
+        try {
+            $filePath = $this->imageService->optimizeReceiptImage($request->file('bukti_pembayaran'));
+        } catch (\Exception $e) {
+            return back()->withInput()
+                         ->with('error', 'Gagal memproses file bukti pembayaran. Pastikan file adalah gambar (JPG/PNG) yang valid.');
+        }
 
         // Create donation record linked to user
         Donasi::create([
@@ -313,6 +545,56 @@ class DonasiController extends Controller
         return $this->showReceipt($donasi);
     }
 
+    /**
+     * Public route to view receipt securely via signed URL
+     */
+    public function publicReceipt(Donasi $donasi)
+    {
+        if (!$donasi->isVerified()) {
+            abort(404, 'Kwitansi belum tersedia.');
+        }
+
+        $donasi->load('user.donatur', 'bendahara');
+        return view('donasi.receipt', compact('donasi'));
+    }
+
+    /**
+     * Admin: Resend receipt email to donor
+     */
+    public function resendReceipt(Request $request, Donasi $donasi)
+    {
+        if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        // Update email if it's different and not a member (or even if it's a member, we just send to that email)
+        if (is_null($donasi->id_donatur)) {
+            $donasi->update(['email_donatur_manual' => $request->email]);
+        }
+        
+        $email = $request->email;
+        $nama  = $donasi->nama_donatur_display;
+
+        try {
+            Mail::to($email)->send(new DonationVerifiedMail([
+                'name'      => $nama,
+                'id_donasi' => $donasi->id_donasi,
+                'nominal'   => $donasi->nominal,
+                'metode'    => $donasi->metode_pembayaran,
+                'tanggal'   => $donasi->tanggal_verifikasi->format('d M Y H:i'),
+                'is_member' => $donasi->id_donatur ? true : false,
+                'receipt_url' => \Illuminate\Support\Facades\URL::signedRoute('donasi.receipt.public', ['donasi' => $donasi->id_donasi]),
+            ]));
+            return redirect()->back()->with('success', 'Kwitansi berhasil dikirim ulang ke ' . $email);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengirim email konfirmasi.');
+        }
+    }
+
     // ==================== PUBLIC STATS ====================
 
     /**
@@ -337,11 +619,59 @@ class DonasiController extends Controller
     public function getAdminStats()
     {
         return [
-            'pending' => Donasi::pending()->count(),
-            'verified' => Donasi::verified()->count(),
-            'rejected' => Donasi::tolak()->count(),
-            'totalDonations' => Donasi::verified()->sum('nominal'),
+            'pending'                  => Donasi::pending()->count(),
+            'verified'                 => Donasi::verified()->count(),
+            'rejected'                 => Donasi::tolak()->count(),
+            'totalDonations'           => Donasi::verified()->sum('nominal'),
             'totalDonations_formatted' => 'Rp ' . number_format(Donasi::verified()->sum('nominal'), 0, ',', '.'),
         ];
+    }
+
+    /**
+     * Admin: Ringkasan donasi dikelompokkan per donatur
+     */
+    public function byDonor(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['Admin', 'Ketua', 'Bendahara'])) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+
+        // Donatur Terdaftar — group by id_donatur
+        $memberDonors = DB::table('donasi')
+            ->join('users', 'donasi.id_donatur', '=', 'users.id_user')
+            ->leftJoin('donatur', 'users.id_user', '=', 'donatur.id_user')
+            ->select(
+                'users.id_user',
+                DB::raw('COALESCE(donatur.nama_donatur, users.username) as nama'),
+                'users.email',
+                'donatur.no_hp',
+                DB::raw('COUNT(donasi.id_donasi) as jumlah_donasi'),
+                DB::raw('SUM(CASE WHEN donasi.status_verifikasi = \'Valid\' THEN donasi.nominal ELSE 0 END) as total_valid'),
+                DB::raw('MAX(donasi.tanggal_donasi) as terakhir_donasi')
+            )
+            ->whereNotNull('donasi.id_donatur')
+            ->groupBy('users.id_user', 'nama', 'users.email', 'donatur.no_hp')
+            ->orderByDesc('total_valid')
+            ->get();
+
+        // Donatur Publik — group by email_donatur_manual
+        $publicDonors = DB::table('donasi')
+            ->select(
+                'nama_donatur_manual as nama',
+                'email_donatur_manual as email',
+                'no_hp_donatur_manual as no_hp',
+                DB::raw('COUNT(id_donasi) as jumlah_donasi'),
+                DB::raw('SUM(CASE WHEN status_verifikasi = \'Valid\' THEN nominal ELSE 0 END) as total_valid'),
+                DB::raw('MAX(tanggal_donasi) as terakhir_donasi')
+            )
+            ->whereNull('id_donatur')
+            ->whereNotNull('email_donatur_manual')
+            ->groupBy('nama_donatur_manual', 'email_donatur_manual', 'no_hp_donatur_manual')
+            ->orderByDesc('total_valid')
+            ->get();
+
+        $grandTotal = Donasi::verified()->sum('nominal');
+
+        return view('donasi.by-donor', compact('memberDonors', 'publicDonors', 'grandTotal'));
     }
 }

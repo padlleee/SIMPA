@@ -38,6 +38,33 @@ class AnakAsuh extends Model
         'created_at'     => 'datetime',
     ];
 
+    // ── Relationships ────────────────────────────────────────────────────
+
+    /**
+     * Dynamic development-status labels attached to this orphan.
+     */
+    public function labels()
+    {
+        return $this->belongsToMany(
+            Label::class,
+            'anak_asuh_label',
+            'anak_asuh_id',
+            'label_id',
+            'id_anak',
+            'id'
+        );
+    }
+
+    /**
+     * Free-text achievement badges (the main development tracking system).
+     * Each record is one achievement like "Juara 1 – Lomba MTQ" or "Naik Kelas Sem. 4".
+     */
+    public function prestasi()
+    {
+        return $this->hasMany(PrestasiAnak::class, 'anak_asuh_id', 'id_anak')
+                    ->orderBy('created_at', 'desc');
+    }
+
     public function scopeAktif($query)  { return $query->where('status_anak', 'Aktif'); }
     public function scopeAlumni($query) { return $query->where('status_anak', 'Alumni'); }
 

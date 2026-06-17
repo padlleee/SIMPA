@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -36,6 +37,25 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (TokenMismatchException $e, $request) {
+            if ($request->is('logout') || $request->is('admin/logout') || $request->is('donatur/logout')) {
+                auth()->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('landing')->with('success', 'Berhasil keluar dari sistem.');
+            }
+
+            if ($request->is('login') || $request->is('login/*')) {
+                return redirect()->route('landing')
+                    ->with('showLoginModal', true)
+                    ->withErrors(['email' => 'Halaman login kedaluwarsa karena tidak ada aktivitas. Silakan coba lagi.']);
+            }
+
+            return redirect()->back()
+                ->withInput($request->except('_token'))
+                ->with('warning', 'Sesi Anda telah kedaluwarsa. Silakan kirim ulang formulir Anda.');
         });
     }
 }

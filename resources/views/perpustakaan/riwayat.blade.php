@@ -11,7 +11,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div class="relative md:col-span-2">
             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peminjam atau judul buku..."
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/kata kunci..."
                    class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
         </div>
         <select name="status" class="border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
@@ -87,7 +87,14 @@
                     <div class="font-semibold text-slate-800 text-sm">{{ $item->buku?->judul_buku ?? '—' }}</div>
                     <div class="text-xs text-slate-400 font-mono">{{ $item->buku?->kode_buku }}</div>
                 </td>
-                <td class="px-4 py-4 text-slate-700 font-medium">{{ $item->nama_peminjam }}</td>
+                <td class="px-4 py-4">
+                    <div class="text-slate-700 font-medium">{{ $item->nama_peminjam }}</div>
+                    <span class="inline-flex items-center mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider
+                        {{ $item->tipe_peminjam === 'Anak Asuh' ? 'bg-indigo-50 text-indigo-600' : 
+                           ($item->tipe_peminjam === 'Donatur' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500') }}">
+                        {{ $item->tipe_peminjam }}
+                    </span>
+                </td>
                 <td class="px-4 py-4 text-center text-slate-500 text-xs">{{ $item->tanggal_pinjam?->format('d M Y') }}</td>
                 <td class="px-4 py-4 text-center text-xs {{ $terlambat ? 'text-red-600 font-semibold' : 'text-slate-500' }}">
                     {{ $item->tanggal_kembali?->format('d M Y') ?? '—' }}

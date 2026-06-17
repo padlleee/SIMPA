@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use App\Mail\ForgotPasswordMail;
 
 class AuthController extends Controller
 {
@@ -157,31 +162,85 @@ class AuthController extends Controller
             ]);
         }
 
-        // Jika sudah ada permintaan aktif yang belum diproses
-        if ($user->password_reset_requested_at) {
+        // Generate token
+        $token = Str::random(60);
+
+        // Hapus token lama jika ada, lalu insert yang baru
+        DB::table('password_resets')->where('email', $user->email)->delete();
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => Hash::make($token),
+            'created_at' => Carbon::now()
+        ]);
+
+        try {
+            Mail::to($user->email)->send(new ForgotPasswordMail([
+                'name' => $user->donatur->nama_donatur ?? $user->username,
+                'reset_url' => route('password.reset', ['token' => $token, 'email' => $user->email]),
+            ]));
+            
             return response()->json([
-                'status'  => 'already_requested',
-                'message' => 'Permintaan reset password sudah pernah dikirim dan sedang menunggu diproses oleh admin.',
+                'status'  => 'success',
+                'message' => 'Link reset password telah dikirim ke email Anda. Silakan cek Inbox atau Spam.',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send reset link: ' . $e->getMessage());
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Gagal mengirim email reset. Coba lagi nanti.',
             ]);
         }
+    }
 
-        // Tandai permintaan reset
+    /**
+     * Tampilkan form pengisian password baru setelah link dari email diklik
+     */
+    public function showResetForm(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    /**
+     * Proses ubah password dari form reset
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        // Cek token
+        $record = DB::table('password_resets')->where('email', $request->email)->first();
+
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            return back()->withInput($request->only('email'))
+                         ->withErrors(['email' => 'Token reset password tidak valid atau sudah kadaluarsa.']);
+        }
+
+        // Cek expired (misal 60 menit)
+        if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_resets')->where('email', $request->email)->delete();
+            return back()->withInput($request->only('email'))
+                         ->withErrors(['email' => 'Link reset password sudah kadaluarsa. Silakan request ulang.']);
+        }
+
+        // Update password user
+        $user = User::where('email', $request->email)->first();
         $user->update([
-            'password_reset_requested_at' => now(),
+            'password' => Hash::make($request->password),
+            'force_password_change' => false,
+            'password_changed_at' => now(),
         ]);
 
-        // Stub: log sebagai pengganti pengiriman email sesungguhnya
-        Log::info('[SIMPA] Password reset request dari donatur', [
-            'user_id'  => $user->id_user,
-            'username' => $user->username,
-            'email'    => $user->email,
-            'waktu'    => now()->toDateTimeString(),
-        ]);
+        // Hapus token yang sudah terpakai
+        DB::table('password_resets')->where('email', $request->email)->delete();
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Permintaan berhasil dikirim! Admin akan segera memproses dan mengirim password baru ke email Anda.',
-        ]);
+        return redirect()->route('login')->with('success', 'Password Anda berhasil direset! Silakan login dengan password baru.');
     }
 
     /**

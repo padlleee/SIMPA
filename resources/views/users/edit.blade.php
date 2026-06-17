@@ -21,8 +21,18 @@
         <div>
             <label class="block text-sm font-semibold text-slate-700 mb-2">Role</label>
             <select name="role" class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                <option value="Admin"     {{ old('role', $user->role) == 'Admin'     ? 'selected' : '' }}>Admin</option>
-                <option value="Ketua"     {{ old('role', $user->role) == 'Ketua'     ? 'selected' : '' }}>Ketua Yayasan</option>
+                @if(auth()->user()->role === 'Ketua' || $user->role === 'Admin')
+                    @if(auth()->user()->role === 'Ketua')
+                        @if(\App\Models\User::where('role', 'Admin')->count() == 0 || $user->role === 'Admin')
+                            <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
+                        @endif
+                    @elseif($user->role === 'Admin')
+                        <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
+                    @endif
+                @endif
+                @if(auth()->user()->role === 'Ketua' || $user->role === 'Ketua')
+                    <option value="Ketua" {{ old('role', $user->role) == 'Ketua' ? 'selected' : '' }}>Ketua Yayasan</option>
+                @endif
                 <option value="Bendahara" {{ old('role', $user->role) == 'Bendahara' ? 'selected' : '' }}>Bendahara</option>
                 <option value="Donatur"   {{ old('role', $user->role) == 'Donatur'   ? 'selected' : '' }}>Donatur</option>
             </select>

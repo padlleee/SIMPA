@@ -7,6 +7,8 @@ use App\Models\Donatur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminResetPasswordMail;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -35,6 +37,20 @@ class UserController extends Controller
             'email.unique' => 'Email sudah terdaftar. Silakan gunakan email lain.',
             'username.unique' => 'Username sudah digunakan. Silakan pilih username lain.',
         ]);
+
+        $authUser = auth()->user();
+
+        // Proteksi Role
+        if ($authUser->role !== 'Ketua' && in_array($request->role, ['Admin', 'Ketua'])) {
+            return back()->withInput()->with('error', 'Anda tidak memiliki hak akses untuk membuat role Admin atau Ketua.');
+        }
+
+        if ($request->role === 'Admin') {
+            $adminCount = User::where('role', 'Admin')->count();
+            if ($adminCount >= 1) {
+                return back()->withInput()->with('error', 'Sistem hanya diperbolehkan memiliki maksimal 1 Admin.');
+            }
+        }
 
         $user = User::create([
             'username'             => $request->username,
@@ -71,6 +87,31 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
+        $authUser = auth()->user();
+
+        // Proteksi Edit Akses
+        if ($authUser->role === 'Admin') {
+            if ($user->role === 'Ketua') {
+                return back()->with('error', 'Admin tidak dapat mengubah data Ketua Yayasan.');
+            }
+            if ($user->role === 'Admin' && $user->id_user !== $authUser->id_user) {
+                return back()->with('error', 'Admin tidak dapat mengubah data Admin lain.');
+            }
+        }
+
+        // Proteksi Perubahan Role ke Admin/Ketua
+        if ($authUser->role !== 'Ketua' && $request->role !== $user->role && in_array($request->role, ['Admin', 'Ketua'])) {
+             return back()->with('error', 'Anda tidak berhak mengubah role menjadi Admin atau Ketua.');
+        }
+
+        // Proteksi Maksimal 1 Admin
+        if ($request->role === 'Admin' && $user->role !== 'Admin') {
+            $adminCount = User::where('role', 'Admin')->count();
+            if ($adminCount >= 1) {
+                return back()->with('error', 'Sistem hanya diperbolehkan memiliki maksimal 1 Admin.');
+            }
+        }
+
         $data = [
             'username' => $request->username,
             'email'    => $request->email,
@@ -87,8 +128,18 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id_user === auth()->id()) {
+        $authUser = auth()->user();
+        if ($user->id_user === $authUser->id_user) {
             return back()->with('error', 'Tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        if ($authUser->role === 'Admin') {
+            if ($user->role === 'Ketua') {
+                return back()->with('error', 'Admin tidak dapat menghapus akun Ketua Yayasan.');
+            }
+            if ($user->role === 'Admin') {
+                return back()->with('error', 'Admin tidak dapat menghapus akun Admin.');
+            }
         }
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Akun pengguna berhasil dihapus.');
@@ -100,8 +151,18 @@ class UserController extends Controller
      */
     public function resetPassword(User $user)
     {
-        if ($user->id_user === auth()->id()) {
+        $authUser = auth()->user();
+        if ($user->id_user === $authUser->id_user) {
             return back()->with('error', 'Tidak dapat mereset password akun Anda sendiri.');
+        }
+
+        if ($authUser->role === 'Admin') {
+            if ($user->role === 'Ketua') {
+                return back()->with('error', 'Admin tidak dapat mereset password Ketua Yayasan.');
+            }
+            if ($user->role === 'Admin') {
+                return back()->with('error', 'Admin tidak dapat mereset password Admin lain.');
+            }
         }
 
         // Generate password sementara yang mudah dibaca
@@ -115,18 +176,21 @@ class UserController extends Controller
             'password_reset_requested_at'=> null, // Hapus flag permintaan
         ]);
 
-        // Stub: log sebagai pengganti kirim email (siap diganti Mail::send)
-        Log::info('[SIMPA] Admin telah mereset password pengguna', [
-            'admin_id'      => auth()->id(),
-            'target_user'   => $user->username,
-            'target_email'  => $user->email,
-            'temp_password' => $tempPassword, // HANYA untuk log dev, hapus saat production
-            'via_request'   => $isEmailReset,
-        ]);
+        try {
+            Mail::to($user->email)->send(new AdminResetPasswordMail([
+                'name' => $user->donatur->nama_donatur ?? $user->username,
+                'username' => $user->username,
+                'temp_password' => $tempPassword,
+            ]));
+            $emailSent = true;
+        } catch (\Exception $e) {
+            Log::error('Gagal mengirim email reset password oleh admin: ' . $e->getMessage());
+            $emailSent = false;
+        }
 
-        $flashMessage = $isEmailReset
-            ? 'Password sementara telah digenerate. Dalam implementasi nyata, password akan dikirim ke email ' . $user->email . '.'
-            : null;
+        $flashMessage = $emailSent 
+            ? 'Password telah direset dan email pemberitahuan telah dikirim ke ' . $user->email . '.' 
+            : 'Password telah direset namun GAGAL mengirim email. Berikan password berikut kepada pengguna secara manual.';
 
         return redirect()->route('users.index')
             ->with('reset_info', [
@@ -135,6 +199,7 @@ class UserController extends Controller
                 'password'     => $tempPassword,
                 'via_email'    => $isEmailReset,
                 'extra_message'=> $flashMessage,
+                'email_sent'   => $emailSent,
             ]);
     }
 }

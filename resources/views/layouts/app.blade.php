@@ -16,8 +16,11 @@
     {{-- SIDEBAR (extracted partial) --}}
     @include('layouts.partials.sidebar')
 
+    {{-- SIDEBAR OVERLAY --}}
+    <div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden md:hidden" onclick="toggleSidebar()"></div>
+
     {{-- MAIN CONTENT AREA --}}
-    <div class="flex-1 ml-64 dashboard-main-offset flex flex-col overflow-hidden">
+    <div class="flex-1 md:ml-64 dashboard-main-offset flex flex-col overflow-hidden transition-all duration-300">
 
         {{-- TOP BAR (extracted partial – includes notification logic) --}}
         @include('layouts.partials.topbar')

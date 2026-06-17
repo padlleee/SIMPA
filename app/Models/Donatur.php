@@ -30,4 +30,18 @@ class Donatur extends Model
     {
         return $this->hasMany(Donasi::class, 'id_donatur', 'id_donatur');
     }
+
+    /**
+     * Book loans issued to this donatur.
+     */
+    public function peminjamanBuku()
+    {
+        return $this->hasMany(PeminjamanBukuDonatur::class, 'donatur_id', 'id_donatur');
+    }
+
+    public function peminjamanBukuAktif()
+    {
+        return $this->hasMany(PeminjamanBukuDonatur::class, 'donatur_id', 'id_donatur')
+                    ->whereIn('status', ['Pending', 'Dipinjam']);
+    }
 }

@@ -77,11 +77,11 @@
                                     </span>
                                 @elseif($donasi->status_verifikasi === 'Valid')
                                     <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                                        ✓ Sudah Terverifikasi
+                                         Sudah Terverifikasi
                                     </span>
                                 @else
                                     <span class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
-                                        ✗ Ditolak
+                                         Ditolak
                                     </span>
                                 @endif
                             </div>
@@ -99,11 +99,11 @@
                             $fileExt = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                         @endphp
 
-                        @if(in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif']))
-                            <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Pembayaran" class="w-full rounded-lg border border-gray-200">
+                        @if(in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                            <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Pembayaran" class="w-full rounded-lg border border-gray-200 cursor-pointer hover:opacity-90 transition-opacity" onclick="showImageModal('{{ asset('storage/' . $filePath) }}')" title="Klik untuk memperbesar">
                         @else
                             <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
-                                <div class="text-6xl mb-4">📄</div>
+                                <div class="text-6xl mb-4"></div>
                                 <p class="text-gray-600 mb-4">Format File: <strong>.{{ $fileExt }}</strong></p>
                                 <a href="{{ asset('storage/' . $filePath) }}" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
                                     Buka File PDF
@@ -112,7 +112,7 @@
                         @endif
                     @else
                         <div class="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
-                            <div class="text-6xl mb-4">❌</div>
+                            <div class="text-6xl mb-4"></div>
                             <p class="text-gray-600">Tidak ada bukti pembayaran</p>
                         </div>
                     @endif
@@ -162,10 +162,10 @@
                             <p class="text-sm font-semibold text-yellow-800">⏳ Menunggu Verifikasi</p>
                             <p class="text-xs text-yellow-600 mt-2">Donasi ini belum diverifikasi oleh bendahara.</p>
                         @elseif($donasi->status_verifikasi === 'Valid')
-                            <p class="text-sm font-semibold text-green-800">✓ Sudah Terverifikasi</p>
+                            <p class="text-sm font-semibold text-green-800"> Sudah Terverifikasi</p>
                             <p class="text-xs text-green-600 mt-2">Donasi ini telah diverifikasi dan diterima.</p>
                         @else
-                            <p class="text-sm font-semibold text-red-800">✗ Ditolak</p>
+                            <p class="text-sm font-semibold text-red-800"> Ditolak</p>
                             <p class="text-xs text-red-600 mt-2">Donasi ini telah ditolak oleh bendahara.</p>
                         @endif
                     </div>
@@ -179,7 +179,7 @@
                             onclick="showModal('verifyModal')"
                             class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition"
                         >
-                            ✓ Verifikasi Donasi
+                             Verifikasi Donasi
                         </button>
 
                         <!-- Reject Button -->
@@ -187,7 +187,7 @@
                             onclick="showModal('rejectModal')"
                             class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition"
                         >
-                            ✗ Tolak Donasi
+                             Tolak Donasi
                         </button>
                     </div>
                 @else
@@ -198,14 +198,20 @@
 
                 <!-- Print Receipt Button -->
                 @if($donasi->isVerified())
-                    <div class="mt-4">
+                    <div class="mt-4 space-y-2">
                         <a
                             href="{{ route('donasi.receipt', $donasi) }}"
                             target="_blank"
                             class="w-full block text-center bg-gray-900 text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition text-sm"
                         >
-                            🖨️ Lihat Kwitansi
+                             Lihat Kwitansi
                         </a>
+                        <button
+                            onclick="showModal('resendReceiptModal')"
+                            class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition text-sm"
+                        >
+                             Kirim Ulang Email Kwitansi
+                        </button>
                     </div>
                 @endif
 
@@ -216,7 +222,7 @@
                         <button type="button"
                                 onclick="simpaConfirm({ title:'Hapus Donasi', message:'Yakin ingin menghapus donasi {{ $donasi->nominal_formatted }} ini secara permanen?', confirmText:'Ya, Hapus', type:'danger', onConfirm:()=>document.getElementById('donasiDel').submit() })"
                                 class="w-full bg-gray-200 text-gray-900 py-2 rounded-lg font-semibold hover:bg-gray-300 transition text-sm">
-                            🗑️ Hapus
+                             Hapus
                         </button>
                     </form>
                 </div>
@@ -287,7 +293,7 @@
                     name="catatan"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                    placeholder="Jelaskan alasan penolakan..."
+                    placeholder="Alasan penolakan..."
                     required
                 ></textarea>
             </div>
@@ -311,6 +317,63 @@
     </div>
 </div>
 
+<!-- Resend Receipt Modal -->
+<div id="resendReceiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+            <h3 class="text-xl font-bold text-gray-900">Kirim Ulang Kwitansi Email</h3>
+            <p class="text-sm text-gray-600 mt-1">Sistem akan mengirimkan tautan kwitansi ke email berikut.</p>
+        </div>
+        <form action="{{ route('donasi.resend-receipt', $donasi) }}" method="POST" class="p-6">
+            @csrf
+            
+            <div class="mb-5">
+                <label for="email_resend" class="block text-sm font-medium text-gray-700 mb-2">Email Tujuan <span class="text-red-500">*</span></label>
+                <input
+                    type="email"
+                    id="email_resend"
+                    name="email"
+                    value="{{ old('email', $donasi->user->email ?? $donasi->email_donatur_manual) }}"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="nama@email.com"
+                    required
+                >
+                @if(is_null($donasi->id_donatur))
+                <p class="text-xs text-gray-500 mt-2">Karena ini donatur publik, mengubah email ini juga akan memperbarui data kontak pada riwayat donasi ini.</p>
+                @else
+                <p class="text-xs text-gray-500 mt-2">Akun terdaftar terdeteksi. Pesan akan dikirim ke alamat email ini.</p>
+                @endif
+            </div>
+
+            <div class="flex gap-3">
+                <button
+                    type="button"
+                    onclick="hideModal('resendReceiptModal')"
+                    class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition font-semibold"
+                >
+                    Batal
+                </button>
+                <button
+                    type="submit"
+                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
+                >
+                    Kirim Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Zoom Image Modal -->
+<div id="imageZoomModal" class="hidden fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-[60] cursor-pointer" onclick="hideModal('imageZoomModal')">
+    <div class="relative max-w-7xl mx-auto p-4 flex justify-center items-center h-full w-full">
+        <button onclick="hideModal('imageZoomModal')" class="absolute top-4 right-4 text-white hover:text-gray-300 focus:outline-none">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="zoomedImage" src="" alt="Bukti Pembayaran Zoom" class="max-w-full max-h-[90vh] object-contain rounded shadow-2xl">
+    </div>
+</div>
+
 <script>
     function showModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
@@ -320,10 +383,16 @@
         document.getElementById(modalId).classList.add('hidden');
     }
 
+    function showImageModal(src) {
+        document.getElementById('zoomedImage').src = src;
+        showModal('imageZoomModal');
+    }
+
     // Close modal when clicking outside
     document.addEventListener('click', function(e) {
         if (e.target.id === 'verifyModal') hideModal('verifyModal');
         if (e.target.id === 'rejectModal') hideModal('rejectModal');
+        if (e.target.id === 'resendReceiptModal') hideModal('resendReceiptModal');
     });
 </script>
 @endsection

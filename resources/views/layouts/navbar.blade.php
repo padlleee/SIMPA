@@ -15,7 +15,14 @@
                  style="aspect-ratio: 1019/277;">
         </div>
 
-        {{-- Nav Links --}}
+        {{-- Mobile Hamburger Button --}}
+        <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2 -mr-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path id="mobile-menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+
+        {{-- Nav Links (Desktop) --}}
         <div class="hidden md:flex items-center gap-1 flex-1 justify-center">
 
             {{-- Beranda – hanya tampil jika bukan di landing page --}}
@@ -23,10 +30,52 @@
             <a href="{{ route('landing') }}" class="nav-link px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">Beranda</a>
             @endif
 
-            <a href="{{ route('tentang-kami') }}" class="nav-link px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">Tentang Kami</a>
+            {{-- Dropdown: Seputar Panti --}}
+            <div class="relative" id="seputar-wrapper">
+                <button id="seputar-btn"
+                        onclick="toggleDropdown('seputar-dropdown', 'seputar-btn')"
+                        class="nav-link flex items-center gap-1.5 px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">
+                    Seputar Panti
+                    <svg id="seputar-chevron" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+
+                <div id="seputar-dropdown" class="dropdown-menu" style="min-width:240px; left:0; right:auto;">
+                    <a href="{{ route('tentang-kami') }}" class="dropdown-item">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">Tentang Kami</p>
+                            <p class="text-xs text-slate-400">Profil, Visi, dan Misi Yayasan</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('info') }}" class="dropdown-item">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">Pusat Informasi</p>
+                            <p class="text-xs text-slate-400">Panduan dan Transparansi</p>
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('blog.index') }}" class="dropdown-item">
+                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5 0 00-2.5-2.5H14"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">Blog</p>
+                            <p class="text-xs text-slate-400">Artikel & Kegiatan Panti</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <a href="{{ route('perpustakaan.public.index') }}" class="nav-link px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">Perpustakaan</a>
             <a href="{{ route('faq') }}" class="nav-link px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">FAQ</a>
-            <a href="{{ route('blog.index') }}" class="nav-link px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium text-sm transition-all">Blog</a>
 
             {{-- Dropdown: Pendaftaran --}}
             <div class="relative" id="pendaftaran-wrapper">
@@ -159,6 +208,40 @@
             @endauth
         </div>
 
+        {{-- Mobile Menu Panel --}}
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-xl flex-col p-6 gap-4 md:hidden z-50">
+            <div class="flex flex-col gap-2">
+                @if(!request()->routeIs('landing'))
+                <a href="{{ route('landing') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Beranda</a>
+                @endif
+                <a href="{{ route('tentang-kami') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Tentang Kami</a>
+                <a href="{{ route('info') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Pusat Informasi</a>
+                <a href="{{ route('blog.index') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Blog & Kegiatan</a>
+                <a href="{{ route('perpustakaan.public.index') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Perpustakaan</a>
+                <a href="{{ route('faq') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">FAQ</a>
+                <a href="{{ route('pendaftaran-anak.create') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Daftar Anak Asuh</a>
+                <a href="{{ route('account-request.create') }}" class="text-slate-700 font-medium py-2 border-b border-slate-100">Minta Akun Donatur</a>
+            </div>
+
+            <div class="flex flex-col gap-3 mt-4 pt-4 border-t border-slate-100">
+                @auth
+                    @if(auth()->user()->role === 'Donatur')
+                    <a href="{{ route('donatur.dashboard') }}" class="bg-slate-50 text-slate-800 text-center py-3 rounded-xl font-medium border border-slate-200">Dashboard Saya</a>
+                    <a href="{{ route('donatur.profile') }}" class="bg-slate-50 text-slate-800 text-center py-3 rounded-xl font-medium border border-slate-200">Profil Saya</a>
+                    @else
+                    <a href="{{ route('dashboard') }}" class="bg-slate-50 text-slate-800 text-center py-3 rounded-xl font-medium border border-slate-200">Admin Dashboard</a>
+                    @endif
+                    <form action="{{ route('logout') }}" method="POST" class="w-full">
+                        @csrf
+                        <button type="submit" class="w-full bg-red-50 text-red-600 text-center py-3 rounded-xl font-medium border border-red-200">Keluar</button>
+                    </form>
+                @else
+                    <button onclick="openRegisterModal()" class="w-full text-slate-600 border border-slate-300 py-3 rounded-xl font-medium">Daftar Donatur</button>
+                    <button onclick="openLoginModal()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-medium shadow-sm">Masuk</button>
+                @endauth
+            </div>
+        </div>
+
     </div>
 </nav>
 
@@ -170,7 +253,19 @@
 
 @push('scripts')
 <script>
-    /* ── Global dropdown toggle ──────────────────────────────── */
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const icon = document.getElementById('mobile-menu-icon');
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            icon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            icon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+        }
+    }
     function toggleDropdown(dropdownId, btnId) {
         const dropdown = document.getElementById(dropdownId);
         const isOpen = dropdown.classList.contains('open');

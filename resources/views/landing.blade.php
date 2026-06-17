@@ -23,12 +23,14 @@
     <div class="hero-content max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-16 items-center">
         <div>
             <span class="inline-block bg-white/10 text-white/90 text-sm font-medium px-4 py-1.5 rounded-full mb-6">Yayasan Amaliya Subang</span>
-            <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
-                Bersama Kita<br>
-                <span class="text-slate-300">Tumbuhkan Harapan</span>
+            <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
+                Mendukung<br>
+                <span class="text-slate-300">Kehidupan yang<br>Lebih Baik</span>
             </h1>
-            <p class="text-slate-300 text-lg leading-relaxed mb-10">
-                Mendukung Kehidupan yang Lebih Baik <span class="text-white/50">|</span> <em>Support for Better Life</em>
+            <p class="text-slate-300 text-lg leading-relaxed mb-8">
+                Support for Better Life
+                <span class="text-white/40 mx-2">|</span>
+                <em class="text-white/70">Bersama menumbuhkan harapan setiap anak</em>
             </p>
             <div class="flex flex-wrap gap-4">
                 @auth
@@ -55,6 +57,16 @@
                     Tentang Kami
                 </a>
                 @endguest
+
+                {{-- Legalitas Panti Button --}}
+                <button id="btn-legalitas"
+                        onclick="document.getElementById('modal-legalitas').classList.remove('hidden')"
+                        class="flex items-center gap-2 text-white/70 hover:text-white text-sm font-medium mt-1 transition-colors group">
+                    <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                    Legalitas Panti
+                </button>
             </div>
         </div>
 
@@ -544,6 +556,125 @@
         </div>
     </div>
 </section>
+
+{{-- ============================================================ --}}
+{{-- MODAL: LEGALITAS PANTI                                       --}}
+{{-- Triggered by clicking "Legalitas Panti" button in the hero. --}}
+{{-- ============================================================ --}}
+<div id="modal-legalitas"
+     class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4"
+     onclick="if(event.target===this)this.classList.add('hidden')">
+
+    {{-- Backdrop --}}
+    <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"></div>
+
+    {{-- Modal Card --}}
+    <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+
+        {{-- Header --}}
+        <div class="bg-slate-800 px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-white font-bold text-base">Legalitas Panti Asuhan</div>
+                    <div class="text-slate-400 text-xs">Yayasan Amaliya Subang — Dokumen Resmi</div>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modal-legalitas').classList.add('hidden')"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Body --}}
+        <div class="p-6 space-y-4">
+            <p class="text-slate-600 text-sm leading-relaxed">
+                Yayasan Panti Asuhan Amaliya beroperasi secara resmi dan sah secara hukum berdasarkan dokumen-dokumen berikut yang dikeluarkan oleh instansi pemerintah yang berwenang.
+            </p>
+
+            {{-- Document List --}}
+            <div class="space-y-3">
+
+                {{-- Item 1 --}}
+                <div class="flex items-start gap-3 bg-slate-50 rounded-xl px-4 py-3.5 border border-slate-200">
+                    <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-4.5 h-4.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-800">Akta Notaris Pendirian Yayasan</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Nomor Akta: 12/YA/III/2015 — Notaris Subang</div>
+                        <span class="inline-block mt-1.5 text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">✓ Terverifikasi</span>
+                    </div>
+                </div>
+
+                {{-- Item 2 --}}
+                <div class="flex items-start gap-3 bg-slate-50 rounded-xl px-4 py-3.5 border border-slate-200">
+                    <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-4.5 h-4.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-800">Izin Operasional Dinas Sosial</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Dinas Sosial Kabupaten Subang — Diperbaharui 2023</div>
+                        <span class="inline-block mt-1.5 text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">✓ Aktif 2023–2026</span>
+                    </div>
+                </div>
+
+                {{-- Item 3 --}}
+                <div class="flex items-start gap-3 bg-slate-50 rounded-xl px-4 py-3.5 border border-slate-200">
+                    <div class="w-9 h-9 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-4.5 h-4.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-800">NPWP Yayasan</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Nomor Pokok Wajib Pajak Resmi Terdaftar</div>
+                        <span class="inline-block mt-1.5 text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">✓ Terdaftar Pajak</span>
+                    </div>
+                </div>
+
+                {{-- Item 4 --}}
+                <div class="flex items-start gap-3 bg-slate-50 rounded-xl px-4 py-3.5 border border-slate-200">
+                    <div class="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg class="w-4.5 h-4.5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-slate-800">Sertifikat Akreditasi Lembaga Sosial</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Kementerian Sosial Republik Indonesia</div>
+                        <span class="inline-block mt-1.5 text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">✓ Terakreditasi</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <p class="text-xs text-slate-400 text-center">
+                Untuk verifikasi dan salinan dokumen resmi, hubungi kami di
+                <a href="mailto:info.amaliyasubang@gmail.com" class="text-slate-600 underline hover:text-slate-800">info.amaliyasubang@gmail.com</a>
+            </p>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-6 pb-6">
+            <button onclick="document.getElementById('modal-legalitas').classList.add('hidden')"
+                    class="w-full bg-slate-800 text-white py-3 rounded-xl font-semibold hover:bg-slate-700 transition-colors text-sm">
+                Tutup
+            </button>
+        </div>
+
+    </div>
+</div>
 
 {{-- SUCCESS FLASH --}}
 @if(session('success'))

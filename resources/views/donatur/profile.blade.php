@@ -66,7 +66,7 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Konfirmasi Password</label>
                     <input type="password" name="password_confirmation"
                            class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800"
-                           placeholder="Ulangi password baru">
+                           placeholder="Ulangi kata sandi baru">
                 </div>
             </div>
         </div>

@@ -70,31 +70,59 @@
         <div class="flex gap-2">
             <button type="submit" class="px-5 py-2 bg-slate-800 text-white rounded-lg text-sm hover:bg-slate-700 transition">Filter</button>
             <a href="{{ route('laporan.index') }}" class="px-5 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200 transition">Reset</a>
+            @if(in_array(Auth::user()->role, ['Admin','Ketua','Bendahara']))
+            <a href="{{ route('laporan.kas-masuk.create') }}"
+               class="px-5 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-500 transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Tambah Kas Masuk
+            </a>
+            @endif
         </div>
     </form>
 </div>
 
-<div class="grid gap-4 grid-cols-1 lg:grid-cols-3 mb-6">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between min-h-[170px]">
+<div class="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-6">
+    {{-- Total Donasi --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between min-h-[140px]">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Donasi</p>
-            <p class="text-3xl font-bold text-emerald-600">Rp {{ number_format($totalDonasi, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold text-emerald-600">Rp {{ number_format($totalDonasi, 0, ',', '.') }}</p>
         </div>
-        <p class="text-sm text-slate-500 mt-4">Hanya donasi yang sudah terverifikasi</p>
+        <p class="text-xs text-slate-400 mt-3">Hanya donasi yang sudah terverifikasi</p>
     </div>
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between min-h-[170px]">
+    {{-- Kas Masuk Lain --}}
+    <div class="bg-white rounded-2xl border border-blue-100 shadow-sm p-5 flex flex-col justify-between min-h-[140px]">
+        <div>
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kas Masuk Lain</p>
+            <p class="text-2xl font-bold text-blue-600">Rp {{ number_format($totalKasMasukLain, 0, ',', '.') }}</p>
+        </div>
+        <div class="flex items-center justify-between mt-3">
+            <p class="text-xs text-slate-400">Hibah, infaq, penjualan, dll.</p>
+            @if(in_array(Auth::user()->role, ['Admin','Ketua','Bendahara']))
+            <a href="{{ route('laporan.kas-masuk.create') }}"
+               class="text-xs text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                + Tambah
+            </a>
+            @endif
+        </div>
+    </div>
+    {{-- Total Pengeluaran --}}
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between min-h-[140px]">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Total Pengeluaran</p>
-            <p class="text-3xl font-bold text-rose-600">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold text-rose-600">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
         </div>
-        <p class="text-sm text-slate-500 mt-4">Semua pengeluaran tercatat</p>
+        <p class="text-xs text-slate-400 mt-3">Semua pengeluaran tercatat</p>
     </div>
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between min-h-[170px]">
+    {{-- Saldo Bersih --}}
+    <div class="bg-white rounded-2xl border {{ $saldoBersih >= 0 ? 'border-slate-200' : 'border-red-200' }} shadow-sm p-5 flex flex-col justify-between min-h-[140px]">
         <div>
             <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Saldo Bersih</p>
-            <p class="text-3xl font-bold {{ $saldoBersih >= 0 ? 'text-slate-800' : 'text-red-600' }}">Rp {{ number_format($saldoBersih, 0, ',', '.') }}</p>
+            <p class="text-2xl font-bold {{ $saldoBersih >= 0 ? 'text-slate-800' : 'text-red-600' }}">Rp {{ number_format($saldoBersih, 0, ',', '.') }}</p>
         </div>
-        <p class="text-sm text-slate-500 mt-4">Selisih donasi dikurangi pengeluaran</p>
+        <p class="text-xs text-slate-400 mt-3">Total pemasukan dikurangi pengeluaran</p>
     </div>
 </div>
 
@@ -102,14 +130,15 @@
     <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 flex items-center justify-between">
         <h2 class="text-sm font-semibold uppercase text-slate-500">Detail Transaksi</h2>
         {{-- Tombol Print --}}
-        <button onclick="window.print()"
-                class="no-print inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 active:scale-95 transition-all">
+        <a href="{{ route('laporan.print', request()->query()) }}"
+           target="_blank"
+           class="no-print inline-flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-semibold hover:bg-slate-700 active:scale-95 transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
             </svg>
             Cetak / Print
-        </button>
+        </a>
     </div>
     @if($paginated->count())
         <div class="overflow-x-auto">
@@ -125,19 +154,41 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @foreach($paginated as $item)
-                        <tr class="hover:bg-slate-50 transition-colors">
+                        @php
+                            $jenis = $item['jenis'];
+                            $isKeluar = $jenis === 'Pengeluaran';
+                            $isDonasi = $jenis === 'Donasi';
+                            $rowClass = $isKeluar ? 'bg-rose-50/30' : ($isDonasi ? '' : 'bg-blue-50/30');
+                            $jenisBadgeClass = $isKeluar
+                                ? 'bg-rose-100 text-rose-700'
+                                : ($isDonasi ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700');
+                        @endphp
+                        <tr class="hover:bg-slate-50 transition-colors {{ $rowClass }}">
                             <td class="px-5 py-4 text-slate-500 text-xs whitespace-nowrap">{{ optional($item['tanggal'])->translatedFormat('j M Y') ?? '-' }}</td>
                             <td class="px-5 py-4 text-slate-700">{{ $item['keterangan'] }}</td>
-                            <td class="px-5 py-4 text-slate-500 uppercase tracking-wider">{{ $item['jenis'] }}</td>
-                            <td class="px-5 py-4 text-right font-semibold text-slate-800">{{ $item['pemasukan'] ? 'Rp ' . number_format($item['pemasukan'], 0, ',', '.') : '-' }}</td>
-                            <td class="px-5 py-4 text-right font-semibold text-slate-800">{{ $item['pengeluaran'] ? 'Rp ' . number_format($item['pengeluaran'], 0, ',', '.') : '-' }}</td>
+                            <td class="px-5 py-4">
+                                <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider {{ $jenisBadgeClass }}">
+                                    {{ $jenis }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-4 text-right font-semibold {{ $item['pemasukan'] ? 'text-emerald-700' : 'text-slate-300' }}">
+                                {{ $item['pemasukan'] ? 'Rp ' . number_format($item['pemasukan'], 0, ',', '.') : '—' }}
+                            </td>
+                            <td class="px-5 py-4 text-right font-semibold {{ $item['pengeluaran'] ? 'text-rose-600' : 'text-slate-300' }}">
+                                {{ $item['pengeluaran'] ? 'Rp ' . number_format($item['pengeluaran'], 0, ',', '.') : '—' }}
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot class="border-t-2 border-slate-300 bg-slate-50">
                     <tr>
                         <td colspan="3" class="px-5 py-3 text-xs font-bold text-slate-600 uppercase">Total Keseluruhan</td>
-                        <td class="px-5 py-3 text-right font-bold text-emerald-700">Rp {{ number_format($totalDonasi, 0, ',', '.') }}</td>
+                        <td class="px-5 py-3 text-right font-bold text-emerald-700">
+                            Rp {{ number_format($totalPemasukan, 0, ',', '.') }}
+                            @if($totalKasMasukLain > 0)
+                                <div class="text-[10px] font-normal text-slate-400">(Donasi + Kas Lain)</div>
+                            @endif
+                        </td>
                         <td class="px-5 py-3 text-right font-bold text-rose-700">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</td>
                     </tr>
                 </tfoot>
