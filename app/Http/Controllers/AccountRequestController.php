@@ -115,7 +115,7 @@ class AccountRequestController extends Controller
                 'no_hp'        => $accountRequest->no_hp ?? $donatur->no_hp,
             ]);
         } else {
-            Donatur::create([
+            $donatur = Donatur::create([
                 'id_user'      => $user->id_user,
                 'nama_donatur' => $accountRequest->nama_lengkap,
                 'email'        => $accountRequest->email,
@@ -139,7 +139,7 @@ class AccountRequestController extends Controller
             Donasi::whereNull('id_donatur')
                 ->where('email_donatur_manual', $accountRequest->email)
                 ->update([
-                    'id_donatur'           => $user->id_user,
+                    'id_donatur'           => $donatur->id_donatur,
                     'nama_donatur_manual'  => null,
                     'email_donatur_manual' => null,
                     'no_hp_donatur_manual' => null,

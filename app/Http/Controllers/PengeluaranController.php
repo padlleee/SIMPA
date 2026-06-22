@@ -18,10 +18,10 @@ class PengeluaranController extends Controller
             $query->whereYear('tanggal_pengeluaran', $request->tahun);
         }
         $pengeluaran = $query->orderBy('tanggal_pengeluaran', 'desc')->paginate(15)->withQueryString();
-        $totalBulanIni = Pengeluaran::whereMonth('tanggal_pengeluaran', now()->month)
-                                    ->whereYear('tanggal_pengeluaran', now()->year)
-                                    ->sum('nominal');
-        return view('pengeluaran.index', compact('pengeluaran', 'totalBulanIni'));
+        
+        $totalPengeluaran = (clone $query)->sum('nominal');
+        
+        return view('pengeluaran.index', compact('pengeluaran', 'totalPengeluaran'));
     }
 
     public function create()

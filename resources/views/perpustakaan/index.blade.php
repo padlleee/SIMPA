@@ -25,12 +25,30 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 17.477 5.754 17 7.5 17s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 17.477 18.247 17 16.5 17c-1.746 0-3.332.477-4.5 1.253"/></svg>
             Pinjam Multi-Buku
         </a>
+        <button onclick="openImportModal('importPerpustakaan')"
+                class="inline-flex items-center gap-2 border border-emerald-600 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+            </svg>
+            Import Excel
+        </button>
         <a href="{{ route('perpustakaan.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Tambah Buku
         </a>
     </div>
 </div>
+
+@if(session('import_errors') && count(session('import_errors')) > 0)
+<div class="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+    <p class="text-sm font-semibold text-amber-700 mb-2">⚠ Beberapa baris dilewati:</p>
+    <ul class="text-xs text-amber-700 space-y-0.5 list-disc pl-4 max-h-32 overflow-y-auto">
+        @foreach(session('import_errors') as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
 <!-- Book Table -->
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
@@ -57,6 +75,9 @@
                 <td class="px-6 py-4 font-mono text-slate-400 text-xs whitespace-nowrap">{{ $item->kode_buku }}</td>
                 <td class="px-4 py-4 min-w-[200px]">
                     <a href="{{ route('perpustakaan.show', $item) }}" class="font-semibold text-slate-800 hover:text-slate-600 transition-colors">{{ $item->judul_buku }}</a>
+                    @if($item->is_featured)
+                    <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-700 uppercase tracking-wider">Beranda</span>
+                    @endif
                     @if($item->tahun_terbit)<div class="text-xs text-slate-400 mt-0.5">{{ $item->tahun_terbit }}</div>@endif
                 </td>
                 <td class="px-4 py-4 text-slate-600 whitespace-nowrap">{{ $item->pengarang }}</td>
@@ -75,6 +96,12 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center justify-end gap-2">
+                        <button type="button" 
+                                onclick="openFeaturedModal('{{ $item->id_buku }}', '{{ addslashes($item->judul_buku) }}', {{ $item->is_featured ? 'true' : 'false' }}, '{{ $item->kategori_landing ?? '' }}')" 
+                                title="Pengaturan Tampil di Beranda" 
+                                class="p-2 {{ $item->is_featured ? 'text-amber-500 hover:bg-amber-50' : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50' }} rounded-lg transition-colors">
+                            <svg class="w-4 h-4 {{ $item->is_featured ? 'fill-current' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                        </button>
                         <a href="{{ route('perpustakaan.show', $item) }}" title="Detail" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </a>
@@ -241,7 +268,90 @@
     </div>
 </div>
 
+<!-- Featured Modal -->
+<div id="featuredModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeFeaturedModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 transform scale-95 opacity-0 transition-all duration-200" id="featuredDialog">
+        <div class="flex items-center justify-between mb-5">
+            <h3 class="text-lg font-bold text-slate-800">Tampilan Beranda</h3>
+            <button onclick="closeFeaturedModal()" type="button" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <form id="featuredForm" method="POST" action="">
+            @csrf
+            @method('PATCH')
+            <p class="text-sm text-slate-600 mb-4">Atur apakah buku <strong id="featuredBookTitle" class="text-slate-800"></strong> ini akan ditampilkan di halaman depan (Landing Page).</p>
+            
+            <div class="mb-4">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="hidden" name="is_featured" value="0">
+                    <input type="checkbox" name="is_featured" id="is_featured_input" value="1" class="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-800" onchange="toggleKategoriLanding()">
+                    <span class="text-sm font-medium text-slate-700">Tampilkan Buku ini di Beranda</span>
+                </label>
+            </div>
+
+            <div id="kategoriLandingGroup" class="mb-6 hidden">
+                <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Pilih Kategori Landing Page</label>
+                <select name="kategori_landing" id="kategori_landing_input" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
+                    <option value="">-- Pilih Kategori --</option>
+                    <option value="buku_baru">Buku Baru</option>
+                    <option value="sering_dipinjam">Sering Dipinjam</option>
+                    <option value="buku_unik">Buku Unik</option>
+                </select>
+                <p class="text-xs text-slate-400 mt-2">Pilih bagian mana buku ini akan muncul di beranda.</p>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="closeFeaturedModal()" class="flex-1 px-4 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">Batal</button>
+                <button type="submit" class="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors">Simpan Pengaturan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
+// Featured Modal Script
+function openFeaturedModal(id, title, isFeatured, kategori) {
+    document.getElementById('featuredBookTitle').textContent = title;
+    document.getElementById('featuredForm').action = `/perpustakaan/${id}/featured`;
+    
+    document.getElementById('is_featured_input').checked = isFeatured;
+    document.getElementById('kategori_landing_input').value = kategori || '';
+    
+    toggleKategoriLanding();
+
+    const modal = document.getElementById('featuredModal');
+    const dialog = document.getElementById('featuredDialog');
+    modal.classList.remove('hidden');
+    requestAnimationFrame(() => {
+        dialog.classList.remove('scale-95', 'opacity-0');
+        dialog.classList.add('scale-100', 'opacity-100');
+    });
+}
+
+function closeFeaturedModal() {
+    const modal = document.getElementById('featuredModal');
+    const dialog = document.getElementById('featuredDialog');
+    dialog.classList.remove('scale-100', 'opacity-100');
+    dialog.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => modal.classList.add('hidden'), 200);
+}
+
+function toggleKategoriLanding() {
+    const isChecked = document.getElementById('is_featured_input').checked;
+    const group = document.getElementById('kategoriLandingGroup');
+    const input = document.getElementById('kategori_landing_input');
+    
+    if (isChecked) {
+        group.classList.remove('hidden');
+        input.required = true;
+    } else {
+        group.classList.add('hidden');
+        input.required = false;
+    }
+}
+
 // Delete buku
 let _delId = null;
 function confirmDeleteBuku(id, nama, pinjamCount = 0, pinjamData = []) {
@@ -280,7 +390,17 @@ document.addEventListener('keydown', e => {
         document.getElementById('deleteBukuModal').classList.add('hidden');
         document.getElementById('modalBukuDipinjam').classList.add('hidden');
         document.getElementById('kembaliModal').classList.add('hidden');
+        closeFeaturedModal();
     }
 });
 </script>
+
+@include('components.import-modal', [
+    'modalId'       => 'importPerpustakaan',
+    'importRoute'   => 'perpustakaan.import',
+    'templateRoute' => 'perpustakaan.template',
+    'title'         => 'Import Data Buku Perpustakaan',
+    'columns'       => ['Judul Buku *', 'Pengarang', 'Penerbit', 'Tahun Terbit', 'ISBN', 'Kategori', 'Jumlah Buku', 'Kondisi (Baik/Cukup/Rusak)', 'Sinopsis'],
+])
+
 @endsection

@@ -40,9 +40,9 @@
 
             {{-- KODE BARANG --}}
             <div class="md:col-span-2">
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang</label>
-                <input type="text" name="kode_barang" value="{{ old('kode_barang', $newKodeBarang ?? '') }}" readonly
-                       class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang Kategori <span class="text-slate-400 font-normal">(Opsional, biarkan kosong untuk otomatis)</span></label>
+                <input type="text" name="kode_barang" value="{{ old('kode_barang', $newKodeBarang ?? '') }}"
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800">
             </div>
 
             {{-- JUMLAH --}}

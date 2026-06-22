@@ -11,7 +11,15 @@
         @csrf
         @method('PUT')
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="md:col-span-2">
+            <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang <span class="font-normal text-slate-400">(Otomatis/Manual)</span></label>
+                <input type="text" name="kode_barang" value="{{ old('kode_barang', $stok->kode_barang) }}"
+                       placeholder="Kosongkan untuk otomatis..."
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kode_barang') border-red-400 @enderror">
+                @error('kode_barang')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Nama Barang <span class="text-red-500">*</span></label>
                 <input type="text" name="nama_barang" value="{{ old('nama_barang', $stok->nama_barang) }}" required
                        placeholder="Contoh: Beras, Minyak Goreng..."

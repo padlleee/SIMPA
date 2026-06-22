@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AnakAsuh;
 use App\Models\Label;
 use App\Models\PrestasiAnak;
+use App\Imports\AnakAsuhImport;
 use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
 
@@ -197,5 +198,45 @@ class AnakAsuhController extends Controller
 
         $prestasi->delete();
         return response()->json(['success' => true]);
+    }
+
+    // ── IMPORT EXCEL ────────────────────────────────────────────────────
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file_excel.required' => 'Harap pilih file Excel.',
+            'file_excel.mimes'    => 'File harus berformat .xlsx, .xls, atau .csv.',
+            'file_excel.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $path   = $request->file('file_excel')->store('imports/temp', 'local');
+        $fullPath = storage_path('app/' . $path);
+
+        $importer = new AnakAsuhImport();
+        $importer->import($fullPath);
+
+        // Hapus file temp
+        \Illuminate\Support\Facades\Storage::disk('local')->delete($path);
+
+        $message = "Import selesai: {$importer->inserted} data berhasil ditambahkan.";
+        if ($importer->skipped > 0) {
+            $message .= " {$importer->skipped} baris dilewati.";
+        }
+
+        return redirect()->route('anak-asuh.index')
+                         ->with('success', $message)
+                         ->with('import_errors', $importer->errors);
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/template_anak_asuh.xlsx');
+        if (!file_exists($path)) {
+            \Artisan::call('import:generate-templates');
+        }
+        return response()->download($path, 'Template_Import_Anak_Asuh.xlsx');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnakAsuh;
 use App\Models\CalonAnakAsuh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,17 @@ class PendaftaranAnakController extends Controller
 
     public function store(Request $request)
     {
+        // Konversi format DD/MM/YYYY menjadi YYYY-MM-DD agar bisa divalidasi Laravel
+        if ($request->filled('tanggal_lahir') && strpos($request->tanggal_lahir, '/') !== false) {
+            $parts = explode('/', $request->tanggal_lahir);
+            if (count($parts) === 3) {
+                $request->merge([
+                    'tanggal_lahir_raw' => $request->tanggal_lahir, // simpan raw jika error untuk dikembalikan
+                    'tanggal_lahir'     => $parts[2] . '-' . $parts[1] . '-' . $parts[0]
+                ]);
+            }
+        }
+
         $request->validate([
             'nama_anak'      => 'required|string|max:100',
             'tanggal_lahir'  => 'required|date|before:today',
@@ -75,7 +87,18 @@ class PendaftaranAnakController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return back()->with('success', "Pendaftaran atas nama {$calon->nama_anak} telah disetujui.");
+        // Otomatis daftarkan sebagai Anak Asuh aktif
+        AnakAsuh::create([
+            'nama_anak'     => $calon->nama_anak,
+            'tanggal_lahir' => $calon->tanggal_lahir,
+            // CalonAnakAsuh stores 'Laki-laki' / 'Perempuan', AnakAsuh needs 'L' / 'P'
+            'jenis_kelamin' => $calon->jenis_kelamin === 'Laki-laki' ? 'L' : 'P',
+            'status_anak'   => 'Aktif',
+            'tanggal_masuk' => now()->format('Y-m-d'),
+            // Kolom lainnya (pendidikan, jenis layanan, dsb) dapat disunting admin nanti
+        ]);
+
+        return back()->with('success', "Pendaftaran atas nama {$calon->nama_anak} telah disetujui dan otomatis terdaftar sebagai Anak Asuh Aktif.");
     }
 
     public function reject(Request $request, CalonAnakAsuh $calon)

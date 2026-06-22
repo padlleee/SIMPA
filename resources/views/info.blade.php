@@ -41,7 +41,7 @@
                         <div class="text-sm text-slate-500">a.n. Yayasan Amaliya Subang</div>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Bank_BJB_logo.svg/512px-Bank_BJB_logo.svg.png" alt="Bank BJB" class="h-6 mb-4 object-contain">
+                        <img src="https://vectorlogo4u.com/wp-content/uploads/2018/11/bank-bjb-vector-logo.png" alt="Bank BJB" class="h-14 mb-0 -mt-4 object-contain object-left">
                         <div class="text-xl font-mono font-bold text-slate-800 mb-1">0115697889100</div>
                         <div class="text-sm text-slate-500">a.n. Yayasan Amaliya Subang</div>
                     </div>

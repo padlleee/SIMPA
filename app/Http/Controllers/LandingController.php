@@ -25,11 +25,29 @@ class LandingController extends Controller
         $bukuBaru           = $featured->where('kategori_landing', 'buku_baru')->take(4)->values();
         $bukuUnik           = $featured->where('kategori_landing', 'buku_unik')->take(4)->values();
 
+        // ── Statistik Dampak Nyata ──────────────────────────────────
+        $anakAktifCount = \App\Models\AnakAsuh::aktif()->count();
+        $statAnakAktif  = $anakAktifCount > 100 ? 100 : $anakAktifCount;
+
+        $alumniCount = \App\Models\AnakAsuh::alumni()->count();
+        $statAlumni  = $alumniCount > 100 ? 100 : $alumniCount;
+
+        $donaturCount = \App\Models\User::where('role', 'Donatur')->count();
+        $statDonatur  = $donaturCount > 50 ? 50 : $donaturCount;
+
+        // Yayasan berdiri tahun 1992, kelipatan 5
+        $years = date('Y') - 1992;
+        $statTahun = floor($years / 5) * 5;
+
         return view('landing', compact(
             'recent_posts',
             'bukuSeringDipinjam',
             'bukuBaru',
-            'bukuUnik'
+            'bukuUnik',
+            'statAnakAktif',
+            'statAlumni',
+            'statDonatur',
+            'statTahun'
         ));
     }
 }

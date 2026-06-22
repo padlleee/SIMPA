@@ -28,6 +28,9 @@
     {{-- External Custom Stylesheet --}}
     <link rel="stylesheet" href="{{ asset('css/simpa-style.css') }}">
 
+    {{-- AOS Animation CSS --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
     {{-- Per-page Styles (pushed by child views) --}}
     @stack('styles')
 </head>
@@ -38,6 +41,19 @@
 
     {{-- Global Scripts --}}
     @stack('scripts')
+
+    {{-- AOS Initialization --}}
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                once: true,
+                offset: 50,
+                duration: 800,
+                easing: 'ease-out-cubic',
+            });
+        });
+    </script>
 
     {{-- ================================================================
          GLOBAL: Override pesan validasi HTML5 bawaan browser ke Bahasa Indonesia
@@ -283,5 +299,7 @@
     });
     </script>
 
+    @include('components.import-modal-js')
+    @include('components.scroll-reveal')
 </body>
 </html>

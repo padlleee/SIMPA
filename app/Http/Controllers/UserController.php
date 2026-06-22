@@ -61,13 +61,29 @@ class UserController extends Controller
         ]);
 
         if ($request->role === 'Donatur') {
-            Donatur::create([
+            $donatur = Donatur::create([
                 'id_user'      => $user->id_user,
                 'nama_donatur' => $request->username,
                 'email'        => $request->email,   // wajib diisi, kolom NOT NULL di tabel donatur
                 'no_hp'        => '-',
                 'alamat'       => '-',
             ]);
+
+            // Celah 2 FIX: Auto-claim donasi publik dengan email yang sama
+            $claimedCount = \App\Models\Donasi::whereNull('id_donatur')
+                ->where('email_donatur_manual', $request->email)
+                ->count();
+
+            if ($claimedCount > 0) {
+                \App\Models\Donasi::whereNull('id_donatur')
+                    ->where('email_donatur_manual', $request->email)
+                    ->update([
+                        'id_donatur'           => $donatur->id_donatur,
+                        'nama_donatur_manual'  => null,
+                        'email_donatur_manual' => null,
+                        'no_hp_donatur_manual' => null,
+                    ]);
+            }
         }
 
         return redirect()->route('users.index')->with('success', 'Akun pengguna berhasil dibuat.');

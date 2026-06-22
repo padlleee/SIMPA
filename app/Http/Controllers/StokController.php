@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\RiwayatStok;
 use App\Models\StokPanti;
+use App\Imports\StokPantiImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StokController extends Controller
 {
@@ -69,6 +71,7 @@ class StokController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'kode_barang'    => 'nullable|string|max:50',
             'nama_barang'    => 'required|string|max:100', // removed unique constraint for batching
             'kategori_barang'=> 'nullable|string|max:100',
             'kategori_barang_lainnya' => 'nullable|string|max:100',
@@ -110,6 +113,7 @@ class StokController extends Controller
         if ($existingStok) {
             // Update existing batch
             $existingStok->update([
+                'kode_barang'   => $request->kode_barang ?: $existingStok->kode_barang,
                 'barang_masuk'  => $existingStok->barang_masuk + $request->barang_masuk,
                 'barang_keluar' => $existingStok->barang_keluar + $request->barang_keluar,
                 // Stok awal dari form diabaikan karena ini update batch lama
@@ -120,7 +124,7 @@ class StokController extends Controller
             // Create new batch
             $stokBaru = StokPanti::create([
                 'nama_barang'    => $namaBarang,
-                'kode_barang'    => StokPanti::generateKodeBarang(),
+                'kode_barang'    => $request->kode_barang ?: StokPanti::generateKodeBarang(),
                 'kategori_barang'=> $kategori,
                 'satuan'         => $request->satuan,
                 'merk'           => $merk,
@@ -289,5 +293,44 @@ class StokController extends Controller
     {
         $stok->delete();
         return redirect()->route('stok.index')->with('success', 'Barang berhasil dihapus.');
+    }
+
+    // ── IMPORT EXCEL ────────────────────────────────────────────────────
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file_excel.required' => 'Harap pilih file Excel.',
+            'file_excel.mimes'    => 'File harus berformat .xlsx, .xls, atau .csv.',
+            'file_excel.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $path     = $request->file('file_excel')->store('imports/temp', 'local');
+        $fullPath = storage_path('app/' . $path);
+
+        $importer = new StokPantiImport();
+        $importer->import($fullPath);
+
+        Storage::disk('local')->delete($path);
+
+        $message = "Import selesai: {$importer->inserted} data berhasil ditambahkan.";
+        if ($importer->skipped > 0) {
+            $message .= " {$importer->skipped} baris dilewati.";
+        }
+
+        return redirect()->route('stok.index')
+                         ->with('success', $message)
+                         ->with('import_errors', $importer->errors);
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/template_stok_panti.xlsx');
+        if (!file_exists($path)) {
+            \Artisan::call('import:generate-templates');
+        }
+        return response()->download($path, 'Template_Import_Stok_Panti.xlsx');
     }
 }

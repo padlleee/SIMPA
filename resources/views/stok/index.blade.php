@@ -32,6 +32,13 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Segera Kadaluarsa
     </a>
+    <button onclick="openImportModal('importStok')"
+            class="inline-flex items-center gap-2 border border-emerald-600 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+        </svg>
+        Import Excel
+    </button>
     <a href="{{ route('stok.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Tambah Barang
@@ -245,5 +252,24 @@
     });
 </script>
 @endpush
+
+@if(session('import_errors') && count(session('import_errors')) > 0)
+<div class="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+    <p class="text-sm font-semibold text-amber-700 mb-2">⚠ Beberapa baris dilewati:</p>
+    <ul class="text-xs text-amber-700 space-y-0.5 list-disc pl-4 max-h-32 overflow-y-auto">
+        @foreach(session('import_errors') as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
+@include('components.import-modal', [
+    'modalId'       => 'importStok',
+    'importRoute'   => 'stok.import',
+    'templateRoute' => 'stok.template',
+    'title'         => 'Import Data Stok Panti',
+    'columns'       => ['Nama Barang *', 'Kategori Barang', 'Merk/Brand', 'Stok Awal', 'Satuan', 'Tanggal Kadaluarsa (DD/MM/YYYY)', 'Keterangan'],
+])
 
 @endsection

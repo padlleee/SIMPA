@@ -71,7 +71,7 @@
             <p class="text-slate-500 text-sm text-center md:text-left">
                 &copy; {{ date('Y') }} Yayasan Amaliya Subang. Hak cipta dilindungi undang-undang.
             </p>
-            <p class="text-slate-400 text-xs">Sistem SIMPA v1.0.0</p>
+            <p class="text-slate-400 text-xs">SIMPA v1.0.0</p>
         </div>
     </div>
 </footer>

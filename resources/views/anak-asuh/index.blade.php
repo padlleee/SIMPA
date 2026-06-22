@@ -21,11 +21,32 @@
         </select>
         <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors">Filter</button>
     </form>
-    <a href="{{ route('anak-asuh.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Tambah Anak
-    </a>
+    <div class="flex items-center gap-2">
+        <button onclick="openImportModal('importAnakAsuh')"
+                class="inline-flex items-center gap-2 border border-emerald-600 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+            </svg>
+            Import Excel
+        </button>
+        <a href="{{ route('anak-asuh.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Tambah Anak
+        </a>
+    </div>
 </div>
+
+{{-- Import errors --}}
+@if(session('import_errors') && count(session('import_errors')) > 0)
+<div class="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+    <p class="text-sm font-semibold text-amber-700 mb-2">⚠ Beberapa baris dilewati:</p>
+    <ul class="text-xs text-amber-700 space-y-0.5 list-disc pl-4 max-h-32 overflow-y-auto">
+        @foreach(session('import_errors') as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
 <!-- Table -->
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -107,5 +128,13 @@
     </div>
     @endif
 </div>
+
+@include('components.import-modal', [
+    'modalId'       => 'importAnakAsuh',
+    'importRoute'   => 'anak-asuh.import',
+    'templateRoute' => 'anak-asuh.template',
+    'title'         => 'Import Data Anak Asuh',
+    'columns'       => ['Nama Anak *', 'Tanggal Lahir *', 'Jenis Kelamin * (L/P)', 'Pendidikan', 'Tanggal Masuk', 'Status', 'Tempat Lahir', 'Kelas', 'Jenis Layanan', 'Dusun', 'Desa', 'Kecamatan'],
+])
 
 @endsection
