@@ -189,9 +189,9 @@
         <div class="kop">
             <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo Panti">
             <div class="kop-text">
-                <div class="org-name">YAYASAN PANTI ASUHAN AMALIYA</div>
-                <div class="org-sub">Sistem Informasi Manajemen Panti Asuhan (SIMPA)</div>
-                <div class="org-addr">Jl. Cagak, Subang, Jawa Barat | Telepon: 0812-xxxx-xxxx</div>
+                <div class="org-name">YAYASAN AMALIYA SUBANG</div>
+                <div class="org-sub" style="color: #111;">Blok Suka Asih I RT.64 RW.18 Kel. Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat</div>
+                <div class="org-addr" style="color: #111;">Tlp. 08129686049 / 081313174592 | <a href="mailto:info.amaliyasubang@gmail.com" style="color: blue; text-decoration: none;">info.amaliyasubang@gmail.com</a> | www.amaliyasubang.org</div>
             </div>
         </div>
 

@@ -99,6 +99,12 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/anak-asuh', [AnakAsuhController::class, 'index'])->name('anak-asuh.index');
     Route::get('/anak-asuh/create', [AnakAsuhController::class, 'create'])->name('anak-asuh.create');
     Route::post('/anak-asuh', [AnakAsuhController::class, 'store'])->name('anak-asuh.store');
+
+    // Anak Asuh — Import Excel (HARUS sebelum route dinamis {anakAsuh})
+    Route::post('/anak-asuh/import', [AnakAsuhController::class, 'importExcel'])->name('anak-asuh.import');
+    Route::get('/anak-asuh/template', [AnakAsuhController::class, 'downloadTemplate'])->name('anak-asuh.template');
+
+    // Anak Asuh — Dynamic routes
     Route::get('/anak-asuh/{anakAsuh}', [AnakAsuhController::class, 'show'])->name('anak-asuh.show');
     Route::get('/anak-asuh/{anakAsuh}/edit', [AnakAsuhController::class, 'edit'])->name('anak-asuh.edit');
     Route::put('/anak-asuh/{anakAsuh}', [AnakAsuhController::class, 'update'])->name('anak-asuh.update');
@@ -125,6 +131,9 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/stok/riwayat', [RiwayatStokController::class, 'index'])->name('stok.riwayat');
     Route::get('/stok/create', [StokController::class, 'create'])->name('stok.create');
     Route::post('/stok', [StokController::class, 'store'])->name('stok.store');
+    // Stok — Import Excel (before {stok} dynamic segment)
+    Route::post('/stok/import', [StokController::class, 'importExcel'])->name('stok.import');
+    Route::get('/stok/template', [StokController::class, 'downloadTemplate'])->name('stok.template');
     Route::get('/stok/{stok}/edit', [StokController::class, 'edit'])->name('stok.edit');
     Route::get('/stok/{stok}/transaksi', [StokController::class, 'transaksi'])->name('stok.transaksi');
     Route::post('/stok/{stok}/transaksi', [StokController::class, 'storeTransaksi'])->name('stok.storeTransaksi');
@@ -135,7 +144,10 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/inventaris', [InventarisController::class, 'index'])->name('inventaris.index');
     Route::get('/inventaris/create', [InventarisController::class, 'create'])->name('inventaris.create');
     Route::post('/inventaris', [InventarisController::class, 'store'])->name('inventaris.store');
-    Route::get('/inventaris/detail/{nama_kategori}', [InventarisController::class, 'show'])->name('inventaris.show');
+    Route::get('/inventaris/detail/{nama_kategori}', [InventarisController::class, 'show'])->name('inventaris.show')->where('nama_kategori', '.*');
+    // Inventaris — Import Excel (before {inventari} dynamic segment)
+    Route::post('/inventaris/import', [InventarisController::class, 'importExcel'])->name('inventaris.import');
+    Route::get('/inventaris/template', [InventarisController::class, 'downloadTemplate'])->name('inventaris.template');
     Route::get('/inventaris/{inventari}/edit', [InventarisController::class, 'edit'])->name('inventaris.edit');
     Route::put('/inventaris/{inventari}', [InventarisController::class, 'update'])->name('inventaris.update');
     Route::delete('/inventaris/{inventari}', [InventarisController::class, 'destroy'])->name('inventaris.destroy');
@@ -145,9 +157,13 @@ Route::middleware(['auth', 'role:Admin,Ketua,Bendahara'])->group(function () {
     Route::get('/perpustakaan/create', [PerpustakaanController::class, 'create'])->name('perpustakaan.create');
     Route::get('/perpustakaan/riwayat', [PerpustakaanController::class, 'riwayat'])->name('perpustakaan.riwayat');
     Route::post('/perpustakaan', [PerpustakaanController::class, 'store'])->name('perpustakaan.store');
+    // Perpustakaan — Import Excel (before {perpustakaan} dynamic segment)
+    Route::post('/perpustakaan/import', [PerpustakaanController::class, 'importExcel'])->name('perpustakaan.import');
+    Route::get('/perpustakaan/template', [PerpustakaanController::class, 'downloadTemplate'])->name('perpustakaan.template');
     Route::get('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'show'])->name('perpustakaan.show');
     Route::get('/perpustakaan/{perpustakaan}/edit', [PerpustakaanController::class, 'edit'])->name('perpustakaan.edit');
     Route::put('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'update'])->name('perpustakaan.update');
+    Route::patch('/perpustakaan/{perpustakaan}/featured', [PerpustakaanController::class, 'updateFeatured'])->name('perpustakaan.featured');
     Route::delete('/perpustakaan/{perpustakaan}', [PerpustakaanController::class, 'destroy'])->name('perpustakaan.destroy');
     Route::get('/perpustakaan/{perpustakaan}/pinjam', [PerpustakaanController::class, 'pinjamCreate'])->name('perpustakaan.pinjam');
     Route::post('/perpustakaan/{perpustakaan}/pinjam', [PerpustakaanController::class, 'pinjamStore'])->name('perpustakaan.pinjam.store');

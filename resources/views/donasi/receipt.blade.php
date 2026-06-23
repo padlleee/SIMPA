@@ -95,17 +95,15 @@
         <!-- ================= RECEIPT 1 (TOP) ================= -->
         <div class="receipt-block">
             <!-- Header -->
-            <div class="flex items-center justify-between mb-2">
-                <div class="w-24 shrink-0 flex justify-center">
-                    <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo" class="h-20 w-auto object-contain grayscale">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="w-20 shrink-0 flex justify-center">
+                    <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo" class="h-16 w-auto object-contain grayscale">
                 </div>
-                <div class="text-center flex-grow px-4">
-                    <h2 class="font-bold text-lg tracking-wide">YAYASAN PANTI ASUHAN</h2>
-                    <h1 class="font-bold text-2xl tracking-wider mt-1">AMALIYA SUBANG</h1>
-                    <p class="text-sm mt-1">Alamat : Blok Suka Asih, RT 23/RW 07, Kel. Karanganyar, Kec/Kab. Subang 41211</p>
-                    <p class="text-sm">Telp: (0260) xxxxxx | email : info@amaliyasubang.org</p>
+                <div class="flex-grow">
+                    <h1 class="font-bold text-2xl tracking-wider mb-1" style="font-family: 'Times New Roman', Times, serif;">YAYASAN AMALIYA SUBANG</h1>
+                    <p class="text-[13px] leading-tight text-black">Blok Suka Asih I RT.64 RW.18 Kel. Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat</p>
+                    <p class="text-[13px] leading-tight text-black">Tlp. 08129686049 / 081313174592 | <span style="color: blue;">info.amaliyasubang@gmail.com</span> | www.amaliyasubang.org</p>
                 </div>
-                <div class="w-24 shrink-0"></div> <!-- Balancer -->
             </div>
             
             <!-- Double Line Separator -->

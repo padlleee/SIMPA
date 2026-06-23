@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Perpustakaan;
 use App\Models\PeminjamanBuku;
+use App\Imports\PerpustakaanImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -226,6 +227,24 @@ class PerpustakaanController extends Controller
         return redirect()->route('perpustakaan.index')->with('success', 'Buku berhasil dikembalikan.');
     }
 
+    // ===================== FEATURED LANDING PAGE =====================
+    
+    public function updateFeatured(Request $request, Perpustakaan $perpustakaan)
+    {
+        $request->validate([
+            'is_featured'      => 'required|boolean',
+            'kategori_landing' => 'nullable|string',
+        ]);
+
+        $perpustakaan->update([
+            'is_featured'      => $request->is_featured,
+            'kategori_landing' => $request->is_featured ? $request->kategori_landing : null,
+        ]);
+
+        $status = $request->is_featured ? 'ditampilkan di beranda' : 'dihapus dari beranda';
+        return redirect()->back()->with('success', "Status buku \"{$perpustakaan->judul_buku}\" berhasil {$status}.");
+    }
+
     // ===================== MULTI-PINJAM =====================
 
     public function multiPinjamCreate(Request $request)
@@ -343,5 +362,44 @@ class PerpustakaanController extends Controller
         $totalPinjam= PeminjamanBuku::dipinjam()->count();
 
         return view('perpustakaan.public-index', compact('buku', 'kategori', 'totalBuku', 'totalPinjam'));
+    }
+
+    // ===================== IMPORT EXCEL =====================
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file_excel.required' => 'Harap pilih file Excel.',
+            'file_excel.mimes'    => 'File harus berformat .xlsx, .xls, atau .csv.',
+            'file_excel.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $path     = $request->file('file_excel')->store('imports/temp', 'local');
+        $fullPath = storage_path('app/' . $path);
+
+        $importer = new PerpustakaanImport();
+        $importer->import($fullPath);
+
+        Storage::disk('local')->delete($path);
+
+        $message = "Import selesai: {$importer->inserted} buku berhasil ditambahkan.";
+        if ($importer->skipped > 0) {
+            $message .= " {$importer->skipped} baris dilewati.";
+        }
+
+        return redirect()->route('perpustakaan.index')
+                         ->with('success', $message)
+                         ->with('import_errors', $importer->errors);
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/template_perpustakaan.xlsx');
+        if (!file_exists($path)) {
+            \Artisan::call('import:generate-templates');
+        }
+        return response()->download($path, 'Template_Import_Perpustakaan.xlsx');
     }
 }

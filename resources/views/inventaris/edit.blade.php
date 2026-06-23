@@ -50,15 +50,17 @@
 
             {{-- KODE BARANG & KODE UNIK ASET --}}
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang</label>
-                <input type="text" name="kode_barang" value="{{ old('kode_barang', $inventaris->kode_barang) }}" readonly
-                       class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Barang Kategori</label>
+                <input type="text" name="kode_barang" value="{{ old('kode_barang', $inventaris->kode_barang) }}"
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 @error('kode_barang') border-red-400 @enderror">
+                @error('kode_barang')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Unik Aset <span class="text-xs text-slate-400 font-normal ml-1">— Auto-generated</span></label>
-                <input type="text" value="{{ $inventaris->kode_unik_aset }}" readonly
-                       class="w-full border border-slate-300 bg-slate-50 text-slate-500 rounded-xl px-4 py-3 focus:outline-none cursor-not-allowed font-mono">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Kode Unik Aset <span class="text-xs text-slate-400 font-normal ml-1">— Bisa diubah manual</span></label>
+                <input type="text" name="kode_unik_aset" value="{{ old('kode_unik_aset', $inventaris->kode_unik_aset) }}"
+                       class="w-full border border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-800 font-mono @error('kode_unik_aset') border-red-400 @enderror">
+                @error('kode_unik_aset')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             {{-- SATUAN --}}

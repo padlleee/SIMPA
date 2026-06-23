@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventarisPeralatan;
+use App\Imports\InventarisImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -178,6 +179,7 @@ class InventarisController extends Controller
             'satuan'                => 'required|string|max:50',
             'satuan_lainnya'        => 'required_if:satuan,Lainnya|nullable|string|max:50',
             'kode_barang'           => 'nullable|string|max:100',
+            'kode_unik_aset'        => 'nullable|string|max:150',
             'lokasi'                => 'required|string|max:255',
             'ruangan'               => 'nullable|string',
             'kondisi'               => 'required|in:Baik,Rusak',
@@ -217,5 +219,44 @@ class InventarisController extends Controller
         }
         $inventari->delete();
         return back()->with('success', 'Aset berhasil dihapus.');
+    }
+
+    // ── IMPORT EXCEL ────────────────────────────────────────────────────
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'file_excel.required' => 'Harap pilih file Excel.',
+            'file_excel.mimes'    => 'File harus berformat .xlsx, .xls, atau .csv.',
+            'file_excel.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $path     = $request->file('file_excel')->store('imports/temp', 'local');
+        $fullPath = storage_path('app/' . $path);
+
+        $importer = new InventarisImport();
+        $importer->import($fullPath);
+
+        Storage::disk('local')->delete($path);
+
+        $message = "Import selesai: {$importer->inserted} data berhasil ditambahkan.";
+        if ($importer->skipped > 0) {
+            $message .= " {$importer->skipped} baris dilewati.";
+        }
+
+        return redirect()->route('inventaris.index')
+                         ->with('success', $message)
+                         ->with('import_errors', $importer->errors);
+    }
+
+    public function downloadTemplate()
+    {
+        $path = public_path('templates/template_inventaris.xlsx');
+        if (!file_exists($path)) {
+            \Artisan::call('import:generate-templates');
+        }
+        return response()->download($path, 'Template_Import_Inventaris.xlsx');
     }
 }

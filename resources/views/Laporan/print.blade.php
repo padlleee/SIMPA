@@ -213,8 +213,8 @@
         <img src="{{ asset('images/logo-panti-single.png') }}" alt="Logo">
         <div class="kop-text">
             <div class="org-name">YAYASAN AMALIYA SUBANG</div>
-            <div class="org-sub">Panti Asuhan Amaliya — Lembaga Sosial Kemanusiaan</div>
-            <div class="org-addr">Asrama Panti Asuhan Amaliya, Subang, Jawa Barat &nbsp;·&nbsp; SIMPA – Sistem Informasi Manajemen Panti Asuhan</div>
+            <div class="org-sub" style="color: #111;">Blok Suka Asih I RT.64 RW.18 Kel. Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat</div>
+            <div class="org-addr" style="color: #111;">Tlp. 08129686049 / 081313174592 | <a href="mailto:info.amaliyasubang@gmail.com" style="color: blue; text-decoration: none;">info.amaliyasubang@gmail.com</a> | www.amaliyasubang.org</div>
         </div>
     </div>
 

@@ -29,8 +29,14 @@
 </div>
 
 <div class="bg-slate-800 rounded-2xl p-6 mb-6 text-white">
-    <p class="text-slate-400 text-sm">Total Pengeluaran Bulan Ini</p>
-    <p class="text-3xl font-bold mt-1">Rp {{ number_format($totalBulanIni, 0, ',', '.') }}</p>
+    <p class="text-slate-400 text-sm">
+        @if(request('bulan') || request('tahun'))
+            Total Pengeluaran (Berdasarkan Filter)
+        @else
+            Total Seluruh Pengeluaran
+        @endif
+    </p>
+    <p class="text-3xl font-bold mt-1">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
 </div>
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

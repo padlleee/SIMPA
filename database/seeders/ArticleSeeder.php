@@ -47,15 +47,37 @@ class ArticleSeeder extends Seeder
             ],
         ];
 
+        // Pastikan direktori blog ada
+        if (!\Illuminate\Support\Facades\Storage::disk('public')->exists('blog')) {
+            \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory('blog');
+        }
+
         foreach ($articles as $data) {
             $slug = Str::slug($data['title']) . '-' . Str::random(5);
+
+            $imageName = 'blog/' . Str::random(10) . '.jpg';
+            try {
+                // Try fetching random placeholder image
+                $context = stream_context_create(['http' => ['ignore_errors' => true]]);
+                $imageContent = @file_get_contents('https://picsum.photos/800/600', false, $context);
+                if ($imageContent !== false && strlen($imageContent) > 0) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($imageName, $imageContent);
+                } else {
+                    throw new \Exception('Failed to download');
+                }
+            } catch (\Exception $e) {
+                // Fallback to local image if internet is down
+                if (file_exists(public_path('images/logo-panti.png'))) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->put($imageName, file_get_contents(public_path('images/logo-panti.png')));
+                }
+            }
 
             Article::updateOrCreate(
                 ['title' => $data['title']],
                 [
                     'slug'     => $slug,
                     'content'  => $data['content'],
-                    'image'    => $data['image'],
+                    'image'    => $imageName,
                     'id_admin' => $admin?->id_user,
                 ]
             );

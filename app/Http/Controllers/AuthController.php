@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $request->validateWithBag('login', [
             'email'    => 'required|string|email',
             'password' => 'required',
         ], [
@@ -58,7 +58,7 @@ class AuthController extends Controller
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        ], 'login')->onlyInput('email');
     }
 
     public function logout(Request $request)

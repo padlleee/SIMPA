@@ -84,8 +84,6 @@
     <span class="text-slate-600 font-medium truncate max-w-xs">{{ $buku->judul_buku }}</span>
 </div>
 
-{{-- ── Flash Messages ── --}}
-@include('layouts.partials.flash')
 
 {{-- ── Main Grid ── --}}
 <div class="grid lg:grid-cols-3 gap-6 items-start">

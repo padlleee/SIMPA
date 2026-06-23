@@ -138,5 +138,7 @@
         </div>
     </div>
 </div>
+
+@include('components.scroll-reveal')
 </body>
 </html>

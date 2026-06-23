@@ -20,7 +20,7 @@
     <div class="bg-slide" id="slide2"></div>
     <div class="bg-overlay"></div>
 
-    <div class="hero-content max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-16 items-center">
+    <div class="hero-content max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-16 items-center" data-aos="fade-up" data-aos-duration="1000">
         <div>
             <span class="inline-block bg-white/10 text-white/90 text-sm font-medium px-4 py-1.5 rounded-full mb-6">Yayasan Amaliya Subang</span>
             <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
@@ -71,23 +71,23 @@
         </div>
 
         {{-- Stats Card --}}
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20" data-aos="fade-up" data-aos-delay="200">
             <h3 class="text-white font-semibold text-lg mb-6">Dampak Nyata Kami</h3>
             <div class="grid grid-cols-2 gap-6">
                 <div class="bg-white/10 rounded-xl p-5">
-                    <div class="text-4xl font-bold text-white">50+</div>
+                    <div class="text-4xl font-bold text-white">{{ $statAnakAktif }}+</div>
                     <div class="text-slate-300 text-sm mt-1">Anak Asuh Aktif</div>
                 </div>
                 <div class="bg-white/10 rounded-xl p-5">
-                    <div class="text-4xl font-bold text-white">120+</div>
+                    <div class="text-4xl font-bold text-white">{{ $statAlumni }}+</div>
                     <div class="text-slate-300 text-sm mt-1">Alumni Berhasil</div>
                 </div>
                 <div class="bg-white/10 rounded-xl p-5">
-                    <div class="text-4xl font-bold text-white">10+</div>
+                    <div class="text-4xl font-bold text-white">{{ $statTahun }}+</div>
                     <div class="text-slate-300 text-sm mt-1">Tahun Berkarya</div>
                 </div>
                 <div class="bg-white/10 rounded-xl p-5">
-                    <div class="text-4xl font-bold text-white">500+</div>
+                    <div class="text-4xl font-bold text-white">{{ $statDonatur }}+</div>
                     <div class="text-slate-300 text-sm mt-1">Donatur Setia</div>
                 </div>
             </div>
@@ -100,12 +100,12 @@
 {{-- ============================================================ --}}
 <section id="tentang-kami" class="py-20 bg-gradient-to-b from-slate-50 to-white">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-14">
+        <div class="text-center mb-14" data-aos="fade-up">
             <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Tentang Kami · About Us</span>
             <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Misi Kami untuk Masa Depan Anak Bangsa</h2>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-12 items-start mb-12">
+        <div class="grid md:grid-cols-2 gap-12 items-start mb-12" data-aos="fade-up" data-aos-delay="100">
             {{-- Kolom Indonesia --}}
             <div class="space-y-5">
                 <div class="flex items-center gap-3 mb-2">
@@ -152,7 +152,7 @@
 {{-- ============================================================ --}}
 <section class="py-20 bg-white">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-14">
+        <div class="text-center mb-14" data-aos="fade-up">
             <span class="inline-block text-xs font-bold text-slate-500 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full mb-4">Cara Berkontribusi · How You Can Help</span>
             <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Ada Banyak Cara untuk Berbagi Kebaikan</h2>
             <p class="text-slate-500 mt-4 max-w-2xl mx-auto">Setiap kontribusi Anda, sekecil apapun, memiliki dampak nyata bagi kehidupan anak-anak asuh kami.</p>
@@ -160,7 +160,7 @@
 
         <div class="grid md:grid-cols-3 gap-8">
             {{-- Card 1: Donasi --}}
-            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
                 <div class="w-14 h-14 bg-slate-800 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -180,7 +180,7 @@
             </div>
 
             {{-- Card 2: Relawan --}}
-            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
                 <div class="w-14 h-14 bg-slate-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -200,7 +200,7 @@
             </div>
 
             {{-- Card 3: Beasiswa --}}
-            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div class="group relative bg-slate-50 rounded-2xl p-8 border border-slate-200 hover:border-slate-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
                 <div class="w-14 h-14 bg-slate-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
@@ -228,7 +228,7 @@
 {{-- ============================================================ --}}
 <section class="py-20 bg-gradient-to-br from-slate-800 to-slate-900">
     <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-14">
+        <div class="text-center mb-14" data-aos="fade-up">
             <span class="inline-block text-xs font-bold text-slate-400 uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full mb-4">Kisah Nyata · Real Stories</span>
             <h2 class="text-3xl md:text-4xl font-bold text-white">Mereka yang Telah Kami Dampingi</h2>
             <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Setiap kisah adalah bukti nyata bahwa kepedulian bersama dapat mengubah takdir seorang anak.</p>
@@ -236,7 +236,7 @@
 
         <div class="grid md:grid-cols-2 gap-8">
             {{-- Titi --}}
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">T</div>
                     <div>
@@ -260,7 +260,7 @@
             </div>
 
             {{-- Handani --}}
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/15 hover:border-white/30 hover:bg-white/15 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">H</div>
                     <div>

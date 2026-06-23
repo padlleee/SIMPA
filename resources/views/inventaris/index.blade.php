@@ -13,7 +13,6 @@
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori atau nama peralatan..."
                    class="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800">
         </div>
-        
         <div class="relative min-w-[180px]">
             <select name="ruangan" class="w-full pl-4 pr-10 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-800 appearance-none bg-white">
                 <option value="">Semua Ruangan</option>
@@ -25,14 +24,33 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
         </div>
-
         <button type="submit" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium">Filter</button>
     </form>
-    <a href="{{ route('inventaris.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        Tambah Peralatan
-    </a>
+    <div class="flex items-center gap-2">
+        <button onclick="openImportModal('importInventaris')"
+                class="inline-flex items-center gap-2 border border-emerald-600 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-emerald-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+            </svg>
+            Import Excel
+        </button>
+        <a href="{{ route('inventaris.create') }}" class="bg-slate-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Tambah Peralatan
+        </a>
+    </div>
 </div>
+
+@if(session('import_errors') && count(session('import_errors')) > 0)
+<div class="mb-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+    <p class="text-sm font-semibold text-amber-700 mb-2">⚠ Beberapa baris dilewati:</p>
+    <ul class="text-xs text-amber-700 space-y-0.5 list-disc pl-4 max-h-32 overflow-y-auto">
+        @foreach(session('import_errors') as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
@@ -84,5 +102,13 @@
     </div>
     @endif
 </div>
+
+@include('components.import-modal', [
+    'modalId'       => 'importInventaris',
+    'importRoute'   => 'inventaris.import',
+    'templateRoute' => 'inventaris.template',
+    'title'         => 'Import Data Inventaris Peralatan',
+    'columns'       => ['Nama Barang *', 'Nama Kategori *', 'Jumlah', 'Satuan', 'Kondisi (Baik/Rusak Ringan/Rusak Berat)', 'Ruangan', 'Lokasi Detail', 'Keterangan', 'Kode Barang'],
+])
 
 @endsection

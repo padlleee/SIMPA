@@ -265,14 +265,15 @@
     @endif
 
     @php
-        $isLoginError = $errors->any() && !$errors->has('nama_lengkap') && old('nama_lengkap') === null;
+        // Only open login modal if there are errors specifically in the 'login' bag
+        $isLoginError = $errors->login->any();
     @endphp
 
     // Display errors if any
     @if($isLoginError)
         openLoginModal();
         const errorsDiv = document.getElementById('loginErrors');
-        @foreach($errors->all() as $error)
+        @foreach($errors->login->all() as $error)
             const errorMsg = document.createElement('div');
             errorMsg.className = 'bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 text-sm flex gap-3';
             errorMsg.innerHTML = `

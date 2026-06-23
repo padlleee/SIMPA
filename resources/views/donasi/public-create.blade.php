@@ -8,250 +8,327 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for dropdown */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 text-slate-800">
 
 <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-2xl mx-auto">
+        
         <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Formulir Donasi</h1>
-            <p class="text-lg text-gray-600">Setiap donasi Anda adalah berkah bagi anak-anak asuh kami</p>
+        <div class="text-center mb-12 relative">
+            <a href="{{ url('/') }}" class="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali
+            </a>
+            <h1 class="text-4xl font-bold text-slate-900 mb-3">Formulir Donasi</h1>
+            <p class="text-lg text-slate-600">Setiap donasi Anda adalah berkah bagi anak-anak asuh kami</p>
         </div>
 
         <!-- Bank Account Information -->
-        <div class="bg-white rounded-lg shadow-md p-8 mb-8 border-l-4 border-gray-400">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-6">💳 Rekening Resmi Foundation</h2>
+        <div class="bg-white rounded-2xl shadow-sm p-8 mb-8 border border-slate-200">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800">Rekening Resmi Yayasan</h2>
+            </div>
 
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="grid md:grid-cols-2 gap-5">
                 <!-- BRI Account -->
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-                            <span class="text-lg font-bold text-gray-700">BRI</span>
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl hover:border-blue-300 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="h-10 w-16 bg-white border border-slate-200 rounded flex items-center justify-center p-1.5 shrink-0">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_BRI.png" alt="BRI" class="h-full object-contain">
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Bank BRI</h3>
+                        <h3 class="text-base font-bold text-slate-800">Bank BRI</h3>
                     </div>
-                    <div class="space-y-3 text-sm">
-                        <div>
-                            <p class="text-gray-600 font-medium">No. Rekening</p>
-                            <p class="text-gray-900 font-mono text-lg">
-                                <span id="bri-account">012301002045309</span>
-                                <button onclick="copyToClipboard('bri-account')" class="ml-2 text-blue-600 hover:text-blue-800" title="Salin">
-                                    📋
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 font-medium">No. Rekening</p>
+                            <div class="flex items-center gap-2">
+                                <span id="bri-account" class="font-mono font-bold text-slate-900 tracking-wide">012301002045309</span>
+                                <button type="button" onclick="copyToClipboard('bri-account')" class="text-blue-600 hover:text-blue-800 p-1.5 rounded-md hover:bg-blue-50 transition" title="Salin Rekening">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 </button>
-                            </p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-gray-600 font-medium">Atas Nama</p>
-                            <p class="text-gray-900">YAYASAN PANTI ASUHAN</p>
+                        <div class="flex items-center justify-between border-t border-slate-200/60 pt-2">
+                            <p class="text-slate-500 font-medium">Atas Nama</p>
+                            <p class="text-slate-800 font-semibold text-right">YAYASAN PANTI ASUHAN AMALIYA</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- BJB Account -->
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4">
-                            <span class="text-lg font-bold text-gray-700">BJB</span>
+                <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl hover:border-blue-300 transition-colors">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="h-10 w-16 bg-white border border-slate-200 rounded flex items-center justify-center p-1.5 shrink-0">
+                            <img src="https://vectorlogo4u.com/wp-content/uploads/2018/11/bank-bjb-vector-logo.png" alt="BJB" class="h-full object-contain">
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900">Bank BJB</h3>
+                        <h3 class="text-base font-bold text-slate-800">Bank BJB</h3>
                     </div>
-                    <div class="space-y-3 text-sm">
-                        <div>
-                            <p class="text-gray-600 font-medium">No. Rekening</p>
-                            <p class="text-gray-900 font-mono text-lg">
-                                <span id="bjb-account">0987654321</span>
-                                <button onclick="copyToClipboard('bjb-account')" class="ml-2 text-blue-600 hover:text-blue-800" title="Salin">
-                                    📋
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="text-slate-500 font-medium">No. Rekening</p>
+                            <div class="flex items-center gap-2">
+                                <span id="bjb-account" class="font-mono font-bold text-slate-900 tracking-wide">0987654321</span>
+                                <button type="button" onclick="copyToClipboard('bjb-account')" class="text-blue-600 hover:text-blue-800 p-1.5 rounded-md hover:bg-blue-50 transition" title="Salin Rekening">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                                 </button>
-                            </p>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-gray-600 font-medium">Atas Nama</p>
-                            <p class="text-gray-900">YAYASAN PANTI ASUHAN</p>
+                        <div class="flex items-center justify-between border-t border-slate-200/60 pt-2">
+                            <p class="text-slate-500 font-medium">Atas Nama</p>
+                            <p class="text-slate-800 font-semibold text-right">YAYASAN PANTI ASUHAN AMALIYA</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded text-sm text-gray-700">
-                <p><strong>Catatan Penting:</strong> Mohon pastikan nama donatur yang dicantumkan sesuai dengan nama pada rekening pengirim untuk mempercepat proses verifikasi.</p>
+            <div class="mt-6 flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+                <svg class="w-5 h-5 shrink-0 text-amber-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p><strong>Catatan Penting:</strong> Mohon pastikan nama donatur yang dicantumkan pada form sesuai dengan nama pada rekening pengirim untuk mempercepat proses verifikasi oleh tim kami.</p>
             </div>
         </div>
 
         <!-- Donation Form -->
-        <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <div class="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100">
+                <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800">Isi Data Donasi</h2>
+            </div>
+
             <form action="{{ route('donasi.publicStore') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
-                <!-- Nama Donatur -->
-                <div>
-                    <label for="nama_donatur" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Lengkap <span class="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="nama_donatur"
-                        name="nama_donatur"
-                        value="{{ old('nama_donatur') }}"
-                        placeholder="Masukkan nama lengkap Anda / Nama instansi"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('nama_donatur') border-red-500 @enderror"
-                        required
-                        oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.setCustomValidity('')"
-                    >
-                    @error('nama_donatur')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Nama Donatur -->
+                    <div class="md:col-span-2">
+                        <label for="nama_donatur" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Nama Lengkap / Instansi <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="nama_donatur"
+                            name="nama_donatur"
+                            value="{{ old('nama_donatur') }}"
+                            placeholder="Contoh: Budi Santoso / PT Maju Jaya"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-slate-800 outline-none transition @error('nama_donatur') border-red-500 @enderror"
+                            required
+                            oninvalid="this.setCustomValidity('Wajib diisi')" oninput="this.setCustomValidity('')"
+                        >
+                        @error('nama_donatur')
+                            <p class="mt-1.5 text-sm text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                <!-- Email -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                        Email <span class="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="Masukkan alamat email terdaftar (contoh: nama@email.com)"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('email') border-red-500 @enderror"
-                        required
-                        oninvalid="this.setCustomValidity('Wajib diisi dengan email yang valid')" oninput="this.setCustomValidity('')"
-                    >
-                    @error('email')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Alamat Email <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            placeholder="nama@email.com"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-slate-800 outline-none transition @error('email') border-red-500 @enderror"
+                            required
+                            oninvalid="this.setCustomValidity('Wajib diisi dengan email yang valid')" oninput="this.setCustomValidity('')"
+                        >
+                        @error('email')
+                            <p class="mt-1.5 text-sm text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                <!-- No. HP -->
-                <div>
-                    <label for="no_hp" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nomor Telepon (Opsional)
-                    </label>
-                    <input
-                        type="text"
-                        id="no_hp"
-                        name="no_hp"
-                        value="{{ old('no_hp') }}"
-                        placeholder="0812xxxx (WhatsApp aktif)"
-                        maxlength="15"
-                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                    >
+                    <!-- No. HP -->
+                    <div>
+                        <label for="no_hp" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Nomor WhatsApp <span class="text-slate-400 font-normal">(Opsional)</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="no_hp"
+                            name="no_hp"
+                            value="{{ old('no_hp') }}"
+                            placeholder="0812xxxx"
+                            maxlength="15"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:border-slate-800 outline-none transition"
+                        >
+                    </div>
                 </div>
 
                 <!-- Nominal -->
                 <div>
-                    <label for="nominal" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nominal Donasi (Rp) <span class="text-red-500">*</span>
+                    <label for="nominal" class="block text-sm font-semibold text-slate-700 mb-2">
+                        Nominal Donasi <span class="text-red-500">*</span>
                     </label>
                     <div class="relative">
-                        <span class="absolute left-4 top-2 text-gray-600">Rp</span>
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-semibold text-slate-500">Rp</span>
                         <input
                             type="text"
                             id="nominal"
                             name="nominal"
                             value="{{ old('nominal') }}"
-                            placeholder="Masukkan nominal donasi (Min. Rp 10.000)"
+                            placeholder="10000"
                             maxlength="12"
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('nominal') border-red-500 @enderror"
+                            class="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl font-bold text-lg focus:ring-2 focus:ring-slate-800 focus:border-slate-800 outline-none transition @error('nominal') border-red-500 @enderror"
                             required
                             oninvalid="this.setCustomValidity('Wajib diisi')"
                             oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12); this.setCustomValidity('')"
                         >
                     </div>
-                    @error('nominal')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-2 text-sm text-gray-500">Minimal donasi: Rp 10.000</p>
+                    <div class="flex items-center justify-between mt-2">
+                        <p class="text-sm text-slate-500">Minimal: Rp 10.000</p>
+                        @error('nominal')
+                            <p class="text-sm text-red-600 font-medium">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- Metode Pembayaran -->
+                <!-- Metode Pembayaran (Custom Dropdown) -->
                 <div>
-                    <label for="metode" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">
                         Metode Pembayaran <span class="text-red-500">*</span>
                     </label>
-                    <select
-                        id="metode"
-                        name="metode"
-                        onchange="showPaymentInfo(this.value)"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent @error('metode') border-red-500 @enderror"
-                        required
-                        oninvalid="this.setCustomValidity('Wajib pilih metode pembayaran')" oninput="this.setCustomValidity('')"
-                    >
-                        <option value="">-- Pilih Metode --</option>
-                        <option value="BJB" @selected(old('metode') === 'BJB')>Transfer Bank BJB</option>
-                        <option value="BRI" @selected(old('metode') === 'BRI')>Transfer Bank BRI</option>
-                        <option value="Transfer" @selected(old('metode') === 'Transfer')>Transfer Bank Lainnya</option>
-                        <option value="QRIS" @selected(old('metode') === 'QRIS')>QRIS</option>
-                    </select>
+                    
+                    <div class="relative" id="custom-dropdown">
+                        <!-- Hidden Real Input -->
+                        <input type="hidden" name="metode" id="metode" value="{{ old('metode') }}" required oninvalid="alert('Pilih metode pembayaran terlebih dahulu.')">
+                        
+                        <!-- Dropdown Button -->
+                        <button type="button" id="dropdown-btn" class="w-full flex items-center justify-between px-4 py-3 border border-slate-300 rounded-xl bg-white hover:bg-slate-50 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition outline-none @error('metode') border-red-500 @enderror">
+                            <div class="flex items-center gap-3" id="dropdown-selected-content">
+                                <span class="text-slate-400">Pilih Metode Pembayaran...</span>
+                            </div>
+                            <svg class="w-5 h-5 text-slate-400 transition-transform duration-200" id="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="dropdown-menu" class="absolute z-50 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg hidden max-h-60 overflow-y-auto custom-scrollbar">
+                            <div class="p-2 space-y-1">
+                                <!-- Option: BRI -->
+                                <button type="button" onclick="selectPayment('BRI', 'Bank BRI', 'https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_BRI.png')" class="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition text-left">
+                                    <div class="w-14 h-8 bg-white border border-slate-200 rounded flex items-center justify-center p-1 shrink-0">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_BRI.png" alt="BRI" class="h-full object-contain">
+                                    </div>
+                                    <span class="font-semibold text-slate-700">Transfer Bank BRI</span>
+                                </button>
+                                <!-- Option: BJB -->
+                                <button type="button" onclick="selectPayment('BJB', 'Bank BJB', 'https://vectorlogo4u.com/wp-content/uploads/2018/11/bank-bjb-vector-logo.png')" class="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition text-left">
+                                    <div class="w-14 h-8 bg-white border border-slate-200 rounded flex items-center justify-center p-1 shrink-0">
+                                        <img src="https://vectorlogo4u.com/wp-content/uploads/2018/11/bank-bjb-vector-logo.png" alt="BJB" class="h-full object-contain">
+                                    </div>
+                                    <span class="font-semibold text-slate-700">Transfer Bank BJB</span>
+                                </button>
+                                <!-- Option: QRIS -->
+                                <button type="button" onclick="selectPayment('QRIS', 'QRIS (All Payment)', 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg')" class="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition text-left">
+                                    <div class="w-14 h-8 bg-white border border-slate-200 rounded flex items-center justify-center p-1 shrink-0">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" alt="QRIS" class="h-full object-contain">
+                                    </div>
+                                    <span class="font-semibold text-slate-700">QRIS (GoPay, OVO, Dana, dll)</span>
+                                </button>
+                                <!-- Option: Transfer Lain -->
+                                <button type="button" onclick="selectPayment('Transfer', 'Bank Lainnya', '')" class="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition text-left">
+                                    <div class="w-14 h-8 bg-slate-100 border border-slate-200 rounded flex items-center justify-center text-slate-500 shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                    </div>
+                                    <span class="font-semibold text-slate-700">Transfer Bank Lainnya</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     @error('metode')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-sm text-red-600 font-medium">{{ $message }}</p>
                     @enderror
 
-                    <div id="info-transfer" class="hidden mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-gray-700">
-                        <p class="font-semibold">📌 Transfer ke salah satu rekening yang tertera di atas, lalu unggah bukti transfer.</p>
+                    <!-- Dynamic Payment Info Panels -->
+                    <div id="info-transfer" class="hidden mt-4 flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+                        <svg class="w-5 h-5 shrink-0 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div>
+                            <p class="font-semibold mb-1">Panduan Transfer</p>
+                            <p class="text-blue-700/80">Silakan transfer nominal donasi ke salah satu rekening Yayasan di atas, kemudian unggah bukti transfer pada kolom di bawah.</p>
+                        </div>
                     </div>
-                    <div id="info-qris" class="hidden mt-3 text-center">
-                        <p class="text-sm font-semibold text-gray-700 mb-2">Scan QRIS berikut untuk pembayaran:</p>
-                        <img src="{{ asset('images/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya"
-                             class="mx-auto h-48 object-contain rounded-lg border border-gray-200 p-2 bg-white">
+
+                    <div id="info-qris" class="hidden mt-4">
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <div class="bg-slate-50 border-b border-slate-200 px-5 py-3 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                                    <span class="font-bold text-slate-700">Scan QRIS Panti Asuhan Amaliya</span>
+                                </div>
+                            </div>
+                            <div class="p-6 text-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-50 to-white">
+                                <img src="{{ asset('images/qris.jpg') }}" alt="QRIS Panti Asuhan Amaliya" class="mx-auto w-56 h-56 object-contain rounded-xl border border-slate-200 p-3 bg-white shadow-sm mb-5">
+                                
+                                <a href="{{ asset('images/qris.jpg') }}" download="QRIS_Panti_Asuhan_Amaliya.jpg" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    Unduh QRIS
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Bukti Pembayaran -->
                 <div>
-                    <label for="bukti_pembayaran" class="block text-sm font-medium text-gray-700 mb-2">
-                        Bukti Pembayaran <span class="text-red-500">*</span>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">
+                        Unggah Bukti Pembayaran <span class="text-red-500">*</span>
                     </label>
-                    <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:bg-gray-100 transition">
+                    <div class="relative border-2 border-dashed border-slate-300 rounded-xl p-8 bg-slate-50 hover:bg-slate-100 hover:border-slate-400 transition group">
                         <input
                             type="file"
                             id="bukti_pembayaran"
                             name="bukti_pembayaran"
                             accept=".jpg,.jpeg,.png,.pdf"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             required
                             oninvalid="this.setCustomValidity('Wajib upload bukti pembayaran')" oninput="this.setCustomValidity('')"
                         >
                         <div class="text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h24a4 4 0 004-4V20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M4 20h40" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <p class="mt-2 font-medium text-gray-900">Klik untuk upload atau drag & drop</p>
-                            <p class="text-sm text-gray-500 mt-1">JPG, PNG, atau PDF (Maks. 2MB)</p>
+                            <div class="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                                </svg>
+                            </div>
+                            <p class="font-bold text-slate-700">Pilih file atau drag & drop ke sini</p>
+                            <p class="text-sm text-slate-500 mt-1">Format: JPG, PNG, atau PDF (Maks. 2MB)</p>
                         </div>
                     </div>
                     @error('bukti_pembayaran')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="mt-1.5 text-sm text-red-600 font-medium">{{ $message }}</p>
                     @enderror
-                    <div id="file-info" class="mt-2 text-sm text-gray-600"></div>
+                    
+                    <div id="file-info" class="hidden mt-3 flex items-center gap-2 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span id="file-info-text"></span>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
-                <div class="flex gap-4 pt-6">
-                    <button
-                        type="submit"
-                        class="flex-1 bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition duration-200"
-                    >
-                        Kirim Donasi
+                <div class="pt-6 border-t border-slate-100">
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition shadow-md hover:shadow-lg active:scale-[0.99]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        Kirim Konfirmasi Donasi
                     </button>
-                    <a
-                        href="{{ url('/') }}"
-                        class="flex-1 bg-gray-200 text-gray-900 py-3 rounded-lg font-semibold text-center hover:bg-gray-300 transition duration-200"
-                    >
-                        Batal
-                    </a>
                 </div>
 
                 <!-- Disclaimer -->
-                <div class="p-4 bg-gray-50 rounded-lg text-sm text-gray-600 border border-gray-200">
-                    <p> Semua data pribadi Anda dilindungi dan hanya digunakan untuk verifikasi donasi.</p>
-                    <p> Kwitansi digital dapat diakses dari dashboard jika Anda mendaftar sebagai Donatur Tetap.</p>
+                <div class="mt-4 flex items-start gap-2 text-xs text-slate-500">
+                    <svg class="w-4 h-4 shrink-0 mt-0.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <p>Semua data pribadi dilindungi dengan aman. Tim kami akan memverifikasi bukti donasi dalam 1×24 jam. Kwitansi digital resmi akan dikirim ke email Anda.</p>
                 </div>
             </form>
         </div>
@@ -259,32 +336,101 @@
 </div>
 
 <script>
+    // --- Copy To Clipboard ---
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        navigator.clipboard.writeText(element.textContent.trim()).then(() => {
+            const btn = element.nextElementSibling;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+            setTimeout(() => btn.innerHTML = originalHTML, 2000);
+        });
+    }
+
+    // --- Custom Dropdown Logic ---
+    const dropdownBtn = document.getElementById('dropdown-btn');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const dropdownIcon = document.getElementById('dropdown-icon');
+    const hiddenMetode = document.getElementById('metode');
+    const selectedContent = document.getElementById('dropdown-selected-content');
+
+    dropdownBtn.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+        dropdownIcon.classList.toggle('rotate-180');
+    });
+
+    // Close dropdown when click outside
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById('custom-dropdown').contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+            dropdownIcon.classList.remove('rotate-180');
+        }
+    });
+
+    function selectPayment(val, text, logoUrl) {
+        hiddenMetode.value = val;
+        
+        // Update display
+        if (logoUrl) {
+            selectedContent.innerHTML = `
+                <div class="h-6 w-10 bg-white border border-slate-200 rounded flex items-center justify-center p-0.5">
+                    <img src="${logoUrl}" class="h-full object-contain">
+                </div>
+                <span class="font-bold text-slate-800">${text}</span>
+            `;
+        } else {
+            selectedContent.innerHTML = `
+                <div class="h-6 w-10 bg-slate-100 border border-slate-200 rounded flex items-center justify-center text-slate-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                </div>
+                <span class="font-bold text-slate-800">${text}</span>
+            `;
+        }
+        
+        // Hide menu
+        dropdownMenu.classList.add('hidden');
+        dropdownIcon.classList.remove('rotate-180');
+        
+        // Show corresponding info panel
+        showPaymentInfo(val);
+    }
+
     function showPaymentInfo(val) {
         ['info-transfer','info-qris'].forEach(id => document.getElementById(id).classList.add('hidden'));
         if (['BJB','BRI','Transfer'].includes(val)) document.getElementById('info-transfer').classList.remove('hidden');
         if (val === 'QRIS') document.getElementById('info-qris').classList.remove('hidden');
     }
 
-    // Update file info when file is selected
-    document.getElementById('bukti_pembayaran').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const fileInfo = document.getElementById('file-info');
-            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-            fileInfo.innerHTML = ` File terpilih: <strong>${file.name}</strong> (${sizeMB} MB)`;
-            fileInfo.className = 'mt-2 text-sm text-green-600';
-        }
-    });
-
-    // Copy to clipboard function
-    function copyToClipboard(elementId) {
-        const element = document.getElementById(elementId);
-        navigator.clipboard.writeText(element.textContent.trim()).then(() => alert('Nomor rekening disalin!'));
+    // Initialize with old value if validation fails
+    const oldMetode = '{{ old('metode') }}';
+    if (oldMetode) {
+        let text = '', logoUrl = '';
+        if (oldMetode === 'BRI') { text = 'Bank BRI'; logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/9/97/Logo_BRI.png'; }
+        else if (oldMetode === 'BJB') { text = 'Bank BJB'; logoUrl = 'https://vectorlogo4u.com/wp-content/uploads/2018/11/bank-bjb-vector-logo.png'; }
+        else if (oldMetode === 'QRIS') { text = 'QRIS'; logoUrl = 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg'; }
+        else if (oldMetode === 'Transfer') { text = 'Bank Lainnya'; logoUrl = ''; }
+        
+        if (text) selectPayment(oldMetode, text, logoUrl);
     }
 
-    // Restore dynamic info on validation error
-    const oldMetode = '{{ old('metode') }}';
-    if (oldMetode) showPaymentInfo(oldMetode);
+    // --- File Input Display ---
+    document.getElementById('bukti_pembayaran').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const fileInfo = document.getElementById('file-info');
+        const fileInfoText = document.getElementById('file-info-text');
+        
+        if (file) {
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            fileInfoText.innerHTML = `<strong>${file.name}</strong> (${sizeMB} MB)`;
+            fileInfo.classList.remove('hidden');
+            fileInfo.classList.add('flex');
+        } else {
+            fileInfo.classList.add('hidden');
+            fileInfo.classList.remove('flex');
+        }
+    });
 </script>
+
+@include('components.scroll-reveal')
 </body>
 </html>
