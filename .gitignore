@@ -20,6 +20,3 @@ yarn-error.log
 /.idea
 /.vscode
 
-# Abaikan gambar dokumen legalitas yang diupload
-/public/images/legalitas/*
-!/public/images/legalitas/.gitkeep
