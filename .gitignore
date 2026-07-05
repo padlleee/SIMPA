@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/framework/sessions/
 /vendor
 AUTHENTICATION_MODULE.md
 LANDING_PAGE_IMPLEMENTATION.md
@@ -11,6 +12,7 @@ generate_docs.py
 Panduan_Git_GitHub.md
 .env
 .env.backup
+.env.railway
 .phpunit.result.cache
 docker-compose.override.yml
 Homestead.json
@@ -20,3 +22,15 @@ yarn-error.log
 /.idea
 /.vscode
 
+# File debug & script sementara
+php_info.txt
+test_db.php
+migrate_inventaris.php
+wipe_donasi.php
+wipe_users.php
+
+# File tunnel/binary
+cloudflared.exe
+ngrok.exe
+ngrok.zip
+*.zip
