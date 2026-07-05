@@ -187,7 +187,7 @@ SIMPA/
 
 ## 👨‍💻 Tim Pengembang
 
-Proyek ini dikembangkan oleh Kelompok Mahasiswa Semester 4 sebagai Proyek Akhir mata kuliah Rekayasa Perangkat Lunak.
+Proyek ini dikembangkan oleh Kelompok Mahasiswa Semester 4 sebagai Tugas Project Semester Pada Prodi Sistem Informasi
 
 ---
 
