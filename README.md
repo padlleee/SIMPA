@@ -94,7 +94,7 @@ Proyek ini dikembangkan sebagai **Tugas Akhir Semester 4** dengan menerapkan met
 
 | Kategori | Teknologi |
 |---|---|
-| **Backend Framework** | Laravel 11 (PHP 8.2) |
+| **Backend Framework** | Laravel 9 (PHP 8.2) |
 | **Frontend** | Blade Template, Tailwind CSS, Alpine.js |
 | **Database** | MySQL 8 |
 | **Authentication** | Laravel Sanctum + Custom Role Middleware |
